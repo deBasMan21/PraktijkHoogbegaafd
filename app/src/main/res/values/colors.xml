@@ -10,4 +10,10 @@
     <color name="phrOrange">#EB7D07</color>
     <color name="phrPurple">#9D86BE</color>
     <color name="phrOrangeLight">#FAE4CD</color>
+
+    <color name="emoto">#E85533</color>
+    <color name="fanti">#62B04A</color>
+    <color name="intellecto">#B666A1</color>
+    <color name="psymo">#5166A9</color>
+    <color name="senzo">#F29631</color>
 </resources>
