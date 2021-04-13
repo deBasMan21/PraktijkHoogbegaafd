@@ -1,14 +1,14 @@
-package nl.avans.praktijkhoogbegaafd.ui.gallery;
+package nl.avans.praktijkhoogbegaafd.ui.graph;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class GalleryViewModel extends ViewModel {
+public class GraphViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public GalleryViewModel() {
+    public GraphViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is gallery fragment");
     }
