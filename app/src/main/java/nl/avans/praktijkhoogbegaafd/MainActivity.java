@@ -1,6 +1,7 @@
 package nl.avans.praktijkhoogbegaafd;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -27,16 +28,21 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
+    public static FeelingsEntityManager fem;
+
+    public static boolean childrenmode = false;
+
     public static String name = "";
     public static String begeleidster = "";
     public static String birthDay = "";
+    public static String parentalName = "";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FeelingsEntityManager fem = new FeelingsEntityManager(getApplication());
+        fem = new FeelingsEntityManager(getApplication());
 
         Room.databaseBuilder(this, FeelingsDB.class, "feelingsDB");
 
@@ -54,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        boolean loggedIn = MainActivity.name.equals("");
         if(sharedPref.contains("Name")){
             name = sharedPref.getString("Name", "?");
         }
@@ -63,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
         if(sharedPref.contains("Begeleidster")){
             begeleidster = sharedPref.getString("Begeleidster", "?");
         }
+        if(loggedIn){
+            Intent intent = new Intent(this, StartupActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+
+//        !getIntent().getBooleanExtra("info", false)
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

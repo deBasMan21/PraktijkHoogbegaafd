@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PraktijkHoogbegaafd">
-        <activity android:name=".ui.questionActivities.QuestionSummary"></activity>
+        <activity android:name=".GiveInfoActivity"></activity>
+        <activity android:name=".StartupActivity" />
+        <activity android:name=".ui.questionActivities.QuestionSummary" />
         <activity android:name=".ui.questionActivities.QuestionSenzo" />
         <activity android:name=".ui.questionActivities.QuestionPsymo" />
         <activity android:name=".ui.questionActivities.QuestionIntellecto" />

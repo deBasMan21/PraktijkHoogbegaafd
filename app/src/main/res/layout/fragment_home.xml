@@ -26,7 +26,7 @@
         android:layout_marginTop="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welkom terug in de app! Klik hieronder om je emoties in te vullen."
+        android:text="Welkom terug in de app! Klik hieronder om je intensiteiten in te vullen."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:id="@+id/bn_home_start"
         android:layout_height="wrap_content"
-        android:text="Vul je emoties in"
+        android:text="Vul je intensiteiten in"
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

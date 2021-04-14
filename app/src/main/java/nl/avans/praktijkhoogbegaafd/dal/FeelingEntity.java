@@ -33,4 +33,53 @@ public class FeelingEntity {
         this.psymo = psymo;
         this.senzo = senzo;
     }
+
+    @NonNull
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(@NonNull String date) {
+        this.date = date;
+    }
+
+    public int getEmoto() {
+        return emoto;
+    }
+
+    public void setEmoto(int emoto) {
+        this.emoto = emoto;
+    }
+
+    public int getFanti() {
+        return fanti;
+    }
+
+    public void setFanti(int fanti) {
+        this.fanti = fanti;
+    }
+
+    public int getIntellecto() {
+        return intellecto;
+    }
+
+    public void setIntellecto(int intellecto) {
+        this.intellecto = intellecto;
+    }
+
+    public int getPsymo() {
+        return psymo;
+    }
+
+    public void setPsymo(int psymo) {
+        this.psymo = psymo;
+    }
+
+    public int getSenzo() {
+        return senzo;
+    }
+
+    public void setSenzo(int senzo) {
+        this.senzo = senzo;
+    }
 }

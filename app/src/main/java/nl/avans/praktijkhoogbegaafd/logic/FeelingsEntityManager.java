@@ -26,7 +26,7 @@ public class FeelingsEntityManager {
         });
     }
 
-    public List<FeelingEntity> getFeelingsForDay(String date){
+    public FeelingEntity getFeelingsForDay(String date){
         return feelingDAO.getFeelingsForDay(date);
     }
 }

@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import nl.avans.praktijkhoogbegaafd.MainActivity;
 import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.ui.questionActivities.QuestionEmoto;
 
@@ -28,6 +29,12 @@ public class HomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         Button startEmotes = root.findViewById(R.id.bn_home_start);
+
+        if(MainActivity.childrenmode){
+            startEmotes.setText("Vul je x-Citabillies in");
+        } else {
+            startEmotes.setText("Vul je intensiteiten in");
+        }
 
         startEmotes.setOnClickListener(new View.OnClickListener() {
             @Override

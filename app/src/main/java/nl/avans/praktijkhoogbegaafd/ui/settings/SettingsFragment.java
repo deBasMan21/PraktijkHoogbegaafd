@@ -53,6 +53,9 @@ public class SettingsFragment extends Fragment {
         }
         spinner.setSelection(selectedBegeleidster);
 
+        TextView parentName = root.findViewById(R.id.tv_settings_parent);
+        parentName.setText(MainActivity.parentalName);
+
 
         Calendar calendar = Calendar.getInstance();
 
@@ -89,6 +92,7 @@ public class SettingsFragment extends Fragment {
                 MainActivity.begeleidster = categories[spinner.getSelectedItemPosition()];
                 MainActivity.name = etName.getText().toString();
                 MainActivity.birthDay = bday.getText().toString();
+                MainActivity.parentalName = parentName.getText().toString();
                 Intent intent = new Intent(getContext(), MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -97,6 +101,7 @@ public class SettingsFragment extends Fragment {
                 editor.putString("Name", MainActivity.name);
                 editor.putString("Birthday", MainActivity.birthDay);
                 editor.putString("Begeleidster", MainActivity.begeleidster);
+                editor.putString("Parent", MainActivity.parentalName);
                 editor.apply();
 
                 startActivity(intent);
