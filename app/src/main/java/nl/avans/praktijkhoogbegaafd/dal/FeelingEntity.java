@@ -1,23 +1,36 @@
 package nl.avans.praktijkhoogbegaafd.dal;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
 public class FeelingEntity {
-    @PrimaryKey
+    @PrimaryKey @NonNull
     public String date;
 
     @ColumnInfo
-    public int value;
+    public int emoto;
 
     @ColumnInfo
-    public String xCitabillie;
+    public int fanti;
 
-    public FeelingEntity(String date, int value, String xCitabillie){
+    @ColumnInfo
+    public int intellecto;
+
+    @ColumnInfo
+    public int psymo;
+
+    @ColumnInfo
+    public int senzo;
+
+    public FeelingEntity(@NonNull String date, int emoto, int fanti, int intellecto, int psymo, int senzo){
         this.date = date;
-        this.value = value;
-        this.xCitabillie = xCitabillie;
+        this.emoto = emoto;
+        this.fanti = fanti;
+        this.intellecto = intellecto;
+        this.psymo = psymo;
+        this.senzo = senzo;
     }
 }

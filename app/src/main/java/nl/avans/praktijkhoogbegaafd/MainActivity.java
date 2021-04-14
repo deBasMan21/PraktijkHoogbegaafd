@@ -37,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         FeelingsEntityManager fem = new FeelingsEntityManager(getApplication());
+
         Room.databaseBuilder(this, FeelingsDB.class, "feelingsDB");
+
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
