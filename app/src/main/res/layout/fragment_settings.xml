@@ -35,14 +35,16 @@
         android:text="Naam"
         app:layout_constraintTop_toBottomOf="@+id/et_settings_date_of_birth" />
 
-    <ToggleButton
-        android:id="@+id/tb_settings_color_mode"
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_settings_name" />
+<!--    <ToggleButton-->
+<!--        android:id="@+id/tb_settings_color_mode"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/et_settings_name"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:backgroundTint="@color/phrOrange"/>-->
 
     <Button
         android:id="@+id/bn_settings_confirm"
@@ -53,5 +55,5 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tb_settings_color_mode" />
+        app:layout_constraintTop_toBottomOf="@+id/et_settings_name" />
 </androidx.constraintlayout.widget.ConstraintLayout>

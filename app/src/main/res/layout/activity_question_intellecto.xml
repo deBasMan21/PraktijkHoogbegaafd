@@ -4,42 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment"
+    tools:context=".ui.questionActivities.QuestionIntellecto"
     android:layout_margin="20dp">
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleX="2"
-        android:scaleY="2"
-        android:src="@mipmap/ic_phr_logo_large_foreground"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
-        android:id="@+id/tv_home_introduction"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        android:textAlignment="center"
-        android:layout_marginTop="30dp"
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welkom terug in de app! Klik hieronder om je emoties in te vullen."
+        android:text="Hoeveel Intellecto's heb je?"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="20sp"
+        android:textColor="@color/phrOrange"
+        android:textStyle="bold"/>
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/rs_questions_intellecto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        android:layout_marginTop="20dp"/>
 
     <Button
         android:layout_width="wrap_content"
-        android:id="@+id/bn_home_start"
         android:layout_height="wrap_content"
-        android:text="Vul je emoties in"
-        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/phrOrange"
+        android:id="@+id/bn_question_intellecto"
+        android:text="Volgende"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_home_introduction"
-        android:backgroundTint="@color/phrOrange"/>
+        app:layout_constraintTop_toBottomOf="@+id/rs_questions_intellecto" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
