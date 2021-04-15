@@ -19,14 +19,21 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import nl.avans.praktijkhoogbegaafd.dal.InfoEntity;
+import nl.avans.praktijkhoogbegaafd.logic.InfoEntityManager;
+
 public class GiveInfoActivity extends AppCompatActivity {
 
     private boolean parental = false;
+
+    private InfoEntityManager iem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_give_info);
+
+        iem = new InfoEntityManager(getApplication());
 
         SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
 
@@ -61,15 +68,8 @@ public class GiveInfoActivity extends AppCompatActivity {
                         MainActivity.begeleidster = categories[spinner.getSelectedItemPosition()];
                         MainActivity.parentalName = etParent.getText().toString();
 
-                        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString("Name", MainActivity.name);
-                        editor.putString("Birthday", MainActivity.birthDay);
-                        editor.putString("Begeleidster", MainActivity.begeleidster);
-                        editor.putString("Parent", MainActivity.parentalName);
-                        editor.putBoolean("ParentalControl", MainActivity.childrenmode);
-                        editor.putBoolean("Logged", true);
-                        editor.apply();
+                        iem.insertInfo(new InfoEntity(MainActivity.name, MainActivity.birthDay, MainActivity.begeleidster, MainActivity.parentalName, MainActivity.childrenmode));
+
 
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -83,16 +83,10 @@ public class GiveInfoActivity extends AppCompatActivity {
                         MainActivity.name = etName.getText().toString();
                         MainActivity.birthDay = etBirthday.getText().toString();
                         MainActivity.childrenmode = false;
+                        MainActivity.parentalName = "";
                         MainActivity.begeleidster = categories[spinner.getSelectedItemPosition()];
 
-                        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString("Name", MainActivity.name);
-                        editor.putString("Birthday", MainActivity.birthDay);
-                        editor.putString("Begeleidster", MainActivity.begeleidster);
-                        editor.putBoolean("ParentalControl", MainActivity.childrenmode);
-                        editor.putBoolean("Logged", true);
-                        editor.apply();
+                        iem.insertInfo(new InfoEntity(MainActivity.name, MainActivity.birthDay, MainActivity.begeleidster, MainActivity.parentalName, MainActivity.childrenmode));
 
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

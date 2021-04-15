@@ -7,8 +7,15 @@ import androidx.room.PrimaryKey;
 
 @Entity
 public class FeelingEntity {
+
     @PrimaryKey @NonNull
+    public int id;
+
+    @ColumnInfo
     public String date;
+
+    @ColumnInfo
+    public boolean parent;
 
     @ColumnInfo
     public int emoto;
@@ -25,8 +32,10 @@ public class FeelingEntity {
     @ColumnInfo
     public int senzo;
 
-    public FeelingEntity(@NonNull String date, int emoto, int fanti, int intellecto, int psymo, int senzo){
+    public FeelingEntity(@NonNull int id, String date, boolean parent, int emoto, int fanti, int intellecto, int psymo, int senzo){
+        this.id = id;
         this.date = date;
+        this.parent = parent;
         this.emoto = emoto;
         this.fanti = fanti;
         this.intellecto = intellecto;
@@ -81,5 +90,21 @@ public class FeelingEntity {
 
     public void setSenzo(int senzo) {
         this.senzo = senzo;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean isParent() {
+        return parent;
+    }
+
+    public void setParent(boolean parent) {
+        this.parent = parent;
     }
 }

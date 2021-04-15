@@ -44,11 +44,14 @@ public class QuestionSummary extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new insertValuesInDB().execute();
-                Intent intent = new Intent(v.getContext(), MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
             }
         });
+    }
+
+    public void startIntent(){
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     public class insertValuesInDB extends AsyncTask<Void, Void, Void>{
@@ -63,12 +66,19 @@ public class QuestionSummary extends AppCompatActivity {
             int psymo = getIntent().getIntExtra("Psymo", 0);
             int senzo = getIntent().getIntExtra("Senzo", 0);
 
-            FeelingEntity feeling = new FeelingEntity(LocalDate.now().toString(), emoto, fanti, intellecto, psymo, senzo);
+            int id = fem.getHighestId() + 1;
+            FeelingEntity feeling = new FeelingEntity(id, LocalDate.now().toString(), false, emoto, fanti, intellecto, psymo, senzo);
 
             FeelingEntity[] fe = {feeling};
 
             fem.insertFeelings(fe);
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            startIntent();
         }
     }
 }

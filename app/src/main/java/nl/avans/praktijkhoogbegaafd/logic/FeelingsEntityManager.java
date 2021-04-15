@@ -2,11 +2,14 @@ package nl.avans.praktijkhoogbegaafd.logic;
 
 import android.app.Application;
 
-import java.util.List;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import nl.avans.praktijkhoogbegaafd.dal.FeelingDAO;
 import nl.avans.praktijkhoogbegaafd.dal.FeelingEntity;
 import nl.avans.praktijkhoogbegaafd.dal.FeelingsDB;
+import nl.avans.praktijkhoogbegaafd.domain.DayFeeling;
 
 public class FeelingsEntityManager {
     private FeelingsDB feelingsDB;
@@ -14,7 +17,7 @@ public class FeelingsEntityManager {
 
     public FeelingsEntityManager(Application application){
         feelingsDB = FeelingsDB.getDatabase(application);
-        feelingDAO = feelingsDB.getMovieDAO();
+        feelingDAO = feelingsDB.getFeelingDAO();
     }
 
     public void insertFeelings(FeelingEntity[] feelings){
@@ -26,7 +29,14 @@ public class FeelingsEntityManager {
         });
     }
 
-    public FeelingEntity getFeelingsForDay(String date){
-        return feelingDAO.getFeelingsForDay(date);
+    public DayFeeling getFeelingsForDay(String date){
+        FeelingEntity[] feelings = feelingDAO.getFeelingsForDay(date);
+        ArrayList<FeelingEntity> parsedfeelings = new ArrayList<>();
+        parsedfeelings.addAll(Arrays.asList(feelings));
+        return new DayFeeling(date, parsedfeelings);
+    }
+
+    public int getHighestId(){
+        return feelingDAO.getHighestId();
     }
 }

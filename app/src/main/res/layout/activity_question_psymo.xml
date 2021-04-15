@@ -7,35 +7,81 @@
     tools:context=".ui.questionActivities.QuestionPsymo"
     android:layout_margin="20dp">
 
-    <TextView
-        android:id="@+id/textView3"
+    <ImageView
+        android:id="@+id/ig_emoto_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hoeveel Psymo's heb je?"
+        android:src="@mipmap/ic_phr_stars_large_foreground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_emoto_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hoeveel Emoto's heb je?"
         android:textColor="@color/phrOrange"
-        android:textStyle="bold"/>
+        android:textSize="20sp"
+
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ig_emoto_header" />
 
     <com.google.android.material.slider.RangeSlider
-        android:id="@+id/rs_questions_psymo"
+        android:id="@+id/rs_questions_emoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/tv_emoto_title"
         android:layout_marginTop="20dp"/>
 
+    <TextView
+        android:id="@+id/tv_emoto_max"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aanwezig"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rs_questions_emoto" />
+
+    <TextView
+        android:id="@+id/tv_emoto_min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Niet aanwezig"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rs_questions_emoto" />
+
+    <TextView
+        android:id="@+id/tv_emoto_neutral"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Neutraal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rs_questions_emoto" />
+
     <Button
+        android:id="@+id/bn_questions_emoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/phrOrange"
-        android:id="@+id/bn_question_psymo"
+        android:layout_marginTop="20dp"
         android:text="Volgende"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rs_questions_psymo" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_emoto_neutral" />
+
+    <TextView
+        android:id="@+id/tv_emoto_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tips"
+        android:textSize="20sp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bn_questions_emoto" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

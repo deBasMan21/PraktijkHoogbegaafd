@@ -22,13 +22,16 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
 
 import nl.avans.praktijkhoogbegaafd.dal.FeelingsDB;
+import nl.avans.praktijkhoogbegaafd.dal.InfoEntity;
 import nl.avans.praktijkhoogbegaafd.logic.FeelingsEntityManager;
+import nl.avans.praktijkhoogbegaafd.logic.InfoEntityManager;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
     public static FeelingsEntityManager fem;
+    public static InfoEntityManager iem;
 
     public static boolean childrenmode = false;
 
@@ -37,15 +40,21 @@ public class MainActivity extends AppCompatActivity {
     public static String birthDay = "";
     public static String parentalName = "";
 
+    public static int id = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        fem = new FeelingsEntityManager(getApplication());
-
         Room.databaseBuilder(this, FeelingsDB.class, "feelingsDB");
 
+
+        fem = new FeelingsEntityManager(getApplication());
+        iem = new InfoEntityManager(getApplication());
+
+
+        id = fem.getHighestId();
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -60,21 +69,22 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        boolean loggedIn = MainActivity.name.equals("");
-        if(sharedPref.contains("Name")){
-            name = sharedPref.getString("Name", "?");
-        }
-        if(sharedPref.contains("Birthday")){
-            birthDay = sharedPref.getString("Birthday", "?");
-        }
-        if(sharedPref.contains("Begeleidster")){
-            begeleidster = sharedPref.getString("Begeleidster", "?");
-        }
-        if(loggedIn){
+
+        InfoEntity info;
+
+        if(iem.hasInfo()){
+            info = iem.getInfo();
+            MainActivity.name = info.getName();
+            MainActivity.parentalName = info.getParent();
+            MainActivity.begeleidster = info.getBegeleidster();
+            MainActivity.birthDay = info.getBirthday();
+            MainActivity.childrenmode = info.isParentalControl();
+        } else {
             Intent intent = new Intent(this, StartupActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
+
 
 //        !getIntent().getBooleanExtra("info", false)
 

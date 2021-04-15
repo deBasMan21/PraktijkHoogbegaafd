@@ -21,6 +21,8 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import org.w3c.dom.Text;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ import java.util.List;
 import nl.avans.praktijkhoogbegaafd.MainActivity;
 import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.dal.FeelingEntity;
+import nl.avans.praktijkhoogbegaafd.domain.DayFeeling;
 import nl.avans.praktijkhoogbegaafd.logic.FeelingsEntityManager;
 
 public class GraphFragment extends Fragment {
@@ -35,6 +38,7 @@ public class GraphFragment extends Fragment {
     private GraphViewModel graphViewModel;
 
     private List<FeelingEntity> currentFeeling = new ArrayList<>();
+    private List<DayFeeling> dayFeelings = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -45,17 +49,17 @@ public class GraphFragment extends Fragment {
 
         new getFeelingForDays().execute();
 
-        try{
-            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {new DataPoint(1, 1), new DataPoint(2, 2), new DataPoint(3, 3), new DataPoint(4,4), new DataPoint(5,5), new DataPoint(6,6), new DataPoint(7,7)});
-            gv.addSeries(series);
-        } catch (Exception e){
-            e.printStackTrace();
+        if(MainActivity.childrenmode){
+            gv.getViewport().setMinX(1);
+            gv.getViewport().setMinY(0);
+            gv.getViewport().setMaxX(7);
+            gv.getViewport().setMaxY(10);
+        } else{
+            gv.getViewport().setMinX(1);
+            gv.getViewport().setMinY(-2);
+            gv.getViewport().setMaxX(7);
+            gv.getViewport().setMaxY(2);
         }
-
-        gv.getViewport().setMinX(0);
-        gv.getViewport().setMinY(0);
-        gv.getViewport().setMaxX(6);
-        gv.getViewport().setMaxY(10);
 
         gv.getViewport().setYAxisBoundsManual(true);
         gv.getViewport().setXAxisBoundsManual(true);
@@ -69,11 +73,26 @@ public class GraphFragment extends Fragment {
 
 
 
-        String[] categories = {"Alles", "Emoto", "Fanti", "Intellecto", "Psymo", "Senzo"};
+        String[] categories;
+        if(MainActivity.childrenmode){
+            String[] categorieschildren = {"Alles", "Emoto", "Fanti", "Intellecto", "Psymo", "Senzo"};
+            categories = categorieschildren;
+        } else{
+            String[] categorieschildren = {"Alles", "Emotionele intensiteit", "Beeldende intensiteit", "Intellectuele intensiteit", "Psychomotorische intensiteit", "Sensorische intensiteit"};
+            categories = categorieschildren;
+        }
         Spinner spinner = (Spinner) root.findViewById(R.id.sr_graph_category);
         ArrayAdapter<String> adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+
+
+        TextView tv_score_emoto = root.findViewById(R.id.tv_graph_score_emoto);
+        TextView tv_score_fanti = root.findViewById(R.id.tv_graph_score_fanti);
+        TextView tv_score_intellecto = root.findViewById(R.id.tv_graph_score_intellecto);
+        TextView tv_score_psymo = root.findViewById(R.id.tv_graph_score_psymo);
+        TextView tv_score_senzo = root.findViewById(R.id.tv_graph_score_senzo);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -81,127 +100,291 @@ public class GraphFragment extends Fragment {
                 System.out.println(position);
                 gv.removeAllSeries();
                 if(position == 0){
-
                     LineGraphSeries<DataPoint> emoto = new LineGraphSeries<>();
-                    int x = 0;
-                    for (FeelingEntity fe : currentFeeling) {
-                        emoto.appendData(new DataPoint(x, fe.getEmoto()), true, 10);
+                    double x = 1;
+                    int stats = 0;
+
+                    for (DayFeeling feelings : dayFeelings) {
+                        ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
+                        double subx = x;
+                        for (FeelingEntity feeling : entities) {
+                            emoto.appendData(new DataPoint(subx, feeling.getEmoto()), true, 10);
+                            stats += feeling.getEmoto();
+                            subx += 1.0 / entities.size();
+                        }
                         x++;
                     }
+                    tv_score_emoto.setText("Score van emotionele intensiteit afgelopen week: " + stats);
                     emoto.setColor(Color.rgb(232, 85, 51));
                     emoto.setDrawDataPoints(true);
                     emoto.setDataPointsRadius(6);
-                    emoto.setTitle("Emoto");
+                    if(MainActivity.childrenmode){
+                        emoto.setTitle("Emoto");
+                        tv_score_emoto.setVisibility(View.INVISIBLE);
+                    } else{
+                        emoto.setTitle("Emotionele intensiteit");
+                        tv_score_emoto.setVisibility(View.VISIBLE);
+                    }
                     gv.addSeries(emoto);
 
 
+
                     LineGraphSeries<DataPoint> fanti = new LineGraphSeries<>();
-                    x = 0;
-                    for (FeelingEntity fe : currentFeeling) {
-                        fanti.appendData(new DataPoint(x, fe.getFanti()), true, 10);
+                     x = 1;
+                     stats = 0;
+
+                    for (DayFeeling feelings : dayFeelings) {
+                        ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
+                        double subx = x;
+                        for (FeelingEntity feeling : entities) {
+                            fanti.appendData(new DataPoint(subx, feeling.getFanti()), true, 10);
+                            stats += feeling.getFanti();
+                            subx += 1.0 / entities.size();
+                        }
                         x++;
                     }
+                    tv_score_fanti.setText("Score van beeldende intensiteit afgelopen week: " + stats);
                     fanti.setColor(Color.rgb(98, 176, 74));
                     fanti.setDrawDataPoints(true);
                     fanti.setDataPointsRadius(6);
-                    fanti.setTitle("Fanti");
+                    if(MainActivity.childrenmode){
+                        fanti.setTitle("Fanti");
+                        tv_score_fanti.setVisibility(View.INVISIBLE);
+                    } else{
+                        fanti.setTitle("Beeldende intensiteit");
+                        tv_score_fanti.setVisibility(View.VISIBLE);
+                    }
                     gv.addSeries(fanti);
 
+
+
+
                     LineGraphSeries<DataPoint> intellecto = new LineGraphSeries<>();
-                    x = 0;
-                    for (FeelingEntity fe : currentFeeling) {
-                        intellecto.appendData(new DataPoint(x, fe.getIntellecto()), true, 10);
+                     x = 1;
+                     stats = 0;
+
+                    for (DayFeeling feelings : dayFeelings) {
+                        ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
+                        double subx = x;
+                        for (FeelingEntity feeling : entities) {
+                            intellecto.appendData(new DataPoint(subx, feeling.getIntellecto()), true, 10);
+                            stats += feeling.getIntellecto();
+                            subx += 1.0 / entities.size();
+                        }
                         x++;
                     }
-                    intellecto.setColor(Color.rgb(182,103, 162));
+                    tv_score_intellecto.setText("Score van intellectuele intensiteit afgelopen week: " + stats);
+                    intellecto.setColor(Color.rgb(182, 103, 161));
                     intellecto.setDrawDataPoints(true);
                     intellecto.setDataPointsRadius(6);
-                    intellecto.setTitle("Intellecto");
+                    if(MainActivity.childrenmode){
+                        intellecto.setTitle("Intellecto");
+                        tv_score_intellecto.setVisibility(View.INVISIBLE);
+                    } else{
+                        intellecto.setTitle("Intellectuele intensiteit");
+                        tv_score_intellecto.setVisibility(View.VISIBLE);
+                    }
                     gv.addSeries(intellecto);
 
+
+
+
+
                     LineGraphSeries<DataPoint> psymo = new LineGraphSeries<>();
-                    x = 0;
-                    for (FeelingEntity fe : currentFeeling) {
-                        psymo.appendData(new DataPoint(x, fe.getPsymo()), true, 10);
+                     x = 1;
+                     stats = 0;
+
+                    for (DayFeeling feelings : dayFeelings) {
+                        ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
+                        double subx = x;
+                        for (FeelingEntity feeling : entities) {
+                            psymo.appendData(new DataPoint(subx, feeling.getPsymo()), true, 10);
+                            stats += feeling.getPsymo();
+                            subx += 1.0 / entities.size();
+                        }
                         x++;
                     }
+                    tv_score_psymo.setText("Score van psychomotorische intensiteit afgelopen week: " + stats);
                     psymo.setColor(Color.rgb(81, 102, 169));
                     psymo.setDrawDataPoints(true);
                     psymo.setDataPointsRadius(6);
-                    psymo.setTitle("Psymo");
+                    if(MainActivity.childrenmode){
+                        psymo.setTitle("Psymo");
+                        tv_score_psymo.setVisibility(View.INVISIBLE);
+                    } else{
+                        psymo.setTitle("Pychomotorische intensiteit");
+                        tv_score_psymo.setVisibility(View.VISIBLE);
+                    }
                     gv.addSeries(psymo);
 
+
+
+
+
                     LineGraphSeries<DataPoint> senzo = new LineGraphSeries<>();
-                    x = 0;
-                    for (FeelingEntity fe : currentFeeling) {
-                        senzo.appendData(new DataPoint(x, fe.getSenzo()), true, 10);
+                     x = 1;
+                     stats = 0;
+
+                    for (DayFeeling feelings : dayFeelings) {
+                        ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
+                        double subx = x;
+                        for (FeelingEntity feeling : entities) {
+                            senzo.appendData(new DataPoint(subx, feeling.getSenzo()), true, 10);
+                            stats += feeling.getSenzo();
+                            subx += 1.0 / entities.size();
+                        }
                         x++;
                     }
+                    tv_score_senzo.setText("Score van sensorische intensiteit afgelopen week: " + stats);
                     senzo.setColor(Color.rgb(242, 150, 49));
                     senzo.setDrawDataPoints(true);
                     senzo.setDataPointsRadius(6);
-                    senzo.setTitle("Senzo");
+                    if(MainActivity.childrenmode){
+                        senzo.setTitle("Senzo");
+                        tv_score_senzo.setVisibility(View.INVISIBLE);
+                    } else{
+                        senzo.setTitle("Sensorische intensiteit");
+                        tv_score_senzo.setVisibility(View.VISIBLE);
+                    }
                     gv.addSeries(senzo);
 
+
                 } else if(position == 1){
+//                    new getFeelingForDays().execute();
+
                     LineGraphSeries<DataPoint> emoto = new LineGraphSeries<>();
-                    int x = 0;
-                    for (FeelingEntity fe : currentFeeling) {
-                        emoto.appendData(new DataPoint(x, fe.getEmoto()), true, 10);
+                    double x = 1;
+                    int stats = 0;
+
+                    for (DayFeeling feelings : dayFeelings) {
+                        ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
+                        double subx = x;
+                        for (FeelingEntity feeling : entities) {
+                            emoto.appendData(new DataPoint(subx, feeling.getEmoto()), true, 10);
+                            stats += feeling.getEmoto();
+                            subx += 1.0 / entities.size();
+                        }
                         x++;
                     }
+                    tv_score_emoto.setText("Score van emotionele intensiteit afgelopen week: " + stats);
                     emoto.setColor(Color.rgb(232, 85, 51));
                     emoto.setDrawDataPoints(true);
                     emoto.setDataPointsRadius(6);
-                    emoto.setTitle("Emoto");
+                    if(MainActivity.childrenmode){
+                        emoto.setTitle("Emoto");
+                        tv_score_emoto.setVisibility(View.INVISIBLE);
+                    } else{
+                        emoto.setTitle("Emotionele intensiteit");
+                        tv_score_emoto.setVisibility(View.VISIBLE);
+                    }
                     gv.addSeries(emoto);
                 } else if(position == 2){
                     LineGraphSeries<DataPoint> fanti = new LineGraphSeries<>();
-                    int x = 0;
-                    for (FeelingEntity fe : currentFeeling) {
-                        fanti.appendData(new DataPoint(x, fe.getFanti()), true, 10);
+                    double x = 1;
+                    int stats = 0;
+
+                    for (DayFeeling feelings : dayFeelings) {
+                        ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
+                        double subx = x;
+                        for (FeelingEntity feeling : entities) {
+                            fanti.appendData(new DataPoint(subx, feeling.getFanti()), true, 10);
+                            stats += feeling.getFanti();
+                            subx += 1.0 / entities.size();
+                        }
                         x++;
                     }
+                    tv_score_fanti.setText("Score van beeldende intensiteit afgelopen week: " + stats);
                     fanti.setColor(Color.rgb(98, 176, 74));
                     fanti.setDrawDataPoints(true);
                     fanti.setDataPointsRadius(6);
-                    fanti.setTitle("Fanti");
+                    if(MainActivity.childrenmode){
+                        fanti.setTitle("Fanti");
+                        tv_score_fanti.setVisibility(View.INVISIBLE);
+                    } else{
+                        fanti.setTitle("Beeldende intensiteit");
+                        tv_score_fanti.setVisibility(View.VISIBLE);
+                    }
                     gv.addSeries(fanti);
                 } else if (position == 3){
                     LineGraphSeries<DataPoint> intellecto = new LineGraphSeries<>();
-                    int x = 0;
-                    for (FeelingEntity fe : currentFeeling) {
-                        intellecto.appendData(new DataPoint(x, fe.getIntellecto()), true, 10);
+                    double x = 1;
+                    int stats = 0;
+
+                    for (DayFeeling feelings : dayFeelings) {
+                        ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
+                        double subx = x;
+                        for (FeelingEntity feeling : entities) {
+                            intellecto.appendData(new DataPoint(subx, feeling.getIntellecto()), true, 10);
+                            stats += feeling.getIntellecto();
+                            subx += 1.0 / entities.size();
+                        }
                         x++;
                     }
-                    intellecto.setColor(Color.rgb(182,103, 162));
+                    tv_score_intellecto.setText("Score van intellectuele intensiteit afgelopen week: " + stats);
+                    intellecto.setColor(Color.rgb(182, 103, 161));
                     intellecto.setDrawDataPoints(true);
                     intellecto.setDataPointsRadius(6);
-                    intellecto.setTitle("Intellecto");
+                    if(MainActivity.childrenmode){
+                        intellecto.setTitle("Intellecto");
+                        tv_score_intellecto.setVisibility(View.INVISIBLE);
+                    } else{
+                        intellecto.setTitle("Intellectuele intensiteit");
+                        tv_score_intellecto.setVisibility(View.VISIBLE);
+                    }
                     gv.addSeries(intellecto);
                 } else if (position == 4){
                     LineGraphSeries<DataPoint> psymo = new LineGraphSeries<>();
-                    int x = 0;
-                    for (FeelingEntity fe : currentFeeling) {
-                        psymo.appendData(new DataPoint(x, fe.getPsymo()), true, 10);
+                    double x = 1;
+                    int stats = 0;
+
+                    for (DayFeeling feelings : dayFeelings) {
+                        ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
+                        double subx = x;
+                        for (FeelingEntity feeling : entities) {
+                            psymo.appendData(new DataPoint(subx, feeling.getPsymo()), true, 10);
+                            stats += feeling.getPsymo();
+                            subx += 1.0 / entities.size();
+                        }
                         x++;
                     }
+                    tv_score_psymo.setText("Score van psychomotorische intensiteit afgelopen week: " + stats);
                     psymo.setColor(Color.rgb(81, 102, 169));
                     psymo.setDrawDataPoints(true);
                     psymo.setDataPointsRadius(6);
-                    psymo.setTitle("Psymo");
+                    if(MainActivity.childrenmode){
+                        psymo.setTitle("Psymo");
+                        tv_score_psymo.setVisibility(View.INVISIBLE);
+                    } else{
+                        psymo.setTitle("Pychomotorische intensiteit");
+                        tv_score_psymo.setVisibility(View.VISIBLE);
+                    }
                     gv.addSeries(psymo);
                 } else if(position == 5){
                     LineGraphSeries<DataPoint> senzo = new LineGraphSeries<>();
-                    int x = 0;
-                    for (FeelingEntity fe : currentFeeling) {
-                        senzo.appendData(new DataPoint(x, fe.getSenzo()), true, 10);
+                    double x = 1;
+                    int stats = 0;
+
+                    for (DayFeeling feelings : dayFeelings) {
+                        ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
+                        double subx = x;
+                        for (FeelingEntity feeling : entities) {
+                            senzo.appendData(new DataPoint(subx, feeling.getSenzo()), true, 10);
+                            stats += feeling.getSenzo();
+                            subx += 1.0 / entities.size();
+                        }
                         x++;
                     }
+                    tv_score_senzo.setText("Score van sensorische intensiteit afgelopen week: " + stats);
                     senzo.setColor(Color.rgb(242, 150, 49));
                     senzo.setDrawDataPoints(true);
                     senzo.setDataPointsRadius(6);
-                    senzo.setTitle("Senzo");
+                    if(MainActivity.childrenmode){
+                        senzo.setTitle("Senzo");
+                        tv_score_senzo.setVisibility(View.INVISIBLE);
+                    } else{
+                        senzo.setTitle("Sensorische intensiteit");
+                        tv_score_senzo.setVisibility(View.VISIBLE);
+                    }
                     gv.addSeries(senzo);
                 }
             }
@@ -215,15 +398,16 @@ public class GraphFragment extends Fragment {
         return root;
     }
 
+
     public class getFeelingForDays extends AsyncTask<Void, Void, Void>{
 
         @Override
         protected Void doInBackground(Void... voids) {
             FeelingsEntityManager fem = MainActivity.fem;
             for(int i = 0; i < 7; i++){
-                FeelingEntity fe = fem.getFeelingsForDay(LocalDate.now().minusDays(6).plusDays(i).toString());
-                if(fe != null){
-                    currentFeeling.add(fe);
+                DayFeeling feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(6 - i).toString());
+                if(feelings.getFeelingsForDay().size() != 0){
+                    dayFeelings.add(feelings);
                 }
             }
             return null;

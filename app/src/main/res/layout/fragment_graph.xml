@@ -29,10 +29,50 @@
         android:id="@+id/bn_graph_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/phrOrange"
         android:text="Delen"
-        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gv_graph"
-        android:backgroundTint="@color/phrOrange"/>
+        app:layout_constraintTop_toBottomOf="@+id/tv_graph_score_senzo" />
+
+    <TextView
+        android:id="@+id/tv_graph_score_emoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gv_graph" />
+
+    <TextView
+        android:id="@+id/tv_graph_score_fanti"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_graph_score_emoto" />
+
+    <TextView
+        android:id="@+id/tv_graph_score_intellecto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_graph_score_fanti" />
+
+    <TextView
+        android:id="@+id/tv_graph_score_psymo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_graph_score_intellecto" />
+
+    <TextView
+        android:id="@+id/tv_graph_score_senzo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_graph_score_psymo" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

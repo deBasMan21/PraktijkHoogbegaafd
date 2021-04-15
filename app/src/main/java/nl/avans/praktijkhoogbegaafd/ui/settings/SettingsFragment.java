@@ -1,9 +1,7 @@
 package nl.avans.praktijkhoogbegaafd.ui.settings;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,13 +13,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.material.navigation.NavigationView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -29,16 +22,22 @@ import java.util.Locale;
 
 import nl.avans.praktijkhoogbegaafd.MainActivity;
 import nl.avans.praktijkhoogbegaafd.R;
+import nl.avans.praktijkhoogbegaafd.dal.InfoEntity;
+import nl.avans.praktijkhoogbegaafd.logic.InfoEntityManager;
 
 public class SettingsFragment extends Fragment {
 
     private SettingsViewModel settingsViewModel;
+
+    private InfoEntityManager iem;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         settingsViewModel =
                 new ViewModelProvider(this).get(SettingsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        iem = MainActivity.iem;
 
         String[] categories = {"Lisanne Bierboom", "Mirthe Zom", "Meghan Kalisvaart", "Tessa van Sluijs", "Noor Vugs", "Lotte Kobossen"};
         Spinner spinner = (Spinner) root.findViewById(R.id.sr_settings_begeleidster);
@@ -53,9 +52,15 @@ public class SettingsFragment extends Fragment {
         }
         spinner.setSelection(selectedBegeleidster);
 
-        TextView parentName = root.findViewById(R.id.tv_settings_parent);
+        TextView parentName = root.findViewById(R.id.et_settings_parent);
         parentName.setText(MainActivity.parentalName);
 
+        EditText parent = root.findViewById(R.id.et_settings_parent);
+        if(MainActivity.childrenmode){
+            parent.setVisibility(View.VISIBLE);
+        } else {
+            parent.setVisibility(View.INVISIBLE);
+        }
 
         Calendar calendar = Calendar.getInstance();
 
@@ -89,6 +94,7 @@ public class SettingsFragment extends Fragment {
         bnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String oldName = MainActivity.name;
                 MainActivity.begeleidster = categories[spinner.getSelectedItemPosition()];
                 MainActivity.name = etName.getText().toString();
                 MainActivity.birthDay = bday.getText().toString();
@@ -96,13 +102,7 @@ public class SettingsFragment extends Fragment {
                 Intent intent = new Intent(getContext(), MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("Name", MainActivity.name);
-                editor.putString("Birthday", MainActivity.birthDay);
-                editor.putString("Begeleidster", MainActivity.begeleidster);
-                editor.putString("Parent", MainActivity.parentalName);
-                editor.apply();
+                iem.updateInfo(oldName, new InfoEntity(MainActivity.name, MainActivity.birthDay, MainActivity.parentalName, MainActivity.begeleidster, MainActivity.childrenmode));
 
                 startActivity(intent);
             }

@@ -9,13 +9,14 @@ import androidx.room.RoomDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = FeelingEntity.class, version = 1)
+@Database(entities = {FeelingEntity.class, InfoEntity.class}, version = 1)
 public abstract class FeelingsDB extends RoomDatabase {
 
     private static volatile FeelingsDB INSTANCE;
     public static final ExecutorService databaseWriteExecuter = Executors.newFixedThreadPool(4);
 
-    abstract public FeelingDAO getMovieDAO();
+    abstract public FeelingDAO getFeelingDAO();
+    abstract public InfoDAO getInfoDAO();
 
     public static FeelingsDB getDatabase(final Context context){
         if(INSTANCE == null){
