@@ -3,7 +3,9 @@ package nl.avans.praktijkhoogbegaafd;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.view.Menu;
 import android.widget.TextView;
@@ -12,6 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,10 +24,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
 
+import java.io.File;
+import java.time.LocalDate;
+
 import nl.avans.praktijkhoogbegaafd.dal.FeelingsDB;
 import nl.avans.praktijkhoogbegaafd.dal.InfoEntity;
 import nl.avans.praktijkhoogbegaafd.logic.FeelingsEntityManager;
 import nl.avans.praktijkhoogbegaafd.logic.InfoEntityManager;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,13 +51,19 @@ public class MainActivity extends AppCompatActivity {
 
     public static int id = 1;
 
+    public static File file;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
+
         Room.databaseBuilder(this, FeelingsDB.class, "feelingsDB");
 
+        String path = Environment.getExternalStorageDirectory().toString();
+        file = new File(path);
 
         fem = new FeelingsEntityManager(getApplication());
         iem = new InfoEntityManager(getApplication());

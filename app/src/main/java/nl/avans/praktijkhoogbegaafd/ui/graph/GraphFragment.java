@@ -1,28 +1,42 @@
 package nl.avans.praktijkhoogbegaafd.ui.graph;
 
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import org.w3c.dom.Text;
-
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +46,8 @@ import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.dal.FeelingEntity;
 import nl.avans.praktijkhoogbegaafd.domain.DayFeeling;
 import nl.avans.praktijkhoogbegaafd.logic.FeelingsEntityManager;
+import nl.avans.praktijkhoogbegaafd.logic.ScreenshotLogic;
+import nl.avans.praktijkhoogbegaafd.ui.ShareActivity;
 
 public class GraphFragment extends Fragment {
 
@@ -39,6 +55,8 @@ public class GraphFragment extends Fragment {
 
     private List<FeelingEntity> currentFeeling = new ArrayList<>();
     private List<DayFeeling> dayFeelings = new ArrayList<>();
+
+    private File file;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -395,9 +413,112 @@ public class GraphFragment extends Fragment {
             }
         });
 
+
+        ImageView ivTest = root.findViewById(R.id.iv_graph_test);
+        Button share = root.findViewById(R.id.bn_graph_share);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bitmap b = ScreenshotLogic.takeScreenshot(gv);
+                storeScreenshot(b, "screenshot");
+                ivTest.setImageBitmap(getScreenshot("screenshot"));
+
+                Intent i = new Intent(getContext(), ShareActivity.class);
+                startActivity(i);
+            }
+        });
         return root;
     }
 
+    public void storeScreenshot(Bitmap bitmap, String filename) {
+        ContextWrapper cw = new ContextWrapper(getContext());
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        File file = new File(directory, filename + ".jpg");
+        file.setReadable(true);
+        this.file = file;
+        if (file.exists()) {
+            file.delete();
+        }
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Bitmap getScreenshot(String filename){
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        options.inJustDecodeBounds = true;
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getPath(), options);
+        int heightRatio = (int)Math.ceil(options.outHeight/(float) 300);
+        int widthRatio = (int)Math.ceil(options.outWidth/(float) 300);
+
+        if (heightRatio > 1 || widthRatio > 1)
+        {
+            if (heightRatio > widthRatio)
+            {
+                options.inSampleSize = heightRatio;
+            } else {
+                options.inSampleSize = widthRatio;
+            }
+        }
+
+        options.inJustDecodeBounds = false;
+        bitmap = BitmapFactory.decodeFile(file.getPath(), options);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] imageInByte = stream.toByteArray();
+        //this gives the size of the compressed image in kb
+        long lengthbmp = imageInByte.length / 1024;
+
+        try {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(file.getPath()));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+        return bitmap;
+    }
+
+    public File createPDF(){
+        PdfDocument doc = new PdfDocument();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(300, 600, 1).create();
+
+        PdfDocument.Page page = doc.startPage(pageInfo);
+        Canvas canvas = page.getCanvas();
+        Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        canvas.drawBitmap(getScreenshot("screenshot"), 0, 0, paint);
+        canvas.drawText(MainActivity.name, 100, 100, paint);
+        doc.finishPage(page);
+
+        String directory_path = Environment.getExternalStorageDirectory().getPath() + "/mypdf/";
+        File file = new File(directory_path);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        String targetPdf = directory_path+"test-2.pdf";
+        File filePath = new File(targetPdf);
+        filePath.setReadable(true);
+        try {
+            doc.writeTo(new FileOutputStream(filePath));
+            Toast.makeText(getContext(), "Done", Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            Log.e("main", "error "+e.toString());
+            Toast.makeText(getContext(), "Something wrong: " + e.toString(),  Toast.LENGTH_LONG).show();
+        }
+        // close the document
+        doc.close();
+        return filePath;
+    }
 
     public class getFeelingForDays extends AsyncTask<Void, Void, Void>{
 
