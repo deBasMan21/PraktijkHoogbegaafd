@@ -41,6 +41,11 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+        <provider
+            android:name=".logic.CachedFileProvider"
+            android:authorities="nl.avans.praktijkhoogbegaafd.logic.CachedFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true"></provider>
     </application>
 
 </manifest>
