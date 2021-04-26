@@ -56,6 +56,8 @@ public class GraphFragment extends Fragment {
     private List<FeelingEntity> currentFeeling = new ArrayList<>();
     private List<DayFeeling> dayFeelings = new ArrayList<>();
 
+    public static boolean parent = false;
+
     private File file;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -63,6 +65,26 @@ public class GraphFragment extends Fragment {
         graphViewModel =
                 new ViewModelProvider(this).get(GraphViewModel.class);
         View root = inflater.inflate(R.layout.fragment_graph, container, false);
+
+        makeGraph(root);
+
+        ImageView ivTest = root.findViewById(R.id.iv_graph_test);
+        Button share = root.findViewById(R.id.bn_graph_share);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bitmap b = ScreenshotLogic.takeScreenshot(root);
+                storeScreenshot(b, "screenshot");
+                ivTest.setImageBitmap(getScreenshot("screenshot"));
+
+                Intent i = new Intent(getContext(), ShareActivity.class);
+                startActivity(i);
+            }
+        });
+        return root;
+    }
+
+    public void makeGraph(View root){
         GraphView gv = root.findViewById(R.id.gv_graph);
 
         new getFeelingForDays().execute();
@@ -148,8 +170,8 @@ public class GraphFragment extends Fragment {
 
 
                     LineGraphSeries<DataPoint> fanti = new LineGraphSeries<>();
-                     x = 1;
-                     stats = 0;
+                    x = 1;
+                    stats = 0;
 
                     for (DayFeeling feelings : dayFeelings) {
                         ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
@@ -178,8 +200,8 @@ public class GraphFragment extends Fragment {
 
 
                     LineGraphSeries<DataPoint> intellecto = new LineGraphSeries<>();
-                     x = 1;
-                     stats = 0;
+                    x = 1;
+                    stats = 0;
 
                     for (DayFeeling feelings : dayFeelings) {
                         ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
@@ -205,12 +227,9 @@ public class GraphFragment extends Fragment {
                     gv.addSeries(intellecto);
 
 
-
-
-
                     LineGraphSeries<DataPoint> psymo = new LineGraphSeries<>();
-                     x = 1;
-                     stats = 0;
+                    x = 1;
+                    stats = 0;
 
                     for (DayFeeling feelings : dayFeelings) {
                         ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
@@ -236,12 +255,9 @@ public class GraphFragment extends Fragment {
                     gv.addSeries(psymo);
 
 
-
-
-
                     LineGraphSeries<DataPoint> senzo = new LineGraphSeries<>();
-                     x = 1;
-                     stats = 0;
+                    x = 1;
+                    stats = 0;
 
                     for (DayFeeling feelings : dayFeelings) {
                         ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
@@ -412,22 +428,6 @@ public class GraphFragment extends Fragment {
 
             }
         });
-
-
-        ImageView ivTest = root.findViewById(R.id.iv_graph_test);
-        Button share = root.findViewById(R.id.bn_graph_share);
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bitmap b = ScreenshotLogic.takeScreenshot(gv);
-                storeScreenshot(b, "screenshot");
-                ivTest.setImageBitmap(getScreenshot("screenshot"));
-
-                Intent i = new Intent(getContext(), ShareActivity.class);
-                startActivity(i);
-            }
-        });
-        return root;
     }
 
     public void storeScreenshot(Bitmap bitmap, String filename) {
@@ -526,7 +526,7 @@ public class GraphFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             FeelingsEntityManager fem = MainActivity.fem;
             for(int i = 0; i < 7; i++){
-                DayFeeling feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(6 - i).toString());
+                DayFeeling feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(6 - i).toString(), parent);
                 if(feelings.getFeelingsForDay().size() != 0){
                     dayFeelings.add(feelings);
                 }

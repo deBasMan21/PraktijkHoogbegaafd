@@ -29,8 +29,8 @@ public class FeelingsEntityManager {
         });
     }
 
-    public DayFeeling getFeelingsForDay(String date){
-        FeelingEntity[] feelings = feelingDAO.getFeelingsForDay(date);
+    public DayFeeling getFeelingsForDay(String date, boolean parent){
+        FeelingEntity[] feelings = feelingDAO.getFeelingsForDay(date, parent);
         ArrayList<FeelingEntity> parsedfeelings = new ArrayList<>();
         parsedfeelings.addAll(Arrays.asList(feelings));
         return new DayFeeling(date, parsedfeelings);

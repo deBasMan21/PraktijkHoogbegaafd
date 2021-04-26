@@ -11,8 +11,8 @@ import java.util.List;
 @Dao
 public interface FeelingDAO {
 
-    @Query("SELECT * FROM FeelingEntity WHERE date = :date")
-    FeelingEntity[] getFeelingsForDay(String date);
+    @Query("SELECT * FROM FeelingEntity WHERE date = :date AND parent = :parent")
+    FeelingEntity[] getFeelingsForDay(String date, boolean parent);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertFeelings(FeelingEntity[] feelings);
