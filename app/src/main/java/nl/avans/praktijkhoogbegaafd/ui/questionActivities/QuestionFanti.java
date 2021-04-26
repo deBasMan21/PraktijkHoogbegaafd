@@ -52,7 +52,7 @@ public class QuestionFanti extends AppCompatActivity {
             max.setText("Aanwezig");
             min.setText("Neutraal");
             neutral.setText("Afwezig");
-            tips.setText("-snel huilen\n-vaak boos worden\n-je heel vrolijk voelen");
+            tips.setText("De beeldende intensiteit kan het best omschreven worden als een versterkt vermogen tot verbeelding die naar voren kan komen als een sterke fantasie, het uit verband trekken van situaties, het hebben van intense dromen of nachtmerries en het bedenken van en het opgaan in levendige innerlijke werelden.");
             rs.setValueFrom(-2);
             rs.setValueTo(2);
             rs.setTickVisible(true);

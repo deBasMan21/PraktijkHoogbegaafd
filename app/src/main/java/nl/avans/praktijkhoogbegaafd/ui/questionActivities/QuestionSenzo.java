@@ -52,7 +52,7 @@ public class QuestionSenzo extends AppCompatActivity {
             max.setText("Aanwezig");
             min.setText("Neutraal");
             neutral.setText("Afwezig");
-            tips.setText("-snel huilen\n-vaak boos worden\n-je heel vrolijk voelen");
+            tips.setText("De sensorische intensiteit kan het best omschreven worden als een versterkte beleving van sensorische input, zoals dingen die je hoort, ziet, voelt, proeft en ruikt als duidelijk prettig of onprettig ervaren worden. Dit kan er toe leiden dat je sterk wordt aangetrokken tot sommige zintuigelijke belevingen of juist een aversie ontwikkelt voor bepaalde zintuigelijke belevingen en daarom deze uit de weg gaat.");
             rs.setValueFrom(-2);
             rs.setValueTo(2);
             rs.setTickVisible(true);

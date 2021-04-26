@@ -73,15 +73,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_emoto_neutral" />
 
-    <TextView
-        android:id="@+id/tv_emoto_tips"
+    <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tips"
-        android:textSize="20sp"
-        android:layout_marginTop="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bn_questions_emoto" />
+        app:layout_constraintTop_toBottomOf="@+id/bn_questions_emoto">
 
+        <TextView
+            android:id="@+id/tv_emoto_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Tips"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bn_questions_emoto" />
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

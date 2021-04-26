@@ -51,7 +51,7 @@ public class QuestionIntellecto extends AppCompatActivity {
             max.setText("Aanwezig");
             min.setText("Neutraal");
             neutral.setText("Afwezig");
-            tips.setText("-snel huilen\n-vaak boos worden\n-je heel vrolijk voelen");
+            tips.setText("De intellectuele intensiteit kan het best omschreven worden als een drang naar het verkrijgen van informatie, het zoeken naar en begrijpen van de waarheid en het analyseren en synthetiseren van informatie om zo antwoord te krijgen op vragen. Kritisch nadenken, perfectionisme en een sterk rechtvaardigheidsgevoel zijn daarin tevens kenmerken die vaker naar voren komen. ");
             rs.setValueFrom(-2);
             rs.setValueTo(2);
             rs.setTickVisible(true);

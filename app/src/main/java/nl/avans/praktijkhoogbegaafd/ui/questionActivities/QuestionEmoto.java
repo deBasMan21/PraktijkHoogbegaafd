@@ -54,7 +54,7 @@ public class QuestionEmoto extends AppCompatActivity {
             max.setText("Aanwezig");
             min.setText("Neutraal");
             neutral.setText("Afwezig");
-            tips.setText("-snel huilen\n-vaak boos worden\n-je heel vrolijk voelen");
+            tips.setText("De emotionele intensiteit kan het best worden omschreven als een versterkte beleving van emoties bij jezelf, maar ook het versterk waarnemen van emoties bij anderen. Dit zorgt voor het ervaren van diepte in emoties en een sterk empathisch vermogen. Je hebt meer behoefte aan diepe emotionele verbinding met anderen, toont compassie en sensitiviteit in relaties en bent sterker gehecht aan plekken, mensen, spullen of dieren.");
             rs.setValueFrom(-2);
             rs.setValueTo(2);
             rs.setTickVisible(true);
