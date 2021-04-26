@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/gr_menu_kid"
+        android:checkableBehavior="single"
+        android:visible="true">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_home"
@@ -17,4 +20,22 @@
             android:icon="@drawable/ic_menu_settings"
             android:title="@string/menu_settings" />
     </group>
+    <group
+        android:id="@+id/gr_menu_adult"
+        android:checkableBehavior="single"
+        android:visible="false">
+        <item
+            android:id="@+id/nav_home_adult"
+            android:icon="@drawable/ic_menu_home"
+            android:title="home adult" />
+        <item
+            android:id="@+id/nav_gallery_adult"
+            android:icon="@drawable/ic_menu_graph"
+            android:title="@string/menu_graph" />
+        <item
+            android:id="@+id/nav_slideshow_adult"
+            android:icon="@drawable/ic_menu_settings"
+            android:title="@string/menu_settings" />
+    </group>
+
 </menu>
