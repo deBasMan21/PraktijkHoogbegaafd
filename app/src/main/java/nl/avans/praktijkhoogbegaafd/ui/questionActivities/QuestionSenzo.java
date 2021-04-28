@@ -32,7 +32,7 @@ public class QuestionSenzo extends AppCompatActivity {
         TextView neutral = findViewById(R.id.tv_emoto_neutral);
         TextView tips = findViewById(R.id.tv_emoto_tips);
 
-        if(MainActivity.childrenmode){
+        if(MainActivity.childrenmode && !getIntent().hasExtra("parent")){
             title.setText("Hoeveel Senzo's heb je?");
             title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             title.setTextColor(Color.YELLOW);
@@ -67,6 +67,9 @@ public class QuestionSenzo extends AppCompatActivity {
                 System.out.println(values.get(0));
 
                 Intent intent = new Intent(getApplicationContext(), QuestionSummary.class);
+                if(getIntent().hasExtra("parent")){
+                    intent.putExtra("parent", true);
+                }
                 intent.putExtra("Emoto", getIntent().getIntExtra("Emoto", 0));
                 intent.putExtra("Fanti", getIntent().getIntExtra("Fanti", 0));
                 intent.putExtra("Intellecto", getIntent().getIntExtra("Intellecto", 0));

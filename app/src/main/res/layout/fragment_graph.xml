@@ -7,6 +7,17 @@
     tools:context=".ui.graph.GraphFragment"
     android:layout_margin="20dp">
 
+    <ToggleButton
+        android:id="@+id/tb_graph_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOff="Kind"
+        android:textOn="Ouder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"/>
+
     <Spinner
         android:id="@+id/sr_graph_category"
         android:layout_width="wrap_content"
@@ -14,7 +25,7 @@
         android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tb_graph_switch" />
 
     <com.jjoe64.graphview.GraphView
         android:id="@+id/gv_graph"

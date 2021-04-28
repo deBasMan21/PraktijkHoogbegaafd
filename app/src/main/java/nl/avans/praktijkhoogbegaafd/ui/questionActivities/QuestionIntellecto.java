@@ -31,7 +31,7 @@ public class QuestionIntellecto extends AppCompatActivity {
         TextView neutral = findViewById(R.id.tv_emoto_neutral);
         TextView tips = findViewById(R.id.tv_emoto_tips);
 
-        if(MainActivity.childrenmode){
+        if(MainActivity.childrenmode && !getIntent().hasExtra("parent")){
             title.setText("Hoeveel Intellecto's heb je?");
             title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             title.setTextColor(Color.MAGENTA);
@@ -66,6 +66,9 @@ public class QuestionIntellecto extends AppCompatActivity {
                 System.out.println(values.get(0));
 
                 Intent intent = new Intent(getApplicationContext(), QuestionPsymo.class);
+                if(getIntent().hasExtra("parent")){
+                    intent.putExtra("parent", true);
+                }
                 intent.putExtra("Emoto", getIntent().getIntExtra("Emoto", 0));
                 intent.putExtra("Fanti", getIntent().getIntExtra("Fanti", 0));
                 int value = Math.round(values.get(0));

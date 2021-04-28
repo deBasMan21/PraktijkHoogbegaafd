@@ -9,31 +9,14 @@
         android:visible="true">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_baseline_escalator_warning_24"
-            android:title="Kind" />
+            android:icon="@drawable/ic_menu_home"
+            android:title="Home" />
         <item
             android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_baseline_person_24"
-            android:title="Ouder" />
+            android:icon="@drawable/ic_menu_graph"
+            android:title="Grafiek" />
         <item
             android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_settings"
-            android:title="@string/menu_settings" />
-    </group>
-    <group
-        android:id="@+id/gr_menu_adult"
-        android:checkableBehavior="single"
-        android:visible="false">
-        <item
-            android:id="@+id/nav_home_adult"
-            android:icon="@drawable/ic_menu_home"
-            android:title="@string/menu_home" />
-        <item
-            android:id="@+id/nav_gallery_adult"
-            android:icon="@drawable/ic_menu_graph"
-            android:title="@string/menu_graph" />
-        <item
-            android:id="@+id/nav_slideshow_adult"
             android:icon="@drawable/ic_menu_settings"
             android:title="@string/menu_settings" />
     </group>

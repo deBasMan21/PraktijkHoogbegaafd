@@ -77,14 +77,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
 
         InfoEntity info;
 
@@ -101,51 +93,15 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-
-//        !getIntent().getBooleanExtra("info", false)
-
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         View navHeader = navigationView.getHeaderView(0);
         TextView tvName = navHeader.findViewById(R.id.tv_header_name);
         TextView tvBegeleidster = navHeader.findViewById(R.id.tv_header_begeleidster);
 
         tvBegeleidster.setText(begeleidster);
         tvName.setText(name);
-
-
-//        navigationView.getMenu().getItem(R.id.nav_gallery_adult).setVisible(false);
-        if(childrenmode){
-            navigationView.getMenu().findItem(R.id.nav_home).setVisible(true);
-            navigationView.getMenu().findItem(R.id.nav_gallery).setVisible(true);
-            navigationView.getMenu().findItem(R.id.nav_slideshow).setVisible(true);
-            navigationView.getMenu().findItem(R.id.nav_home_adult).setVisible(false);
-            navigationView.getMenu().findItem(R.id.nav_gallery_adult).setVisible(false);
-            navigationView.getMenu().findItem(R.id.nav_slideshow_adult).setVisible(false);
-        } else {
-            navigationView.getMenu().findItem(R.id.nav_home).setVisible(false);
-            navigationView.getMenu().findItem(R.id.nav_gallery).setVisible(false);
-            navigationView.getMenu().findItem(R.id.nav_slideshow).setVisible(false);
-            navigationView.getMenu().findItem(R.id.nav_home_adult).setVisible(true);
-            navigationView.getMenu().findItem(R.id.nav_gallery_adult).setVisible(true);
-            navigationView.getMenu().findItem(R.id.nav_slideshow_adult).setVisible(true);
-        }
-
-//        Group menuGroep = findViewById(R.id.gr_menu_kid);
-//        Group menuGroepAdult = findViewById(R.id.gr_menu_adult);
-//        if(childrenmode){
-//            menuGroep.setVisibility(View.VISIBLE);
-//            menuGroepAdult.setVisibility(View.INVISIBLE);
-//        } else {
-//            menuGroep.setVisibility(View.INVISIBLE);
-//            menuGroepAdult.setVisibility(View.VISIBLE);
-//        }
-
-
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)

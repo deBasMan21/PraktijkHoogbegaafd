@@ -34,7 +34,7 @@ public class QuestionEmoto extends AppCompatActivity {
         TextView neutral = findViewById(R.id.tv_emoto_neutral);
         TextView tips = findViewById(R.id.tv_emoto_tips);
 
-        if(MainActivity.childrenmode){
+        if(MainActivity.childrenmode && !getIntent().hasExtra("parent")){
             title.setText("Hoeveel Emoto's heb je?");
             title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             title.setTextColor(Color.RED);
@@ -69,6 +69,9 @@ public class QuestionEmoto extends AppCompatActivity {
                 System.out.println(values.get(0));
 
                 Intent intent = new Intent(getApplicationContext(), QuestionFanti.class);
+                if(getIntent().hasExtra("parent")){
+                    intent.putExtra("parent", true);
+                }
                 int value = Math.round(values.get(0));
                 intent.putExtra("Emoto", value);
                 startActivity(intent);

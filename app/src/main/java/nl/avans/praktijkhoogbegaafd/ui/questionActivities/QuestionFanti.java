@@ -32,7 +32,7 @@ public class QuestionFanti extends AppCompatActivity {
         TextView neutral = findViewById(R.id.tv_emoto_neutral);
         TextView tips = findViewById(R.id.tv_emoto_tips);
 
-        if(MainActivity.childrenmode){
+        if(MainActivity.childrenmode && !getIntent().hasExtra("parent")){
             title.setText("Hoeveel Fanti's heb je?");
             title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             title.setTextColor(Color.GREEN);
@@ -66,6 +66,9 @@ public class QuestionFanti extends AppCompatActivity {
                 List<Float> values = rs.getValues();
 
                 Intent intent = new Intent(getApplicationContext(), QuestionIntellecto.class);
+                if(getIntent().hasExtra("parent")){
+                    intent.putExtra("parent", true);
+                }
                 intent.putExtra("Emoto", getIntent().getIntExtra("Emoto", 0));
                 int value = Math.round(values.get(0));
                 intent.putExtra("Fanti", value);

@@ -32,14 +32,25 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <Button
-        android:layout_width="wrap_content"
         android:id="@+id/bn_home_start"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Vul je intensiteiten in"
-        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/phrOrange"
+        android:text="Vul je X-Citabillies in"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_home_introduction"
-        android:backgroundTint="@color/phrOrange"/>
+        app:layout_constraintTop_toBottomOf="@+id/tv_home_introduction" />
+
+    <Button
+        android:id="@+id/bn_home_kid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vul de intensiteiten van je kind in"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bn_home_start" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

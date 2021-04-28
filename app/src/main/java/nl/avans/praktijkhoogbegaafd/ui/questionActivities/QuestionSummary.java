@@ -23,6 +23,8 @@ import nl.avans.praktijkhoogbegaafd.ui.home.HomeFragment;
 
 public class QuestionSummary extends AppCompatActivity {
 
+    private boolean parent = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,10 @@ public class QuestionSummary extends AppCompatActivity {
         summary = summary + "Psymo: " + getIntent().getIntExtra("Psymo", 0);
         summary = summary + "Senzo: " + getIntent().getIntExtra("Senzo", 0);
         tv.setText(summary);
+
+        if(getIntent().hasExtra("parent")){
+            this.parent = true;
+        }
 
         Button bn = findViewById(R.id.bn_question_summary);
         bn.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +73,7 @@ public class QuestionSummary extends AppCompatActivity {
             int senzo = getIntent().getIntExtra("Senzo", 0);
 
             int id = fem.getHighestId() + 1;
-            FeelingEntity feeling = new FeelingEntity(id, LocalDate.now().toString(), false, emoto, fanti, intellecto, psymo, senzo);
+            FeelingEntity feeling = new FeelingEntity(id, LocalDate.now().toString(), parent, emoto, fanti, intellecto, psymo, senzo);
 
             FeelingEntity[] fe = {feeling};
 

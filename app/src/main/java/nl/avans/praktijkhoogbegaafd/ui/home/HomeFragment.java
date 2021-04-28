@@ -29,17 +29,29 @@ public class HomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         Button startEmotes = root.findViewById(R.id.bn_home_start);
+        Button emotesParent = root.findViewById(R.id.bn_home_kid);
 
         if(MainActivity.childrenmode){
             startEmotes.setText("Vul je x-Citabillies in");
+            emotesParent.setVisibility(View.VISIBLE);
         } else {
             startEmotes.setText("Vul je intensiteiten in");
+            emotesParent.setVisibility(View.INVISIBLE);
         }
 
         startEmotes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), QuestionEmoto.class);
+                startActivity(intent);
+            }
+        });
+
+        emotesParent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), QuestionEmoto.class);
+                intent.putExtra("parent", true);
                 startActivity(intent);
             }
         });
