@@ -24,10 +24,12 @@ import nl.avans.praktijkhoogbegaafd.MainActivity;
 import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.dal.InfoEntity;
 import nl.avans.praktijkhoogbegaafd.logic.InfoEntityManager;
+import nl.avans.praktijkhoogbegaafd.ui.home.HomeFragment;
 
 public class SettingsFragment extends Fragment {
 
     private SettingsViewModel settingsViewModel;
+
 
     private InfoEntityManager iem;
 
@@ -111,4 +113,6 @@ public class SettingsFragment extends Fragment {
 
         return root;
     }
+
+
 }

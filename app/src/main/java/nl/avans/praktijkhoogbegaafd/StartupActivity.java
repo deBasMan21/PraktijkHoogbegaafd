@@ -1,8 +1,10 @@
 package nl.avans.praktijkhoogbegaafd;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,6 +26,15 @@ public class StartupActivity extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Welkom bij de Praktijk Hoogbegaafd app waarmee je jouw intensiteiten en X-citabillies kan meten. Door elke dag in te vullen of de intensiteiten en X-citabillies bij jou aanwezig waren, kunnen we samen kijken hoe we jou het beste kunnen helpen. Voorafgaand aan je afspraak, kun je eenvoudig je scores delen met jouw behandelaar. Mocht je hier nog vragen over hebben, kun je contact opnemen met jouw behandelaar. Veel plezier met invullen. \n\n LET OP! Dit is een testversie van de app en deze dient alleen gebruikt te worden als het is aanbevolen door uw begeleider.").setPositiveButton("Ga door", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).setTitle("Welkom!").show();
+
 
         ImageButton imageAlone = findViewById(R.id.ib_startup_alone);
         ImageButton imageParental = findViewById(R.id.ib_startup_parental);

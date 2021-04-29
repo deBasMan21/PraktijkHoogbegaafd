@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".logic.app"
         android:allowBackup="true"
         android:icon="@mipmap/ic_phr_stars_icon"
         android:label="@string/app_name"
@@ -12,7 +13,7 @@
         android:roundIcon="@mipmap/ic_phr_stars_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.PraktijkHoogbegaafd">
-        <activity android:name=".ui.ShareActivity"></activity>
+        <activity android:name=".ui.ShareActivity" />
         <activity android:name=".GiveInfoActivity" />
         <activity android:name=".StartupActivity" />
         <activity android:name=".ui.questionActivities.QuestionSummary" />
@@ -45,7 +46,9 @@
             android:name=".logic.CachedFileProvider"
             android:authorities="nl.avans.praktijkhoogbegaafd.logic.CachedFileProvider"
             android:exported="false"
-            android:grantUriPermissions="true"></provider>
+            android:grantUriPermissions="true" />
+
+        <receiver android:name=".logic.ReminderBroadcast"/>
     </application>
 
 </manifest>

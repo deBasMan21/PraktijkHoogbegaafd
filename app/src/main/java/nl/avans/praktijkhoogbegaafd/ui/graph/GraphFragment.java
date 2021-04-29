@@ -51,10 +51,14 @@ import nl.avans.praktijkhoogbegaafd.domain.DayFeeling;
 import nl.avans.praktijkhoogbegaafd.logic.FeelingsEntityManager;
 import nl.avans.praktijkhoogbegaafd.logic.ScreenshotLogic;
 import nl.avans.praktijkhoogbegaafd.ui.ShareActivity;
+import nl.avans.praktijkhoogbegaafd.ui.home.HomeFragment;
 
 public class GraphFragment extends Fragment {
 
     private GraphViewModel graphViewModel;
+
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
     private List<FeelingEntity> currentFeeling = new ArrayList<>();
     private List<DayFeeling> dayFeelings = new ArrayList<>();
@@ -198,7 +202,7 @@ public class GraphFragment extends Fragment {
         gv.removeAllSeries();
         if(position == 0){
             LineGraphSeries<DataPoint> emoto = createEmoto();
-            if(MainActivity.childrenmode && !parental){
+            if(MainActivity.childrenmode && parental){
                 emoto.setTitle("Emoto");
                 tv_score_emoto.setVisibility(View.INVISIBLE);
             } else{
@@ -551,5 +555,14 @@ public class GraphFragment extends Fragment {
             makeGraphView();
             pb.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public static HomeFragment newInstance(String param1, String param2) {
+        HomeFragment fragment = new HomeFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
     }
 }
