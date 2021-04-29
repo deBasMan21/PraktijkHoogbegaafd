@@ -73,7 +73,7 @@ public class QuestionSummary extends AppCompatActivity {
             int senzo = getIntent().getIntExtra("Senzo", 0);
 
             int id = fem.getHighestId() + 1;
-            FeelingEntity feeling = new FeelingEntity(id, LocalDate.now().toString(), parent, emoto, fanti, intellecto, psymo, senzo);
+            FeelingEntity feeling = new FeelingEntity(id, LocalDate.now().toString(), !parent, emoto, fanti, intellecto, psymo, senzo);
 
             FeelingEntity[] fe = {feeling};
 

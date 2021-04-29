@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,22 +57,31 @@ public class GraphFragment extends Fragment {
     private GraphViewModel graphViewModel;
 
     private List<FeelingEntity> currentFeeling = new ArrayList<>();
-    private List<DayFeeling> dayFeelings;
+    private List<DayFeeling> dayFeelings = new ArrayList<>();
 
-    private boolean parental = false;
+    private boolean parental = true;
+    private boolean firstTime = true;
     private GraphView gv;
 
     private File file;
+
+    private View root;
+    private int position;
+
+    private ProgressBar pb;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         graphViewModel =
                 new ViewModelProvider(this).get(GraphViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_graph, container, false);
+        root = inflater.inflate(R.layout.fragment_graph, container, false);
 
         gv = root.findViewById(R.id.gv_graph);
 
-        makeGraph(root, 0);
+        pb = root.findViewById(R.id.pb_graph_loading);
+
+        makeGraph(0);
+        System.out.println("hier maakt hij een nieuwe grafiek");
 
         ToggleButton tb = root.findViewById(R.id.tb_graph_switch);
         if(MainActivity.childrenmode){
@@ -97,7 +107,7 @@ public class GraphFragment extends Fragment {
 
 
         String[] categories;
-        if(MainActivity.childrenmode && !parental){
+        if(MainActivity.childrenmode && parental){
             String[] categorieschildren = {"Alles", "Emoto", "Fanti", "Intellecto", "Psymo", "Senzo"};
             categories = categorieschildren;
         } else{
@@ -114,12 +124,14 @@ public class GraphFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                makeGraph(root, position);
+                firstTime = false;
+                makeGraph(position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                firstTime = false;
+                makeGraph(spinner.getSelectedItemPosition());
             }
         });
 
@@ -127,25 +139,30 @@ public class GraphFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 ToggleButton button = (ToggleButton) v;
+                firstTime = false;
                 if(button.isChecked()){
-                    parental = true;
-                    makeGraph(root, spinner.getSelectedItemPosition());
-                } else {
                     parental = false;
-                    makeGraph(root, spinner.getSelectedItemPosition());
+                    System.out.println(spinner.getSelectedItemPosition());
+                    makeGraph(spinner.getSelectedItemPosition());
+                } else {
+                    parental = true;
+                    System.out.println(spinner.getSelectedItemPosition());
+                    makeGraph(spinner.getSelectedItemPosition());
                 }
             }
         });
         return root;
     }
 
-    public void makeGraph(View root, int position){
+    public void makeGraph(int position){
         gv.removeAllSeries();
-        dayFeelings = new ArrayList<>();
-
+        this.position = position;
         new getFeelingForDays().execute();
+    }
 
-        if(MainActivity.childrenmode && !parental){
+    public void makeGraphView(){
+
+        if(MainActivity.childrenmode && parental){
             gv.getViewport().setMinX(1);
             gv.getViewport().setMinY(0);
             gv.getViewport().setMaxX(7);
@@ -194,7 +211,7 @@ public class GraphFragment extends Fragment {
 
             LineGraphSeries<DataPoint> fanti = createFanti();
 
-            if(MainActivity.childrenmode && !parental){
+            if(MainActivity.childrenmode && parental){
                 fanti.setTitle("Fanti");
                 tv_score_fanti.setVisibility(View.INVISIBLE);
             } else{
@@ -208,7 +225,7 @@ public class GraphFragment extends Fragment {
 
             LineGraphSeries<DataPoint> intellecto = createIntellecto();
 
-            if(MainActivity.childrenmode && !parental){
+            if(MainActivity.childrenmode && parental){
                 intellecto.setTitle("Intellecto");
                 tv_score_intellecto.setVisibility(View.INVISIBLE);
             } else{
@@ -220,7 +237,7 @@ public class GraphFragment extends Fragment {
 
             LineGraphSeries<DataPoint> psymo = createPsymo();
 
-            if(MainActivity.childrenmode && !parental){
+            if(MainActivity.childrenmode && parental){
                 psymo.setTitle("Psymo");
                 tv_score_psymo.setVisibility(View.INVISIBLE);
             } else{
@@ -231,7 +248,7 @@ public class GraphFragment extends Fragment {
 
 
             LineGraphSeries<DataPoint> senzo = createSenzo();
-            if(MainActivity.childrenmode && !parental){
+            if(MainActivity.childrenmode && parental){
                 senzo.setTitle("Senzo");
                 tv_score_senzo.setVisibility(View.INVISIBLE);
             } else{
@@ -242,8 +259,9 @@ public class GraphFragment extends Fragment {
 
 
         } else if(position == 1){
+            gv.removeAllSeries();
             LineGraphSeries<DataPoint> emoto = createEmoto();
-            if(MainActivity.childrenmode && !parental){
+            if(MainActivity.childrenmode && parental){
                 emoto.setTitle("Emoto");
                 tv_score_emoto.setVisibility(View.INVISIBLE);
             } else{
@@ -252,9 +270,10 @@ public class GraphFragment extends Fragment {
             }
             gv.addSeries(emoto);
         } else if(position == 2){
+            gv.removeAllSeries();
             LineGraphSeries<DataPoint> fanti = createFanti();
 
-            if(MainActivity.childrenmode && !parental){
+            if(MainActivity.childrenmode && parental){
                 fanti.setTitle("Fanti");
                 tv_score_fanti.setVisibility(View.INVISIBLE);
             } else{
@@ -263,9 +282,10 @@ public class GraphFragment extends Fragment {
             }
             gv.addSeries(fanti);
         } else if (position == 3){
+            gv.removeAllSeries();
             LineGraphSeries<DataPoint> intellecto = createIntellecto();
 
-            if(MainActivity.childrenmode && !parental){
+            if(MainActivity.childrenmode && parental){
                 intellecto.setTitle("Intellecto");
                 tv_score_intellecto.setVisibility(View.INVISIBLE);
             } else{
@@ -274,9 +294,10 @@ public class GraphFragment extends Fragment {
             }
             gv.addSeries(intellecto);
         } else if (position == 4){
+            gv.removeAllSeries();
             LineGraphSeries<DataPoint> psymo = createPsymo();
 
-            if(MainActivity.childrenmode && !parental){
+            if(MainActivity.childrenmode && parental){
                 psymo.setTitle("Psymo");
                 tv_score_psymo.setVisibility(View.INVISIBLE);
             } else{
@@ -285,8 +306,9 @@ public class GraphFragment extends Fragment {
             }
             gv.addSeries(psymo);
         } else if(position == 5){
+            gv.removeAllSeries();
             LineGraphSeries<DataPoint> senzo = createSenzo();
-            if(MainActivity.childrenmode && !parental){
+            if(MainActivity.childrenmode && parental){
                 senzo.setTitle("Senzo");
                 tv_score_senzo.setVisibility(View.INVISIBLE);
             } else{
@@ -499,16 +521,35 @@ public class GraphFragment extends Fragment {
     public class getFeelingForDays extends AsyncTask<Void, Void, Void>{
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pb.setVisibility(View.VISIBLE);
+        }
+
+        @Override
         protected Void doInBackground(Void... voids) {
             FeelingsEntityManager fem = MainActivity.fem;
+            ArrayList<DayFeeling> feelingsForDays = new ArrayList<>();
             for(int i = 0; i < 7; i++){
-
-                DayFeeling feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(6 - i).toString(), !parental);
+                DayFeeling feelings;
+                if(firstTime){
+                    feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(6 - i).toString(), !false);
+                } else {
+                    feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(6 - i).toString(), parental);
+                }
                 if(feelings.getFeelingsForDay().size() != 0){
-                    dayFeelings.add(feelings);
+                    feelingsForDays.add(feelings);
                 }
             }
+            dayFeelings = feelingsForDays;
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            makeGraphView();
+            pb.setVisibility(View.INVISIBLE);
         }
     }
 }

@@ -7,6 +7,16 @@
     tools:context=".ui.graph.GraphFragment"
     android:layout_margin="20dp">
 
+    <ProgressBar
+        android:id="@+id/pb_graph_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"/>
+
     <ToggleButton
         android:id="@+id/tb_graph_switch"
         android:layout_width="wrap_content"
