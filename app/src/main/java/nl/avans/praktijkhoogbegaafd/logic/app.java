@@ -10,12 +10,15 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.room.Room;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Calendar;
 
+import nl.avans.praktijkhoogbegaafd.MainActivity;
 import nl.avans.praktijkhoogbegaafd.R;
+import nl.avans.praktijkhoogbegaafd.dal.FeelingsDB;
 
 public class app extends Application {
     public static final String CHANNEL_1_ID = "channel1";
@@ -24,9 +27,20 @@ public class app extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Room.databaseBuilder(this, FeelingsDB.class, "feelingsDB");
+        InfoEntityManager iem = new InfoEntityManager(this);
+
+
         System.out.println("App started");
         createNotificationChannels();
-        sendNotification();
+        if(iem.getInfo().isParentalControl()){
+            sendNotification(16);
+        } else{
+            sendNotification(11);
+            sendNotification(16);
+            sendNotification(20);
+        }
     }
 
     private void createNotificationChannels() {
@@ -39,34 +53,18 @@ public class app extends Application {
         }
     }
 
-    public void sendNotification(){
-        Intent intent = new Intent(app.this, ReminderBroadcast.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        long time2 = System.currentTimeMillis();
+    public void sendNotification(int hour){
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, 5);
-
-
-        long time = calendar.getTimeInMillis();
-        long solidTime = 1619706900;
-
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calculateMsToEleven() * 10000, pendingIntent);
-
-
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        long test = calendar.getTimeInMillis();
+        long test2 = System.currentTimeMillis();
+        Intent intent = new Intent(getApplicationContext(), ReminderBroadcast.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
-    public long calculateMsToEleven(){
-        long time = System.currentTimeMillis();
-        int minutesTillHour = 60 - LocalTime.now().getMinute();
-        int hoursTillEleven = 11 - (LocalTime.now().getHour() + 2);
-        if(hoursTillEleven < 0){
-            hoursTillEleven = (hoursTillEleven * -1) + 12;
-        }
-        int minutestillEleven = minutesTillHour + (hoursTillEleven * 60);
-        int secondsTillEleven = minutestillEleven * 60;
-        time = System.currentTimeMillis() + (secondsTillEleven * 1000);
-        return time;
-    }
 
 }

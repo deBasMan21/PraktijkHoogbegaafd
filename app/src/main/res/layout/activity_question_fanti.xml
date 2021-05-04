@@ -1,96 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    tools:context=".ui.questionActivities.QuestionFanti"
-    android:layout_margin="20dp">
+    android:layout_width="match_parent">
 
-    <ImageView
-        android:id="@+id/ig_emoto_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_phr_stars_large_foreground"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.questionActivities.QuestionEmoto"
+        android:layout_margin="20dp">
 
-    <TextView
-        android:id="@+id/tv_emoto_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hoeveel Emoto's heb je?"
-        android:textColor="@color/phrOrange"
-        android:textSize="20sp"
-
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ig_emoto_header" />
-
-    <com.google.android.material.slider.RangeSlider
-        android:id="@+id/rs_questions_emoto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_emoto_title"
-        android:layout_marginTop="20dp"/>
-
-    <TextView
-        android:id="@+id/tv_emoto_max"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Aanwezig"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rs_questions_emoto" />
-
-    <TextView
-        android:id="@+id/tv_emoto_min"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Niet aanwezig"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rs_questions_emoto" />
-
-    <TextView
-        android:id="@+id/tv_emoto_neutral"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Neutraal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rs_questions_emoto" />
-
-    <Button
-        android:id="@+id/bn_questions_emoto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/phrOrange"
-        android:layout_marginTop="20dp"
-        android:text="Volgende"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_emoto_neutral" />
-
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bn_questions_emoto">
-
-        <TextView
-            android:id="@+id/tv_emoto_tips"
+        <ImageView
+            android:id="@+id/ig_emoto_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Tips"
-            android:textSize="18sp"
+            android:src="@mipmap/ic_phr_stars_large_foreground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_emoto_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hoeveel Emoto's heb je?"
+            android:textColor="@color/phrOrange"
+            android:textSize="20sp"
+
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ig_emoto_header" />
+
+        <com.google.android.material.slider.RangeSlider
+            android:id="@+id/rs_questions_emoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_emoto_title"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/tv_emoto_max"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aanwezig"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rs_questions_emoto" />
+
+        <TextView
+            android:id="@+id/tv_emoto_min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Niet aanwezig"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rs_questions_emoto" />
+
+        <TextView
+            android:id="@+id/tv_emoto_neutral"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Neutraal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rs_questions_emoto" />
+
+        <Button
+            android:id="@+id/bn_questions_emoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/phrOrange"
+            android:layout_marginTop="20dp"
+            android:text="Volgende"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_emoto_neutral" />
+
+        <ImageView
+            android:id="@+id/iv_questions_emoto"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:visibility="invisible"
+            android:src="@mipmap/ic_phr_emoto_text_foreground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bn_questions_emoto" />
-    </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
 
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bn_questions_emoto">
+
+
+
+            <TextView
+                android:id="@+id/tv_emoto_tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Tips"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bn_questions_emoto" />
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

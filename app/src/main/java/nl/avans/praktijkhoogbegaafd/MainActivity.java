@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
 
-        Room.databaseBuilder(this, FeelingsDB.class, "feelingsDB");
+
 
         String path = Environment.getExternalStorageDirectory().toString();
         file = new File(path);
