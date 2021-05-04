@@ -41,7 +41,7 @@ public class SettingsFragment extends Fragment {
 
         iem = MainActivity.iem;
 
-        String[] categories = {"Lisanne Bierboom", "Mirthe Zom", "Meghan Kalisvaart", "Tessa van Sluijs", "Noor Vugs", "Lotte Kobossen"};
+        String[] categories = {"Lisanne Boerboom", "Mirthe Zom", "Meghan Kalisvaart", "Tessa van Sluijs", "Noor Vugs", "Lotte Kobossen"};
         Spinner spinner = (Spinner) root.findViewById(R.id.sr_settings_begeleidster);
         ArrayAdapter<String> adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
