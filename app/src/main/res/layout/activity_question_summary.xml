@@ -1,29 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.questionActivities.QuestionSummary"
-    android:layout_margin="20dp">
+    android:layout_width="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.questionActivities.QuestionSummary"
+        android:layout_margin="20dp">
 
-    <TextView
-        android:id="@+id/tv_question_summary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/tv_question_summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Je ingevulde waardes:"
+            android:textColor="@color/phrOrange"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/bn_question_summary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Opslaan"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_question_summary"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/phrOrange"/>
+        <ImageView
+            android:id="@+id/iv_summary_emoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_phr_billies_emoto_foreground"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_question_summary" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/tv_summary_emoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Er is 1 Emoto aanwezig"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_summary_emoto"
+            app:layout_constraintStart_toEndOf="@+id/iv_summary_emoto"
+            app:layout_constraintTop_toTopOf="@+id/iv_summary_emoto" />
+
+        <ImageView
+            android:id="@+id/iv_summary_fanti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_phr_billies_fanti_foreground"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_summary_emoto" />
+
+        <TextView
+            android:id="@+id/tv_summary_fanti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Er is 1 Fanti aanwezig"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_summary_fanti"
+            app:layout_constraintStart_toEndOf="@+id/iv_summary_fanti"
+            app:layout_constraintTop_toTopOf="@+id/iv_summary_fanti" />
+
+        <ImageView
+            android:id="@+id/iv_summary_intellecto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_phr_billies_intellecto_foreground"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_summary_fanti" />
+
+        <TextView
+            android:id="@+id/tv_summary_intellecto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Er is 1 Emoto aanwezig"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_summary_intellecto"
+            app:layout_constraintStart_toEndOf="@+id/iv_summary_intellecto"
+            app:layout_constraintTop_toTopOf="@+id/iv_summary_intellecto" />
+
+        <ImageView
+            android:id="@+id/iv_summary_psymo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_phr_billies_psymo_foreground"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_summary_intellecto" />
+
+        <TextView
+            android:id="@+id/tv_summary_psymo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Er is 1 Psymo aanwezig"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_summary_psymo"
+            app:layout_constraintStart_toEndOf="@+id/iv_summary_psymo"
+            app:layout_constraintTop_toTopOf="@+id/iv_summary_psymo" />
+
+        <ImageView
+            android:id="@+id/iv_summary_senzo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_phr_billies_senzo_foreground"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_summary_psymo" />
+
+        <TextView
+            android:id="@+id/tv_summary_senzo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Er is 1 Senzo aanwezig"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_summary_senzo"
+            app:layout_constraintStart_toEndOf="@+id/iv_summary_senzo"
+            app:layout_constraintTop_toTopOf="@+id/iv_summary_senzo" />
+
+        <Button
+            android:id="@+id/bn_question_summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/phrOrange"
+            android:text="Opslaan"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_summary_senzo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bn_question_summary" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

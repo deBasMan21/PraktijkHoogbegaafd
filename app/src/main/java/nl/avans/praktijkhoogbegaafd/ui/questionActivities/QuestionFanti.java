@@ -56,8 +56,8 @@ public class QuestionFanti extends AppCompatActivity {
             title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             header.setImageResource(R.mipmap.ic_phr_stars_foreground);
             max.setText("Aanwezig");
-            min.setText("Neutraal");
-            neutral.setText("Afwezig");
+            neutral.setText("Neutraal");
+            min.setText("Afwezig");
             tips.setText("De beeldende intensiteit kan het best omschreven worden als een versterkt vermogen tot verbeelding die naar voren kan komen als een sterke fantasie, het uit verband trekken van situaties, het hebben van intense dromen of nachtmerries en het bedenken van en het opgaan in levendige innerlijke werelden.");
             rs.setValueFrom(-2);
             rs.setValueTo(2);

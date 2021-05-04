@@ -28,18 +28,30 @@ public class QuestionSummary extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_question_summary);
+        if(MainActivity.childrenmode && !getIntent().hasExtra("parent")){
+            setContentView(R.layout.activity_question_summary);
+            TextView emoto = findViewById(R.id.tv_summary_emoto);
+            TextView fanti = findViewById(R.id.tv_summary_fanti);
+            TextView intellecto = findViewById(R.id.tv_summary_intellecto);
+            TextView psymo = findViewById(R.id.tv_summary_psymo);
+            TextView senzo = findViewById(R.id.tv_summary_senzo);
 
-
-
-        TextView tv = findViewById(R.id.tv_question_summary);
-        String summary = "Values: ";
-        summary = summary + "Emoto: " + getIntent().getIntExtra("Emoto", 0);
-        summary = summary + "Fanti: " + getIntent().getIntExtra("Fanti", 0);
-        summary = summary + "Intellecto: " + getIntent().getIntExtra("Intellecto", 0);
-        summary = summary + "Psymo: " + getIntent().getIntExtra("Psymo", 0);
-        summary = summary + "Senzo: " + getIntent().getIntExtra("Senzo", 0);
-        tv.setText(summary);
+            emoto.setText("Je hebt " + getIntent().getIntExtra("Emoto", 0) + " Emoto's op dit moment");
+            fanti.setText("Je hebt " + getIntent().getIntExtra("Fanti", 0) + " Fanti's op dit moment");
+            intellecto.setText("Je hebt " + getIntent().getIntExtra("Intellecto", 0) + " Intellecto's op dit moment");
+            psymo.setText("Je hebt " + getIntent().getIntExtra("Psymo", 0) + " Psymo's op dit moment");
+            senzo.setText("Je hebt " + getIntent().getIntExtra("Senzo", 0) + " Senzo's op dit moment");
+        } else {
+            setContentView(R.layout.activity_question_summary_adult);
+            TextView tv = findViewById(R.id.tv_question_summary);
+            String summary = "";
+            summary = summary + getIntent().getIntExtra("Emoto", 0);
+            summary = summary + "\n" + getIntent().getIntExtra("Fanti", 0);
+            summary = summary + "\n" + getIntent().getIntExtra("Intellecto", 0);
+            summary = summary + "\n" + getIntent().getIntExtra("Psymo", 0);
+            summary = summary + "\n" + getIntent().getIntExtra("Senzo", 0);
+            tv.setText(summary);
+        }
 
         if(getIntent().hasExtra("parent")){
             this.parent = true;

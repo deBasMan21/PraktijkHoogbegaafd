@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.questionActivities.QuestionSummary"
+    android:layout_margin="20dp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/iv_summary_stars"
+        android:src="@mipmap/ic_phr_stars_foreground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_question_summary_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Je ingevulde waardes:"
+        android:textColor="@color/phrOrange"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_summary_stars" />
+
+    <TextView
+        android:id="@+id/tv_question_intensiteiten"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="De emotionele intensitei:\nDe beeldende intensiteit:\nDe intellectuele intensiteit:\nDe psychomotorische intensiteit:\nDe sensorische intensiteit:"
+        app:layout_constraintEnd_toEndOf="@id/tv_question_summary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_question_summary_title"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:id="@+id/tv_question_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_question_intensiteiten"
+        android:text="1\n1\n1\n2\n1"
+        android:textAlignment="viewEnd"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/phrPurple"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_question_intensiteiten"
+        app:layout_constraintTop_toBottomOf="@+id/tv_question_summary_title" />
+
+    <Button
+        android:id="@+id/bn_question_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/phrOrange"
+        android:text="Opslaan"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_question_intensiteiten" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

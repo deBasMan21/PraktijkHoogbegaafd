@@ -52,13 +52,14 @@ public class QuestionEmoto extends AppCompatActivity {
             figure.setVisibility(View.VISIBLE);
             tips.setVisibility(View.INVISIBLE);
             figure.setImageResource(R.mipmap.ic_phr_emoto_text_foreground);
+
         } else{
             title.setText("Hoe aanwezig is je emotionele intensiteit?");
             title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             header.setImageResource(R.mipmap.ic_phr_stars_foreground);
             max.setText("Aanwezig");
-            min.setText("Neutraal");
-            neutral.setText("Afwezig");
+            neutral.setText("Neutraal");
+            min.setText("Afwezig");
             tips.setText("De emotionele intensiteit kan het best worden omschreven als een versterkte beleving van emoties bij jezelf, maar ook het versterk waarnemen van emoties bij anderen. Dit zorgt voor het ervaren van diepte in emoties en een sterk empathisch vermogen. Je hebt meer behoefte aan diepe emotionele verbinding met anderen, toont compassie en sensitiviteit in relaties en bent sterker gehecht aan plekken, mensen, spullen of dieren.");
             rs.setValueFrom(-2);
             rs.setValueTo(2);

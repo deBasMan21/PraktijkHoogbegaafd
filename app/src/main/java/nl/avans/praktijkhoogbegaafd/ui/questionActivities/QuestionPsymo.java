@@ -54,8 +54,8 @@ public class QuestionPsymo extends AppCompatActivity {
             title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             header.setImageResource(R.mipmap.ic_phr_stars_foreground);
             max.setText("Aanwezig");
-            min.setText("Neutraal");
-            neutral.setText("Afwezig");
+            neutral.setText("Neutraal");
+            min.setText("Afwezig");
             tips.setText("De psychomotorische intensiteit kan het best omschreven worden door een constante psychomotorische activiteit, hoge energielevels, snel en veel praten, veel beweging nodig hebben en een drang naar actie. Dit kan naar voren komen in het niet goed stil kunnen zitten, het repetitief friemelen aan voorwerpen of last hebben van motorische of verbale impulsiviteit.");
             rs.setValueFrom(-2);
             rs.setValueTo(2);
