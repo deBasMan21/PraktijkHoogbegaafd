@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -34,6 +36,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -73,6 +77,12 @@ public class GraphFragment extends Fragment {
     private int position;
 
     private ProgressBar pb;
+
+    private double emoto = 0;
+    private double fanti = 0;
+    private double intellecto = 0;
+    private double psymo = 0;
+    private double senzo = 0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -155,6 +165,28 @@ public class GraphFragment extends Fragment {
                 }
             }
         });
+
+        if(firstTime){
+            gv.getLegendRenderer().setVisible(true);
+        }
+
+        CheckBox cb = root.findViewById(R.id.cb_graph_legend);
+        cb.setChecked(true);
+
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    gv.getLegendRenderer().setVisible(true);
+                    makeGraph(position);
+                } else{
+                    gv.getLegendRenderer().setVisible(false);
+                    makeGraph(position);
+                }
+            }
+        });
+
+
         return root;
     }
 
@@ -181,7 +213,8 @@ public class GraphFragment extends Fragment {
         gv.getViewport().setYAxisBoundsManual(true);
         gv.getViewport().setXAxisBoundsManual(true);
 
-        gv.getLegendRenderer().setVisible(true);
+
+
         gv.getLegendRenderer().setTextSize(25);
         gv.getLegendRenderer().setBackgroundColor(Color.argb(150, 50, 0, 0));
         gv.getLegendRenderer().setTextColor(Color.WHITE);
@@ -196,6 +229,12 @@ public class GraphFragment extends Fragment {
         TextView tv_score_intellecto = root.findViewById(R.id.tv_graph_score_intellecto);
         TextView tv_score_psymo = root.findViewById(R.id.tv_graph_score_psymo);
         TextView tv_score_senzo = root.findViewById(R.id.tv_graph_score_senzo);
+        tv_score_emoto.setText("");
+        tv_score_fanti.setText("");
+        tv_score_intellecto.setText("");
+        tv_score_psymo.setText("");
+        tv_score_senzo.setText("");
+
 
 
         System.out.println(position);
@@ -204,9 +243,10 @@ public class GraphFragment extends Fragment {
             LineGraphSeries<DataPoint> emoto = createEmoto();
             if(MainActivity.childrenmode && parental){
                 emoto.setTitle("Emoto");
-                tv_score_emoto.setVisibility(View.INVISIBLE);
+                tv_score_emoto.setText("Emoto: " + this.emoto);
             } else{
                 emoto.setTitle("Emotionele intensiteit");
+                tv_score_emoto.setText("Emotionele intensiteit: " + this.emoto);
                 tv_score_emoto.setVisibility(View.VISIBLE);
             }
             gv.addSeries(emoto);
@@ -217,9 +257,10 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 fanti.setTitle("Fanti");
-                tv_score_fanti.setVisibility(View.INVISIBLE);
+                tv_score_fanti.setText("Fanti: " + this.fanti);
             } else{
                 fanti.setTitle("Beeldende intensiteit");
+                tv_score_fanti.setText("Beeldende intensiteit: " + this.fanti);
                 tv_score_fanti.setVisibility(View.VISIBLE);
             }
             gv.addSeries(fanti);
@@ -231,9 +272,10 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 intellecto.setTitle("Intellecto");
-                tv_score_intellecto.setVisibility(View.INVISIBLE);
+                tv_score_intellecto.setText("Intellecto: " + this.intellecto);
             } else{
                 intellecto.setTitle("Intellectuele intensiteit");
+                tv_score_intellecto.setText("Intellectuele intensiteit: " + this.intellecto);
                 tv_score_intellecto.setVisibility(View.VISIBLE);
             }
             gv.addSeries(intellecto);
@@ -243,9 +285,10 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 psymo.setTitle("Psymo");
-                tv_score_psymo.setVisibility(View.INVISIBLE);
+                tv_score_psymo.setText("Psymo: " + this.psymo);
             } else{
                 psymo.setTitle("Pychomotorische intensiteit");
+                tv_score_psymo.setText("Psychomotorische intensiteit: " + this.psymo);
                 tv_score_psymo.setVisibility(View.VISIBLE);
             }
             gv.addSeries(psymo);
@@ -254,9 +297,10 @@ public class GraphFragment extends Fragment {
             LineGraphSeries<DataPoint> senzo = createSenzo();
             if(MainActivity.childrenmode && parental){
                 senzo.setTitle("Senzo");
-                tv_score_senzo.setVisibility(View.INVISIBLE);
+                tv_score_senzo.setText("Senzo: " + this.senzo);
             } else{
                 senzo.setTitle("Sensorische intensiteit");
+                tv_score_senzo.setText("Sensorische intensiteit: " + this.senzo);
                 tv_score_senzo.setVisibility(View.VISIBLE);
             }
             gv.addSeries(senzo);
@@ -267,9 +311,10 @@ public class GraphFragment extends Fragment {
             LineGraphSeries<DataPoint> emoto = createEmoto();
             if(MainActivity.childrenmode && parental){
                 emoto.setTitle("Emoto");
-                tv_score_emoto.setVisibility(View.INVISIBLE);
+                tv_score_emoto.setText("Emoto: " + this.emoto);
             } else{
                 emoto.setTitle("Emotionele intensiteit");
+                tv_score_emoto.setText("Emotionele intensiteit: " + this.emoto);
                 tv_score_emoto.setVisibility(View.VISIBLE);
             }
             gv.addSeries(emoto);
@@ -279,9 +324,10 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 fanti.setTitle("Fanti");
-                tv_score_fanti.setVisibility(View.INVISIBLE);
+                tv_score_emoto.setText("Fanti: " + this.fanti);
             } else{
                 fanti.setTitle("Beeldende intensiteit");
+                tv_score_emoto.setText("Beeldende intensiteit: " + this.fanti);
                 tv_score_fanti.setVisibility(View.VISIBLE);
             }
             gv.addSeries(fanti);
@@ -291,9 +337,10 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 intellecto.setTitle("Intellecto");
-                tv_score_intellecto.setVisibility(View.INVISIBLE);
+                tv_score_emoto.setText("Intellecto: " + this.intellecto);
             } else{
                 intellecto.setTitle("Intellectuele intensiteit");
+                tv_score_emoto.setText("Intellectuele intensiteit: " + this.intellecto);
                 tv_score_intellecto.setVisibility(View.VISIBLE);
             }
             gv.addSeries(intellecto);
@@ -303,9 +350,10 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 psymo.setTitle("Psymo");
-                tv_score_psymo.setVisibility(View.INVISIBLE);
+                tv_score_emoto.setText("Psymo: " + this.psymo);
             } else{
                 psymo.setTitle("Pychomotorische intensiteit");
+                tv_score_emoto.setText("Psychomotorische intensiteit: " + this.psymo);
                 tv_score_psymo.setVisibility(View.VISIBLE);
             }
             gv.addSeries(psymo);
@@ -314,15 +362,14 @@ public class GraphFragment extends Fragment {
             LineGraphSeries<DataPoint> senzo = createSenzo();
             if(MainActivity.childrenmode && parental){
                 senzo.setTitle("Senzo");
-                tv_score_senzo.setVisibility(View.INVISIBLE);
+                tv_score_emoto.setText("Senzo: " + this.senzo);
             } else{
                 senzo.setTitle("Sensorische intensiteit");
+                tv_score_emoto.setText("Sensorische intensiteit: " + this.senzo);
                 tv_score_senzo.setVisibility(View.VISIBLE);
             }
             gv.addSeries(senzo);
         }
-
-
 
     }
 
@@ -330,6 +377,8 @@ public class GraphFragment extends Fragment {
         LineGraphSeries<DataPoint> senzo = new LineGraphSeries<>();
         double x = 1;
         int stats = 0;
+        int amountOfValues = 0;
+        double finalStats = 0;
 
         for (DayFeeling feelings : dayFeelings) {
             ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
@@ -338,9 +387,16 @@ public class GraphFragment extends Fragment {
                 senzo.appendData(new DataPoint(subx, feeling.getSenzo()), true, 10);
                 stats += feeling.getSenzo();
                 subx += 1.0 / entities.size();
+                amountOfValues++;
             }
             x++;
         }
+        if(MainActivity.childrenmode && parental){
+            finalStats = 1.0 * stats / amountOfValues;
+        } else {
+            finalStats = 1.0 * stats;
+        }
+        this.senzo = finalStats;
         senzo.setColor(Color.rgb(242, 150, 49));
         senzo.setDrawDataPoints(true);
         senzo.setDataPointsRadius(6);
@@ -351,6 +407,8 @@ public class GraphFragment extends Fragment {
         LineGraphSeries<DataPoint> psymo = new LineGraphSeries<>();
         double x = 1;
         int stats = 0;
+        int amountOfValues = 0;
+        double finalStats = 0;
 
         for (DayFeeling feelings : dayFeelings) {
             ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
@@ -359,9 +417,16 @@ public class GraphFragment extends Fragment {
                 psymo.appendData(new DataPoint(subx, feeling.getPsymo()), true, 10);
                 stats += feeling.getPsymo();
                 subx += 1.0 / entities.size();
+                amountOfValues++;
             }
             x++;
         }
+        if(MainActivity.childrenmode && parental){
+            finalStats = 1.0 * stats / amountOfValues;
+        } else {
+            finalStats = stats;
+        }
+        this.psymo = finalStats;
         psymo.setColor(Color.rgb(81, 102, 169));
         psymo.setDrawDataPoints(true);
         psymo.setDataPointsRadius(6);
@@ -372,6 +437,8 @@ public class GraphFragment extends Fragment {
         LineGraphSeries<DataPoint> intellecto = new LineGraphSeries<>();
         double x = 1;
         int stats = 0;
+        int amountOfValues = 0;
+        double finalStats = 0;
 
         for (DayFeeling feelings : dayFeelings) {
             ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
@@ -380,9 +447,16 @@ public class GraphFragment extends Fragment {
                 intellecto.appendData(new DataPoint(subx, feeling.getIntellecto()), true, 10);
                 stats += feeling.getIntellecto();
                 subx += 1.0 / entities.size();
+                amountOfValues++;
             }
             x++;
         }
+        if(MainActivity.childrenmode && parental){
+            finalStats = 1.0 * stats / amountOfValues;
+        } else {
+            finalStats = 1.0 * stats;
+        }
+        this.intellecto = finalStats;
         intellecto.setColor(Color.rgb(182, 103, 161));
         intellecto.setDrawDataPoints(true);
         intellecto.setDataPointsRadius(6);
@@ -393,6 +467,8 @@ public class GraphFragment extends Fragment {
         LineGraphSeries<DataPoint> fanti = new LineGraphSeries<>();
         double x = 1;
         int stats = 0;
+        int amountOfValues = 0;
+        double finalStats = 0;
 
         for (DayFeeling feelings : dayFeelings) {
             ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
@@ -401,9 +477,16 @@ public class GraphFragment extends Fragment {
                 fanti.appendData(new DataPoint(subx, feeling.getFanti()), true, 10);
                 stats += feeling.getFanti();
                 subx += 1.0 / entities.size();
+                amountOfValues++;
             }
             x++;
         }
+        if(MainActivity.childrenmode && parental){
+            finalStats = 1.0 * stats / amountOfValues;
+        } else {
+            finalStats = 1.0 * stats;
+        }
+        this.fanti = finalStats;
         fanti.setColor(Color.rgb(98, 176, 74));
         fanti.setDrawDataPoints(true);
         fanti.setDataPointsRadius(6);
@@ -414,6 +497,8 @@ public class GraphFragment extends Fragment {
         LineGraphSeries<DataPoint> emoto = new LineGraphSeries<>();
         double x = 1;
         int stats = 0;
+        int amountOfValues = 0;
+        double finalStats = 0;
 
         for (DayFeeling feelings : dayFeelings) {
             ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
@@ -422,10 +507,17 @@ public class GraphFragment extends Fragment {
                 emoto.appendData(new DataPoint(subx, feeling.getEmoto()), true, 10);
                 stats += feeling.getEmoto();
                 subx += 1.0 / entities.size();
+                amountOfValues++;
             }
             x++;
-        }
 
+        }
+        if(MainActivity.childrenmode && parental){
+             finalStats = 1.0 * stats / amountOfValues;
+        } else {
+            finalStats = 1.0 * stats;
+        }
+        this.emoto = finalStats;
         emoto.setColor(Color.rgb(232, 85, 51));
         emoto.setDrawDataPoints(true);
         emoto.setDataPointsRadius(6);

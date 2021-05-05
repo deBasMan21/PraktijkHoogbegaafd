@@ -7,6 +7,14 @@
     tools:context=".ui.graph.GraphFragment"
     android:layout_margin="20dp">
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cb_graph_legend"
+        android:text="Legenda"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ProgressBar
         android:id="@+id/pb_graph_loading"
         android:layout_width="wrap_content"
@@ -60,6 +68,7 @@
         android:id="@+id/tv_graph_score_emoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="hey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gv_graph" />

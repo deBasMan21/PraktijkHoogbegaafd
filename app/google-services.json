@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "818363190032",
+    "project_id": "praktijkhoogbegaafd",
+    "storage_bucket": "praktijkhoogbegaafd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818363190032:android:5c5a41f0252b656107b395",
+        "android_client_info": {
+          "package_name": "nl.avans.praktijkhoogbegaafd"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818363190032-1f0ugrpg4baca87q498n47j22de1tatg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqiRaCj2PV7uOk4OBtt28DhUjP8jBm2mU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "818363190032-1f0ugrpg4baca87q498n47j22de1tatg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
