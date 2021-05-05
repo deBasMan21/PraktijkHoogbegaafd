@@ -10,12 +10,17 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.view.View;
+import android.widget.Button;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Objects;
 
 import nl.avans.praktijkhoogbegaafd.BuildConfig;
+import nl.avans.praktijkhoogbegaafd.MainActivity;
 import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.logic.CachedFileProvider;
 import nl.avans.praktijkhoogbegaafd.logic.ScreenshotLogic;
@@ -27,68 +32,37 @@ public class ShareActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share);
 
+
+
+        HashMap<String, String> emailList = new HashMap<>();
+        emailList.put("Lisanne Boerboom", "lisanne@praktijkhoogbegaafd.nl");
+
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
-        File file = storeScreenshot(ScreenshotLogic.lastScreenshot, "screenshot1");
+        File pdf = (File) getIntent().getSerializableExtra("pdf");
 
-        if(file.canRead() && file.exists()){
+        if(pdf.canRead() && pdf.exists()){
             System.out.println("GELUKT");
         }
 
-        Uri uri = FileProvider.getUriForFile(this,
-                getApplicationContext().getPackageName() + ".provider", file);
+        Uri uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", pdf);
 
-        Uri uri2 = Uri.parse(file.getPath());
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.putExtra(Intent.EXTRA_EMAIL, new String[]{emailList.get(MainActivity.begeleidster)});
+        i.putExtra(Intent.EXTRA_SUBJECT,"Verslag uit Praktijkhoogbegaafd app van " + MainActivity.name);
+        i.putExtra(Intent.EXTRA_TEXT,"Dit verslag bestaat uit de data van " + LocalDate.now().minusDays(6).toString() + " tot en met " + LocalDate.now().toString() + ".");
+        i.putExtra(Intent.EXTRA_STREAM,uri);
+        i.setType("application/pdf");
+        startActivity(Intent.createChooser(i,"Share your progression..."));
 
-        File file1 = new File(uri2.getPath());
-        if(file1.exists() && file1.canRead()){
-            System.out.println("GELUKT");
-        }
 
-        Intent i = new Intent(Intent.ACTION_SENDTO);
-        i.setData(Uri.parse("mailto:"));
-//        i.setType("message/rfc822");
-//        i.putExtra(Intent.EXTRA_STREAM, uri);
-        i.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://" + CachedFileProvider.AUTHORITY + "/" + file.getName()));
-        startActivity(Intent.createChooser(i, "Send email..."));
 
     }
 
-
-    public File storeScreenshot(Bitmap bitmap, String filename) {
-        FileOutputStream fout = null;
-        File tempFile = null;
-        try{
-            File tempDir = this.getCacheDir();
-            tempFile = File.createTempFile("your_file", ".txt", tempDir);
-            fout = new FileOutputStream(tempFile);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fout);
-            fout.flush();
-            fout.close();
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-//
-//
-//
-//        ContextWrapper cw = new ContextWrapper(this);
-//        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-//        File file = new File(directory, filename + ".jpg");
-//        file.setReadable(true);
-//        if (file.exists()) {
-//            file.delete();
-//        }
-//        FileOutputStream fos = null;
-//        try {
-//            fos = new FileOutputStream(file);
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-//            fos.flush();
-//            fos.close();
-//        } catch (java.io.IOException e) {
-//            e.printStackTrace();
-//        }
-        return tempFile;
+    public void goBack(View v){
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }

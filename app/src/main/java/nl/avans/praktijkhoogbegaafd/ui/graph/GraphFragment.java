@@ -71,6 +71,8 @@ public class GraphFragment extends Fragment {
     private boolean firstTime = true;
     private GraphView gv;
 
+    private boolean isEmailIntentStarted = false;
+
     private File file;
 
     private View root;
@@ -105,18 +107,6 @@ public class GraphFragment extends Fragment {
         }
 
         ImageView ivTest = root.findViewById(R.id.iv_graph_test);
-        Button share = root.findViewById(R.id.bn_graph_share);
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bitmap b = ScreenshotLogic.takeScreenshot(root);
-                storeScreenshot(b, "screenshot");
-                ivTest.setImageBitmap(getScreenshot("screenshot"));
-
-                Intent i = new Intent(getContext(), ShareActivity.class);
-                startActivity(i);
-            }
-        });
 
 
 
@@ -186,6 +176,19 @@ public class GraphFragment extends Fragment {
             }
         });
 
+        Button share = root.findViewById(R.id.bn_graph_share);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pb.setVisibility(View.VISIBLE);
+                isEmailIntentStarted = true;
+                share.setVisibility(View.INVISIBLE);
+                spinner.setVisibility(View.INVISIBLE);
+                cb.setVisibility(View.INVISIBLE);
+                makeGraph(0);
+            }
+        });
+
 
         return root;
     }
@@ -220,6 +223,9 @@ public class GraphFragment extends Fragment {
         gv.getLegendRenderer().setTextColor(Color.WHITE);
         gv.getLegendRenderer().setWidth(200);
         gv.getLegendRenderer().setFixedPosition(0, 0);
+        if(isEmailIntentStarted){
+            gv.getLegendRenderer().setVisible(false);
+        }
 
 
 
@@ -549,8 +555,8 @@ public class GraphFragment extends Fragment {
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         options.inJustDecodeBounds = true;
         Bitmap bitmap = BitmapFactory.decodeFile(file.getPath(), options);
-        int heightRatio = (int)Math.ceil(options.outHeight/(float) 300);
-        int widthRatio = (int)Math.ceil(options.outWidth/(float) 300);
+        int heightRatio = (int)Math.ceil(options.outHeight/(float) 2000);
+        int widthRatio = (int)Math.ceil(options.outWidth/(float) 1000);
 
         if (heightRatio > 1 || widthRatio > 1)
         {
@@ -577,41 +583,60 @@ public class GraphFragment extends Fragment {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-
         return bitmap;
     }
 
     public File createPDF(){
         PdfDocument doc = new PdfDocument();
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(300, 600, 1).create();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(1000, 1200, 1).create();
 
         PdfDocument.Page page = doc.startPage(pageInfo);
         Canvas canvas = page.getCanvas();
         Paint paint = new Paint();
-        paint.setColor(Color.RED);
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(25);
         canvas.drawBitmap(getScreenshot("screenshot"), 0, 0, paint);
-        canvas.drawText(MainActivity.name, 100, 100, paint);
+        if(MainActivity.childrenmode){
+            canvas.drawText(MainActivity.name + " " + MainActivity.birthDay + " (Ouder: " + MainActivity.parentalName + ")", 0, 950, paint);
+        } else{
+            canvas.drawText(MainActivity.name , 0, 950, paint);
+        }
+        canvas.drawText("Datum vanaf: " + LocalDate.now().minusDays(6) ,0, 975, paint);
+        canvas.drawText("Datum tot en met: " + LocalDate.now(), 0, 1000, paint);
+        canvas.drawText(MainActivity.begeleidster, 0, 1025, paint);
+
         doc.finishPage(page);
 
-        String directory_path = Environment.getExternalStorageDirectory().getPath() + "/mypdf/";
-        File file = new File(directory_path);
-        if (!file.exists()) {
-            file.mkdirs();
+
+        ContextWrapper cw = new ContextWrapper(getContext());
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        File file = new File(directory, MainActivity.name + "(" + LocalDate.now() + ").pdf");
+        file.setReadable(true);
+        this.file = file;
+        if (file.exists()) {
+            file.delete();
         }
-        String targetPdf = directory_path+"test-2.pdf";
-        File filePath = new File(targetPdf);
-        filePath.setReadable(true);
+        FileOutputStream fos = null;
         try {
-            doc.writeTo(new FileOutputStream(filePath));
-            Toast.makeText(getContext(), "Done", Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            Log.e("main", "error "+e.toString());
-            Toast.makeText(getContext(), "Something wrong: " + e.toString(),  Toast.LENGTH_LONG).show();
+            fos = new FileOutputStream(file);
+            doc.writeTo(fos);
+            fos.flush();
+            fos.close();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
         }
-        // close the document
-        doc.close();
-        return filePath;
+        return file;
+    }
+
+    public void startEmail(){
+        Bitmap b = ScreenshotLogic.takescreenshotOfRootView(root);
+        storeScreenshot(b, "screenshot");
+
+        File file = createPDF();
+
+        Intent i = new Intent(getContext(), ShareActivity.class);
+        i.putExtra("pdf", file);
+        startActivity(i);
     }
 
     public class getFeelingForDays extends AsyncTask<Void, Void, Void>{
@@ -646,6 +671,9 @@ public class GraphFragment extends Fragment {
             super.onPostExecute(aVoid);
             makeGraphView();
             pb.setVisibility(View.INVISIBLE);
+            if(isEmailIntentStarted){
+                startEmail();
+            }
         }
     }
 
