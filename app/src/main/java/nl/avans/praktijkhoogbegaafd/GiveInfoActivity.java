@@ -2,6 +2,7 @@ package nl.avans.praktijkhoogbegaafd;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -55,6 +57,12 @@ public class GiveInfoActivity extends AppCompatActivity {
 
         EditText etName = findViewById(R.id.et_info_name);
         EditText etBirthday = findViewById(R.id.et_info_birthday);
+
+        Calendar cal = Calendar.getInstance();
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int month = cal.get(Calendar.MONTH);
+        int year = cal.get(Calendar.YEAR);
+
 
         Button confirm = findViewById(R.id.bn_info_confirm);
         confirm.setOnClickListener(new View.OnClickListener() {

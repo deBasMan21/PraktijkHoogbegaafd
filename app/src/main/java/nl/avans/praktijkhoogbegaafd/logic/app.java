@@ -34,12 +34,14 @@ public class app extends Application {
 
         System.out.println("App started");
         createNotificationChannels();
-        if(iem.getInfo().isParentalControl()){
-            sendNotification(16);
-        } else{
-            sendNotification(11);
-            sendNotification(16);
-            sendNotification(20);
+        if(iem.getInfo() != null){
+            if(iem.getInfo().isParentalControl()){
+                sendNotification(16);
+            } else{
+                sendNotification(11);
+                sendNotification(16);
+                sendNotification(20);
+            }
         }
     }
 

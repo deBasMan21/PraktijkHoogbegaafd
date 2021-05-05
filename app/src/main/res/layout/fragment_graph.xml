@@ -8,12 +8,12 @@
     android:layout_margin="20dp">
 
     <CheckBox
+        android:id="@+id/cb_graph_legend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/cb_graph_legend"
         android:text="Legenda"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
         android:id="@+id/pb_graph_loading"

@@ -73,6 +73,12 @@ public class GraphFragment extends Fragment {
 
     private boolean isEmailIntentStarted = false;
 
+    private String[] categoriesChildren = {"Alles", "Emoto", "Fanti", "Intellecto", "Psymo", "Senzo"};
+    private String[] categoriesAdult = {"Alles", "Emotionele intensiteit", "Beeldende intensiteit", "Intellectuele intensiteit", "Psychomotorische intensiteit", "Sensorische intensiteit"};
+
+    private ArrayAdapter<String> adapterChildren = null;
+    private ArrayAdapter<String> adapterAdult = null;
+
     private File file;
 
     private View root;
@@ -96,6 +102,9 @@ public class GraphFragment extends Fragment {
 
         pb = root.findViewById(R.id.pb_graph_loading);
 
+        adapterAdult = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, categoriesAdult);
+        adapterChildren = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, categoriesChildren);
+
         makeGraph(0);
         System.out.println("hier maakt hij een nieuwe grafiek");
 
@@ -106,20 +115,14 @@ public class GraphFragment extends Fragment {
             tb.setVisibility(View.INVISIBLE);
         }
 
-        ImageView ivTest = root.findViewById(R.id.iv_graph_test);
 
-
-
-        String[] categories;
-        if(MainActivity.childrenmode && parental){
-            String[] categorieschildren = {"Alles", "Emoto", "Fanti", "Intellecto", "Psymo", "Senzo"};
-            categories = categorieschildren;
-        } else{
-            String[] categorieschildren = {"Alles", "Emotionele intensiteit", "Beeldende intensiteit", "Intellectuele intensiteit", "Psychomotorische intensiteit", "Sensorische intensiteit"};
-            categories = categorieschildren;
-        }
         Spinner spinner = (Spinner) root.findViewById(R.id.sr_graph_category);
-        ArrayAdapter<String> adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, categories);
+        ArrayAdapter<String> adapter;
+        if(MainActivity.childrenmode && parental){
+            adapter = this.adapterChildren;
+        } else {
+            adapter = this.adapterAdult;
+        }
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
@@ -146,10 +149,12 @@ public class GraphFragment extends Fragment {
                 firstTime = false;
                 if(button.isChecked()){
                     parental = false;
+                    spinner.setAdapter(adapterAdult);
                     System.out.println(spinner.getSelectedItemPosition());
                     makeGraph(spinner.getSelectedItemPosition());
                 } else {
                     parental = true;
+                    spinner.setAdapter(adapterChildren);
                     System.out.println(spinner.getSelectedItemPosition());
                     makeGraph(spinner.getSelectedItemPosition());
                 }
@@ -249,7 +254,7 @@ public class GraphFragment extends Fragment {
             LineGraphSeries<DataPoint> emoto = createEmoto();
             if(MainActivity.childrenmode && parental){
                 emoto.setTitle("Emoto");
-                tv_score_emoto.setText("Emoto: " + this.emoto);
+                tv_score_emoto.setText("Emoto: " + Math.round(this.emoto));
             } else{
                 emoto.setTitle("Emotionele intensiteit");
                 tv_score_emoto.setText("Emotionele intensiteit: " + this.emoto);
@@ -263,7 +268,7 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 fanti.setTitle("Fanti");
-                tv_score_fanti.setText("Fanti: " + this.fanti);
+                tv_score_fanti.setText("Fanti: " + Math.round(this.fanti));
             } else{
                 fanti.setTitle("Beeldende intensiteit");
                 tv_score_fanti.setText("Beeldende intensiteit: " + this.fanti);
@@ -278,7 +283,7 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 intellecto.setTitle("Intellecto");
-                tv_score_intellecto.setText("Intellecto: " + this.intellecto);
+                tv_score_intellecto.setText("Intellecto: " + Math.round(this.intellecto));
             } else{
                 intellecto.setTitle("Intellectuele intensiteit");
                 tv_score_intellecto.setText("Intellectuele intensiteit: " + this.intellecto);
@@ -291,7 +296,7 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 psymo.setTitle("Psymo");
-                tv_score_psymo.setText("Psymo: " + this.psymo);
+                tv_score_psymo.setText("Psymo: " + Math.round(this.psymo));
             } else{
                 psymo.setTitle("Pychomotorische intensiteit");
                 tv_score_psymo.setText("Psychomotorische intensiteit: " + this.psymo);
@@ -303,7 +308,7 @@ public class GraphFragment extends Fragment {
             LineGraphSeries<DataPoint> senzo = createSenzo();
             if(MainActivity.childrenmode && parental){
                 senzo.setTitle("Senzo");
-                tv_score_senzo.setText("Senzo: " + this.senzo);
+                tv_score_senzo.setText("Senzo: " + Math.round(this.senzo));
             } else{
                 senzo.setTitle("Sensorische intensiteit");
                 tv_score_senzo.setText("Sensorische intensiteit: " + this.senzo);
@@ -317,7 +322,7 @@ public class GraphFragment extends Fragment {
             LineGraphSeries<DataPoint> emoto = createEmoto();
             if(MainActivity.childrenmode && parental){
                 emoto.setTitle("Emoto");
-                tv_score_emoto.setText("Emoto: " + this.emoto);
+                tv_score_emoto.setText("Emoto: " + Math.round(this.emoto));
             } else{
                 emoto.setTitle("Emotionele intensiteit");
                 tv_score_emoto.setText("Emotionele intensiteit: " + this.emoto);
@@ -330,7 +335,7 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 fanti.setTitle("Fanti");
-                tv_score_emoto.setText("Fanti: " + this.fanti);
+                tv_score_emoto.setText("Fanti: " + Math.round(this.fanti));
             } else{
                 fanti.setTitle("Beeldende intensiteit");
                 tv_score_emoto.setText("Beeldende intensiteit: " + this.fanti);
@@ -343,7 +348,7 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 intellecto.setTitle("Intellecto");
-                tv_score_emoto.setText("Intellecto: " + this.intellecto);
+                tv_score_emoto.setText("Intellecto: " + Math.round(this.intellecto));
             } else{
                 intellecto.setTitle("Intellectuele intensiteit");
                 tv_score_emoto.setText("Intellectuele intensiteit: " + this.intellecto);
@@ -356,7 +361,7 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 psymo.setTitle("Psymo");
-                tv_score_emoto.setText("Psymo: " + this.psymo);
+                tv_score_emoto.setText("Psymo: " + Math.round(this.psymo));
             } else{
                 psymo.setTitle("Pychomotorische intensiteit");
                 tv_score_emoto.setText("Psychomotorische intensiteit: " + this.psymo);
@@ -368,10 +373,10 @@ public class GraphFragment extends Fragment {
             LineGraphSeries<DataPoint> senzo = createSenzo();
             if(MainActivity.childrenmode && parental){
                 senzo.setTitle("Senzo");
-                tv_score_emoto.setText("Senzo: " + this.senzo);
+                tv_score_emoto.setText("Senzo: " + Math.round(this.senzo));
             } else{
                 senzo.setTitle("Sensorische intensiteit");
-                tv_score_emoto.setText("Sensorische intensiteit: " + this.senzo);
+                tv_score_emoto.setText("Sensorische intensiteit: " + Math.round(this.senzo));
                 tv_score_senzo.setVisibility(View.VISIBLE);
             }
             gv.addSeries(senzo);
@@ -596,10 +601,11 @@ public class GraphFragment extends Fragment {
         paint.setColor(Color.BLACK);
         paint.setTextSize(25);
         canvas.drawBitmap(getScreenshot("screenshot"), 0, 0, paint);
+        canvas.drawBitmap(BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.ic_phr_legenda_foreground), 55, 70, paint);
         if(MainActivity.childrenmode){
             canvas.drawText(MainActivity.name + " " + MainActivity.birthDay + " (Ouder: " + MainActivity.parentalName + ")", 0, 950, paint);
         } else{
-            canvas.drawText(MainActivity.name , 0, 950, paint);
+            canvas.drawText(MainActivity.name + " " + MainActivity.birthDay , 0, 950, paint);
         }
         canvas.drawText("Datum vanaf: " + LocalDate.now().minusDays(6) ,0, 975, paint);
         canvas.drawText("Datum tot en met: " + LocalDate.now(), 0, 1000, paint);
