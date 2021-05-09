@@ -22,4 +22,11 @@
         android:name="nl.avans.praktijkhoogbegaafd.ui.settings.SettingsFragment"
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/nav_child"
+        android:name="nl.avans.praktijkhoogbegaafd.ui.childpage.ChildPage"
+        android:label="Child"
+        tools:layout="@layout/child_page_fragment"/>
+
 </navigation>

@@ -28,7 +28,7 @@ public class StartupActivity extends AppCompatActivity {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Welkom bij de Praktijk Hoogbegaafd app waarmee je jouw intensiteiten en X-citabillies kan meten. Door elke dag in te vullen of de intensiteiten en X-citabillies bij jou aanwezig waren, kunnen we samen kijken hoe we jou het beste kunnen helpen. Voorafgaand aan je afspraak, kun je eenvoudig je scores delen met jouw behandelaar. Mocht je hier nog vragen over hebben, kun je contact opnemen met jouw behandelaar. Veel plezier met invullen. \n\n LET OP! Dit is een testversie van de app en deze dient alleen gebruikt te worden als het is aanbevolen door uw begeleider.").setPositiveButton("Ga door", new DialogInterface.OnClickListener() {
+        builder.setMessage("Welkom bij de Praktijk Hoogbegaafd app waarmee je jouw intensiteiten en X-citabillies kan meten. Door elke dag in te vullen of de intensiteiten en X-citabillies bij jou aanwezig waren, kunnen we samen kijken hoe we jou het beste kunnen helpen. Voorafgaand aan je afspraak, kun je eenvoudig je scores delen met jouw behandelaar. Mocht je hier nog vragen over hebben, kun je contact opnemen met jouw behandelaar. Veel plezier met invullen. \n\n LET OP! Dit is een testversie van de app en deze dient alleen gebruikt te worden als het is aanbevolen door uw begeleider.").setNegativeButton("Ga door", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
