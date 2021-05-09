@@ -1,7 +1,6 @@
 package nl.avans.praktijkhoogbegaafd.ui.questionActivities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -10,16 +9,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.time.LocalDate;
 
-import nl.avans.praktijkhoogbegaafd.MainActivity;
+import nl.avans.praktijkhoogbegaafd.ui.MainActivity;
 import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.dal.FeelingEntity;
-import nl.avans.praktijkhoogbegaafd.dal.FeelingsDB;
 import nl.avans.praktijkhoogbegaafd.logic.FeelingsEntityManager;
-import nl.avans.praktijkhoogbegaafd.ui.home.HomeFragment;
 
 public class QuestionSummary extends AppCompatActivity {
 

@@ -1,8 +1,6 @@
-package nl.avans.praktijkhoogbegaafd;
+package nl.avans.praktijkhoogbegaafd.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -11,10 +9,8 @@ import android.view.Menu;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.constraintlayout.widget.Group;
 import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -23,12 +19,10 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.room.Room;
 
 import java.io.File;
-import java.time.LocalDate;
 
-import nl.avans.praktijkhoogbegaafd.dal.FeelingsDB;
+import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.dal.InfoEntity;
 import nl.avans.praktijkhoogbegaafd.logic.FeelingsEntityManager;
 import nl.avans.praktijkhoogbegaafd.logic.InfoEntityManager;

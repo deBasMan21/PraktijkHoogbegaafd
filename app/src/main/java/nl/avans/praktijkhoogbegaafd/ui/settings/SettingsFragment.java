@@ -20,11 +20,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import nl.avans.praktijkhoogbegaafd.MainActivity;
+import nl.avans.praktijkhoogbegaafd.ui.MainActivity;
 import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.dal.InfoEntity;
 import nl.avans.praktijkhoogbegaafd.logic.InfoEntityManager;
-import nl.avans.praktijkhoogbegaafd.ui.home.HomeFragment;
 
 public class SettingsFragment extends Fragment {
 

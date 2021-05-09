@@ -12,11 +12,9 @@ import android.widget.TextView;
 
 import com.google.android.material.slider.RangeSlider;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
-import nl.avans.praktijkhoogbegaafd.MainActivity;
+import nl.avans.praktijkhoogbegaafd.ui.MainActivity;
 import nl.avans.praktijkhoogbegaafd.R;
 
 public class QuestionEmoto extends AppCompatActivity {

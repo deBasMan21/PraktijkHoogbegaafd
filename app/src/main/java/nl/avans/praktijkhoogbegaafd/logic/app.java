@@ -8,16 +8,10 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.room.Room;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Calendar;
 
-import nl.avans.praktijkhoogbegaafd.MainActivity;
-import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.dal.FeelingsDB;
 
 public class app extends Application {

@@ -3,27 +3,17 @@ package nl.avans.praktijkhoogbegaafd.ui;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
-import android.widget.Button;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.Objects;
 
-import nl.avans.praktijkhoogbegaafd.BuildConfig;
-import nl.avans.praktijkhoogbegaafd.MainActivity;
 import nl.avans.praktijkhoogbegaafd.R;
-import nl.avans.praktijkhoogbegaafd.logic.CachedFileProvider;
-import nl.avans.praktijkhoogbegaafd.logic.ScreenshotLogic;
 
 public class ShareActivity extends AppCompatActivity {
 

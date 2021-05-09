@@ -14,7 +14,7 @@ import com.google.android.material.slider.RangeSlider;
 
 import java.util.List;
 
-import nl.avans.praktijkhoogbegaafd.MainActivity;
+import nl.avans.praktijkhoogbegaafd.ui.MainActivity;
 import nl.avans.praktijkhoogbegaafd.R;
 
 public class QuestionPsymo extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package nl.avans.praktijkhoogbegaafd;
+package nl.avans.praktijkhoogbegaafd.ui;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +10,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+
+import nl.avans.praktijkhoogbegaafd.R;
 
 public class StartupActivity extends AppCompatActivity {
 
