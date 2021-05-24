@@ -22,7 +22,6 @@ public class ScreenshotLogic {
     }
 
     public static Bitmap takescreenshotOfRootView(View v){
-        lastScreenshot = takeScreenshot(v.getRootView());
         return takeScreenshot(v.getRootView());
     }
 

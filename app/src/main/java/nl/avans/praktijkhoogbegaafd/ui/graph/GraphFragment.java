@@ -8,12 +8,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.pdf.PdfDocument;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -83,6 +85,17 @@ public class GraphFragment extends Fragment {
     private double intellecto = 0;
     private double psymo = 0;
     private double senzo = 0;
+
+    private String[] names = {"completeView", "Emoto", "Fanti", "Intellecto", "Psymo", "Senzo" };
+
+    private Bitmap ssEmoto;
+    private Bitmap ssFanti;
+    private Bitmap ssIntellecto;
+    private Bitmap ssPsymo;
+    private Bitmap ssSenzo;
+    private Bitmap ssTotal;
+
+    private int name;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -182,7 +195,12 @@ public class GraphFragment extends Fragment {
                 share.setVisibility(View.INVISIBLE);
                 spinner.setVisibility(View.INVISIBLE);
                 cb.setVisibility(View.INVISIBLE);
-                makeGraph(0);
+
+                for (int i = 0; i < 6; i++){
+                    name = i;
+                    makeGraph(i);
+                }
+                startEmail();
             }
         });
 
@@ -528,23 +546,36 @@ public class GraphFragment extends Fragment {
     }
 
     public void storeScreenshot(Bitmap bitmap, String filename) {
-        ContextWrapper cw = new ContextWrapper(getContext());
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        File file = new File(directory, filename + ".jpg");
-        file.setReadable(true);
-        this.file = file;
-        if (file.exists()) {
-            file.delete();
+        if(filename.equals("Emoto")){
+            this.ssEmoto = bitmap;
+        } else if (filename.equals("Fanti")){
+            this.ssFanti = bitmap;
+        } else if(filename.equals("Intellecto")){
+            this.ssIntellecto = bitmap;
+        } else if (filename.equals("Psymo")){
+            this.ssPsymo = bitmap;
+        } else if (filename.equals("Senzo")){
+            this.ssSenzo = bitmap;
+        } else if(filename.equals("completeView")){
+            this.ssTotal = bitmap;
         }
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        }
+//        ContextWrapper cw = new ContextWrapper(getContext());
+//        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+//        File file = new File(directory, filename + ".jpg");
+//        file.setReadable(true);
+//        this.file = file;
+//        if (file.exists()) {
+//            file.delete();
+//        }
+//        FileOutputStream fos = null;
+//        try {
+//            fos = new FileOutputStream(file);
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+//            fos.flush();
+//            fos.close();
+//        } catch (java.io.IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public Bitmap getScreenshot(String filename){
@@ -585,23 +616,40 @@ public class GraphFragment extends Fragment {
 
     public File createPDF(){
         PdfDocument doc = new PdfDocument();
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(1000, 1200, 1).create();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(2000, 3200, 1).create();
 
         PdfDocument.Page page = doc.startPage(pageInfo);
         Canvas canvas = page.getCanvas();
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setTextSize(25);
-        canvas.drawBitmap(getScreenshot("screenshot"), 0, 0, paint);
-        canvas.drawBitmap(BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.ic_phr_legenda_foreground), 55, 70, paint);
+        Bitmap totalGraph = this.ssTotal;
+        Bitmap total = Bitmap.createBitmap(totalGraph, 40, 280, totalGraph.getWidth() - 80, totalGraph.getHeight() - 400);
+        Bitmap emotoSS = this.ssEmoto;
+        Bitmap emoto = Bitmap.createBitmap(emotoSS, 40, 280, totalGraph.getWidth() - 80, totalGraph.getHeight() - 400);
+        Bitmap fantiSS = this.ssFanti;
+        Bitmap fanti = Bitmap.createBitmap(fantiSS, 40, 280, totalGraph.getWidth() - 80, totalGraph.getHeight() - 400);
+        Bitmap intellectoSS = this.ssIntellecto;
+        Bitmap intellecto = Bitmap.createBitmap(intellectoSS, 40, 280, totalGraph.getWidth() - 80, totalGraph.getHeight() - 400);
+        Bitmap psymoSS = this.ssPsymo;
+        Bitmap psymo = Bitmap.createBitmap(psymoSS, 40, 280, totalGraph.getWidth() - 80, totalGraph.getHeight() - 400);
+        Bitmap senzoSS = this.ssSenzo;
+        Bitmap senzo = Bitmap.createBitmap(senzoSS, 40, 280, totalGraph.getWidth() - 80, totalGraph.getHeight() - 400);
+        canvas.drawBitmap(total, 0, 0, paint);
+        canvas.drawBitmap(emoto, total.getWidth(), 0, paint);
+        canvas.drawBitmap(fanti, emoto.getWidth() * 2, 0, paint);
+        canvas.drawBitmap(intellecto, 0, total.getHeight(), paint);
+        canvas.drawBitmap(psymo, intellecto.getWidth(), total.getHeight(), paint);
+        canvas.drawBitmap(senzo, intellecto.getWidth() * 2, total.getHeight(), paint);
+        canvas.drawBitmap(BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.ic_phr_legenda_foreground), total.getWidth(), total.getHeight() * 2, paint);
         if(MainActivity.childrenmode){
-            canvas.drawText(MainActivity.name + " " + MainActivity.birthDay + " (Ouder: " + MainActivity.parentalName + ")", 0, 950, paint);
+            canvas.drawText(MainActivity.name + " " + MainActivity.birthDay + " (Ouder: " + MainActivity.parentalName + ")", 10, total.getHeight() * 2, paint);
         } else{
-            canvas.drawText(MainActivity.name + " " + MainActivity.birthDay , 0, 950, paint);
+            canvas.drawText(MainActivity.name + " " + MainActivity.birthDay , 10, total.getHeight() * 2, paint);
         }
-        canvas.drawText("Datum vanaf: " + LocalDate.now().minusDays(6) ,0, 975, paint);
-        canvas.drawText("Datum tot en met: " + LocalDate.now(), 0, 1000, paint);
-        canvas.drawText(MainActivity.begeleidster, 0, 1025, paint);
+        canvas.drawText("Datum vanaf: " + LocalDate.now().minusDays(6) ,10, total.getHeight() * 2 + 25, paint);
+        canvas.drawText("Datum tot en met: " + LocalDate.now(), 10, total.getHeight() * 2 + 50, paint);
+        canvas.drawText(MainActivity.begeleidster, 10, total.getHeight() * 2 + 75, paint);
 
         doc.finishPage(page);
 
@@ -627,9 +675,6 @@ public class GraphFragment extends Fragment {
     }
 
     public void startEmail(){
-        Bitmap b = ScreenshotLogic.takescreenshotOfRootView(root);
-        storeScreenshot(b, "screenshot");
-
         File file = createPDF();
 
         Intent i = new Intent(getContext(), ShareActivity.class);
@@ -652,7 +697,7 @@ public class GraphFragment extends Fragment {
             for(int i = 0; i < 7; i++){
                 DayFeeling feelings;
                 if(firstTime){
-                    feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(6 - i).toString(), !false);
+                    feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(6 - i).toString(), true);
                 } else {
                     feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(6 - i).toString(), parental);
                 }
@@ -670,7 +715,7 @@ public class GraphFragment extends Fragment {
             makeGraphView();
             pb.setVisibility(View.INVISIBLE);
             if(isEmailIntentStarted){
-                startEmail();
+                storeScreenshot(ScreenshotLogic.takescreenshotOfRootView(root), names[name]);
             }
         }
     }

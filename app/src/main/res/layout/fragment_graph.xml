@@ -28,7 +28,7 @@
     <ToggleButton
         android:id="@+id/tb_graph_switch"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:textOff="Kind"
         android:textOn="Ouder"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,7 +39,7 @@
     <Spinner
         android:id="@+id/sr_graph_category"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
