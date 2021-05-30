@@ -31,12 +31,11 @@ public class QuestionPsymo extends AppCompatActivity {
         TextView min = findViewById(R.id.tv_emoto_min);
         TextView neutral = findViewById(R.id.tv_emoto_neutral);
         TextView tips = findViewById(R.id.tv_emoto_tips);
-        ImageView figure = findViewById(R.id.iv_questions_emoto);
 
         if(MainActivity.childrenmode && !getIntent().hasExtra("parent")){
             title.setText("Hoeveel Psymo's heb je?");
             title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            title.setTextColor(Color.BLUE);
+//            title.setTextColor(Color.BLUE);
             header.setImageResource(R.mipmap.ic_phr_billies_psymo_foreground);
             tips.setText("blabla");
             max.setText("10");
@@ -46,9 +45,8 @@ public class QuestionPsymo extends AppCompatActivity {
             rs.setValueTo(10);
             rs.setTickVisible(true);
             rs.setStepSize(1);
-            figure.setVisibility(View.VISIBLE);
-            tips.setVisibility(View.INVISIBLE);
-            figure.setImageResource(R.mipmap.ic_phr_psymo_text_foreground);
+            tips.setVisibility(View.VISIBLE);
+            tips.setText(R.string.psymo);
         } else{
             title.setText("Hoe aanwezig is je psychomotorische intensiteit?");
             title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -61,7 +59,6 @@ public class QuestionPsymo extends AppCompatActivity {
             rs.setValueTo(2);
             rs.setTickVisible(true);
             rs.setStepSize(1);
-            figure.setVisibility(View.INVISIBLE);
             tips.setVisibility(View.VISIBLE);
         }
 

@@ -78,27 +78,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_emoto_neutral" />
 
-        <ImageView
-            android:id="@+id/iv_questions_emoto"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:src="@mipmap/ic_phr_emoto_text_foreground"
-            android:visibility="visible"
+
+        <TextView
+            android:id="@+id/tv_emoto_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Tips"
+            android:textSize="18sp"
+            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_emoto_neutral" />
-
-            <TextView
-                android:id="@+id/tv_emoto_tips"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Tips"
-                android:textSize="18sp"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bn_questions_emoto" />
+            app:layout_constraintTop_toBottomOf="@+id/bn_questions_emoto" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -31,14 +31,13 @@ public class QuestionFanti extends AppCompatActivity {
         TextView min = findViewById(R.id.tv_emoto_min);
         TextView neutral = findViewById(R.id.tv_emoto_neutral);
         TextView tips = findViewById(R.id.tv_emoto_tips);
-        ImageView figure = findViewById(R.id.iv_questions_emoto);
 
 
 
         if(MainActivity.childrenmode && !getIntent().hasExtra("parent")){
             title.setText("Hoeveel Fanti's heb je?");
             title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            title.setTextColor(Color.GREEN);
+//            title.setTextColor(Color.GREEN);
             header.setImageResource(R.mipmap.ic_phr_billies_fanti_foreground);
             tips.setText("blabla");
             max.setText("10");
@@ -48,9 +47,8 @@ public class QuestionFanti extends AppCompatActivity {
             rs.setValueTo(10);
             rs.setTickVisible(true);
             rs.setStepSize(1);
-            figure.setVisibility(View.VISIBLE);
-            tips.setVisibility(View.INVISIBLE);
-            figure.setImageResource(R.mipmap.ic_phr_fanti_text_foreground);
+            tips.setVisibility(View.VISIBLE);
+            tips.setText(R.string.fanti);
         } else{
             title.setText("Hoe aanwezig is je beeldende intensiteit?");
             title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -63,7 +61,6 @@ public class QuestionFanti extends AppCompatActivity {
             rs.setValueTo(2);
             rs.setTickVisible(true);
             rs.setStepSize(1);
-            figure.setVisibility(View.INVISIBLE);
             tips.setVisibility(View.VISIBLE);
         }
 
