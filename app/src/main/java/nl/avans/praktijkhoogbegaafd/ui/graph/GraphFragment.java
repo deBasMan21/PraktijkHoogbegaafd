@@ -88,13 +88,14 @@ public class GraphFragment extends Fragment {
 
     private String[] names = {"completeView", "Emoto", "Fanti", "Intellecto", "Psymo", "Senzo" };
 
-    private Bitmap ssEmoto;
-    private Bitmap ssFanti;
-    private Bitmap ssIntellecto;
-    private Bitmap ssPsymo;
-    private Bitmap ssSenzo;
-    private Bitmap ssTotal;
+    private Bitmap ssEmoto = null;
+    private Bitmap ssFanti = null;
+    private Bitmap ssIntellecto = null;
+    private Bitmap ssPsymo = null;
+    private Bitmap ssSenzo = null;
+    private Bitmap ssTotal = null;
 
+    private boolean ssDone = false;
     private int name;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -196,11 +197,13 @@ public class GraphFragment extends Fragment {
                 spinner.setVisibility(View.INVISIBLE);
                 cb.setVisibility(View.INVISIBLE);
 
-                for (int i = 0; i < 6; i++){
+                for(int i = 0; i < 6; i++){
                     name = i;
+                    if(i == 5){
+                        ssDone = true;
+                    }
                     makeGraph(i);
                 }
-                startEmail();
             }
         });
 
@@ -716,6 +719,9 @@ public class GraphFragment extends Fragment {
             pb.setVisibility(View.INVISIBLE);
             if(isEmailIntentStarted){
                 storeScreenshot(ScreenshotLogic.takescreenshotOfRootView(root), names[name]);
+                if(ssDone){
+                    startEmail();
+                }
             }
         }
     }
