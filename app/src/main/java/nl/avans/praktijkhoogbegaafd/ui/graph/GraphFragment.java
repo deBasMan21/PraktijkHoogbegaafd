@@ -3,6 +3,7 @@ package nl.avans.praktijkhoogbegaafd.ui.graph;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -106,6 +107,8 @@ public class GraphFragment extends Fragment {
 
         gv = root.findViewById(R.id.gv_graph);
 
+        System.out.println(getToolBarHeight(getContext()) + "px heigh");
+
         pb = root.findViewById(R.id.pb_graph_loading);
 
         adapterAdult = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, categoriesAdult);
@@ -196,14 +199,11 @@ public class GraphFragment extends Fragment {
                 share.setVisibility(View.INVISIBLE);
                 spinner.setVisibility(View.INVISIBLE);
                 cb.setVisibility(View.INVISIBLE);
+                ssDone = false;
+                name = 0;
+                makeGraph(0);
 
-                for(int i = 0; i < 6; i++){
-                    name = i;
-                    if(i == 5){
-                        ssDone = true;
-                    }
-                    makeGraph(i);
-                }
+
             }
         });
 
@@ -395,6 +395,19 @@ public class GraphFragment extends Fragment {
             gv.addSeries(senzo);
         }
 
+
+
+        if(isEmailIntentStarted){
+            storeScreenshot(ScreenshotLogic.takescreenshotOfRootView(root), names[name]);
+            if(name < 5){
+                name++;
+                makeGraph(name);
+
+            } else{
+                startEmail();
+            }
+        }
+
     }
 
     public LineGraphSeries<DataPoint> createSenzo(){
@@ -562,97 +575,79 @@ public class GraphFragment extends Fragment {
         } else if(filename.equals("completeView")){
             this.ssTotal = bitmap;
         }
-//        ContextWrapper cw = new ContextWrapper(getContext());
-//        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-//        File file = new File(directory, filename + ".jpg");
-//        file.setReadable(true);
-//        this.file = file;
-//        if (file.exists()) {
-//            file.delete();
-//        }
-//        FileOutputStream fos = null;
-//        try {
-//            fos = new FileOutputStream(file);
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-//            fos.flush();
-//            fos.close();
-//        } catch (java.io.IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
-    public Bitmap getScreenshot(String filename){
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        options.inJustDecodeBounds = true;
-        Bitmap bitmap = BitmapFactory.decodeFile(file.getPath(), options);
-        int heightRatio = (int)Math.ceil(options.outHeight/(float) 2000);
-        int widthRatio = (int)Math.ceil(options.outWidth/(float) 1000);
+    private static int toolBarHeight = -1;
 
-        if (heightRatio > 1 || widthRatio > 1)
-        {
-            if (heightRatio > widthRatio)
-            {
-                options.inSampleSize = heightRatio;
-            } else {
-                options.inSampleSize = widthRatio;
-            }
+    public static int getToolBarHeight(Context context) {
+        if (toolBarHeight > 0) {
+            return toolBarHeight;
         }
+        final Resources resources = context.getResources();
+        final int resourceId = resources.getIdentifier("action_bar_size", "dimen", "android");
+        toolBarHeight = resourceId > 0 ?
+                resources.getDimensionPixelSize(resourceId) :
+                (int) convertDpToPixel(context, 56);
+        return toolBarHeight;
+    }
 
-        options.inJustDecodeBounds = false;
-        bitmap = BitmapFactory.decodeFile(file.getPath(), options);
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] imageInByte = stream.toByteArray();
-        //this gives the size of the compressed image in kb
-        long lengthbmp = imageInByte.length / 1024;
-
-        try {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(file.getPath()));
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return bitmap;
+    public static float convertDpToPixel(Context context, float dp) {
+        float scale = context.getResources().getDisplayMetrics().density;
+        return dp * scale + 0.5f;
     }
 
     public File createPDF(){
         PdfDocument doc = new PdfDocument();
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(2000, 3200, 1).create();
+        int width = (gv.getWidth()) * 3;
+        int height = (gv.getHeight()) * 2 + 600;
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(width, height, 1).create();
+        gv.getWidth();
+        gv.getHeight();
+
+        int differenceWidth = ssTotal.getWidth() - gv.getWidth();
+
+        int headerHeight = getToolBarHeight(getContext()) * 2;
+
 
         PdfDocument.Page page = doc.startPage(pageInfo);
         Canvas canvas = page.getCanvas();
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
-        paint.setTextSize(25);
+        paint.setTextSize(50);
         Bitmap totalGraph = this.ssTotal;
-        Bitmap total = Bitmap.createBitmap(totalGraph, 40, 280, totalGraph.getWidth() - 80, totalGraph.getHeight() - 400);
+        Bitmap total = Bitmap.createBitmap(totalGraph, differenceWidth / 2, headerHeight, totalGraph.getWidth() - differenceWidth, totalGraph.getHeight() - (totalGraph.getHeight() - gv.getHeight()));
         Bitmap emotoSS = this.ssEmoto;
-        Bitmap emoto = Bitmap.createBitmap(emotoSS, 40, 280, totalGraph.getWidth() - 80, totalGraph.getHeight() - 400);
+        Bitmap emoto = Bitmap.createBitmap(emotoSS, differenceWidth / 2, headerHeight, totalGraph.getWidth() - differenceWidth, totalGraph.getHeight() - (totalGraph.getHeight() - gv.getHeight()));
         Bitmap fantiSS = this.ssFanti;
-        Bitmap fanti = Bitmap.createBitmap(fantiSS, 40, 280, totalGraph.getWidth() - 80, totalGraph.getHeight() - 400);
+        Bitmap fanti = Bitmap.createBitmap(fantiSS, differenceWidth / 2, headerHeight, totalGraph.getWidth() - differenceWidth, totalGraph.getHeight() - (totalGraph.getHeight() - gv.getHeight()));
         Bitmap intellectoSS = this.ssIntellecto;
-        Bitmap intellecto = Bitmap.createBitmap(intellectoSS, 40, 280, totalGraph.getWidth() - 80, totalGraph.getHeight() - 400);
+        Bitmap intellecto = Bitmap.createBitmap(intellectoSS,  differenceWidth / 2, headerHeight, totalGraph.getWidth() - differenceWidth, totalGraph.getHeight() - (totalGraph.getHeight() - gv.getHeight()));
         Bitmap psymoSS = this.ssPsymo;
-        Bitmap psymo = Bitmap.createBitmap(psymoSS, 40, 280, totalGraph.getWidth() - 80, totalGraph.getHeight() - 400);
+        Bitmap psymo = Bitmap.createBitmap(psymoSS, differenceWidth / 2, headerHeight, totalGraph.getWidth() - differenceWidth, totalGraph.getHeight() - (totalGraph.getHeight() - gv.getHeight()));
         Bitmap senzoSS = this.ssSenzo;
-        Bitmap senzo = Bitmap.createBitmap(senzoSS, 40, 280, totalGraph.getWidth() - 80, totalGraph.getHeight() - 400);
-        canvas.drawBitmap(total, 0, 0, paint);
-        canvas.drawBitmap(emoto, total.getWidth(), 0, paint);
-        canvas.drawBitmap(fanti, emoto.getWidth() * 2, 0, paint);
-        canvas.drawBitmap(intellecto, 0, total.getHeight(), paint);
-        canvas.drawBitmap(psymo, intellecto.getWidth(), total.getHeight(), paint);
-        canvas.drawBitmap(senzo, intellecto.getWidth() * 2, total.getHeight(), paint);
-        canvas.drawBitmap(BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.ic_phr_legenda_foreground), total.getWidth(), total.getHeight() * 2, paint);
+        Bitmap senzo = Bitmap.createBitmap(senzoSS, differenceWidth / 2, headerHeight, totalGraph.getWidth() - differenceWidth, totalGraph.getHeight() - (totalGraph.getHeight() - gv.getHeight()));
+
+        Bitmap legend = BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.ic_phr_legenda_foreground);
+        Bitmap logo = BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.ic_phr_logo_large_foreground);
+        Bitmap scaledLogo = Bitmap.createScaledBitmap(logo, 800, 800, false);
+
+
+        canvas.drawBitmap(total, 0, logo.getHeight() + 210, paint);
+        canvas.drawBitmap(emoto, total.getWidth(), logo.getHeight() + 210, paint);
+        canvas.drawBitmap(fanti, emoto.getWidth() * 2, logo.getHeight() + 210, paint);
+        canvas.drawBitmap(intellecto, 0, total.getHeight() + logo.getHeight() + 210, paint);
+        canvas.drawBitmap(psymo, intellecto.getWidth(), total.getHeight() + logo.getHeight() + 210, paint);
+        canvas.drawBitmap(senzo, intellecto.getWidth() * 2, total.getHeight() + logo.getHeight() + 210, paint);
+        canvas.drawBitmap(scaledLogo, (width - scaledLogo.getWidth()) / 2, -200, paint);
+        canvas.drawBitmap(legend, width - legend.getWidth(), logo.getHeight() - 100, paint);
         if(MainActivity.childrenmode){
-            canvas.drawText(MainActivity.name + " " + MainActivity.birthDay + " (Ouder: " + MainActivity.parentalName + ")", 10, total.getHeight() * 2, paint);
+            canvas.drawText(MainActivity.name + " " + MainActivity.birthDay + " (Ouder: " + MainActivity.parentalName + ")", 20, logo.getHeight(), paint);
         } else{
-            canvas.drawText(MainActivity.name + " " + MainActivity.birthDay , 10, total.getHeight() * 2, paint);
+            canvas.drawText(MainActivity.name + " " + MainActivity.birthDay , 20, logo.getHeight(), paint);
         }
-        canvas.drawText("Datum vanaf: " + LocalDate.now().minusDays(6) ,10, total.getHeight() * 2 + 25, paint);
-        canvas.drawText("Datum tot en met: " + LocalDate.now(), 10, total.getHeight() * 2 + 50, paint);
-        canvas.drawText(MainActivity.begeleidster, 10, total.getHeight() * 2 + 75, paint);
+        canvas.drawText("Datum vanaf: " + LocalDate.now().minusDays(6) ,20, logo.getHeight() + 60, paint);
+        canvas.drawText("Datum tot en met: " + LocalDate.now(), 20, logo.getHeight() + 110, paint);
+        canvas.drawText(MainActivity.begeleidster, 20, logo.getHeight() + 160, paint);
 
         doc.finishPage(page);
 
@@ -717,11 +712,15 @@ public class GraphFragment extends Fragment {
             super.onPostExecute(aVoid);
             makeGraphView();
             pb.setVisibility(View.INVISIBLE);
-            if(isEmailIntentStarted){
-                storeScreenshot(ScreenshotLogic.takescreenshotOfRootView(root), names[name]);
-                if(ssDone){
-                    startEmail();
-                }
+//            emailIntentPostExecute();
+        }
+    }
+
+    public void emailIntentPostExecute(){
+        if(isEmailIntentStarted){
+            storeScreenshot(ScreenshotLogic.takescreenshotOfRootView(root), names[name]);
+            if(ssDone){
+                startEmail();
             }
         }
     }

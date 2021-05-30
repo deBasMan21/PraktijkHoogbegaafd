@@ -25,17 +25,6 @@
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="invisible"/>
 
-    <ToggleButton
-        android:id="@+id/tb_graph_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:textOff="Kind"
-        android:textOn="Ouder"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="invisible"/>
-
     <Spinner
         android:id="@+id/sr_graph_category"
         android:layout_width="wrap_content"
@@ -43,7 +32,42 @@
         android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tb_graph_switch" />
+        app:layout_constraintTop_toBottomOf="@+id/ll_graph_buttons" />
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ll_graph_buttons"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gv_graph">
+
+        <ToggleButton
+            android:id="@+id/tb_graph_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginRight="40dp"
+            android:textOff="Kind"
+            android:textOn="Ouder"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sr_graph_category" />
+
+        <Button
+            android:id="@+id/bn_graph_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/phrOrange"
+            android:text="Delen"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tb_graph_switch" />
+    </LinearLayout>
+
+
 
     <com.jjoe64.graphview.GraphView
         android:id="@+id/gv_graph"
@@ -52,17 +76,8 @@
         android:layout_margin="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sr_graph_category" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/bn_graph_share"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/phrOrange"
-        android:text="Delen"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_graph_score_senzo" />
 
     <TextView
         android:id="@+id/tv_graph_score_emoto"
@@ -71,7 +86,7 @@
         android:text="hey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gv_graph" />
+        app:layout_constraintTop_toBottomOf="@+id/sr_graph_category" />
 
     <TextView
         android:id="@+id/tv_graph_score_fanti"
@@ -105,13 +120,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_graph_score_psymo" />
 
-    <ImageView
-        android:id="@+id/iv_graph_test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bn_graph_share" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
