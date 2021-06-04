@@ -9,14 +9,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.pdf.PdfDocument;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -35,11 +34,10 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +63,9 @@ public class GraphFragment extends Fragment {
     private boolean parental = true;
     private boolean firstTime = true;
     private GraphView gv;
+
+    private Double[] weekStats = new Double[5];
+    private Double[] dayStats = new Double[5];
 
     private boolean isEmailIntentStarted = false;
 
@@ -96,8 +97,21 @@ public class GraphFragment extends Fragment {
     private Bitmap ssSenzo = null;
     private Bitmap ssTotal = null;
 
+    private TextView tv_score_emoto;
+    private TextView tv_score_fanti;
+    private TextView tv_score_intellecto;
+    private TextView tv_score_psymo;
+    private TextView tv_score_senzo;
+    private TextView tv_text_emoto;
+    private TextView tv_text_fanti;
+    private TextView tv_text_intellecto;
+    private TextView tv_text_psymo;
+    private TextView tv_text_senzo;
+
     private boolean ssDone = false;
     private int name;
+
+    private boolean weekOrDayStats = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -115,13 +129,17 @@ public class GraphFragment extends Fragment {
         adapterChildren = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, categoriesChildren);
 
         makeGraph(0);
+
         System.out.println("hier maakt hij een nieuwe grafiek");
 
         ToggleButton tb = root.findViewById(R.id.tb_graph_switch);
+        ToggleButton tbStats = root.findViewById(R.id.tb_stats_switch);
         if(MainActivity.childrenmode){
             tb.setVisibility(View.VISIBLE);
+            tbStats.setVisibility(View.VISIBLE);
         } else {
             tb.setVisibility(View.INVISIBLE);
+            tbStats.setVisibility(View.INVISIBLE);
         }
 
 
@@ -167,6 +185,30 @@ public class GraphFragment extends Fragment {
                     System.out.println(spinner.getSelectedItemPosition());
                     makeGraph(spinner.getSelectedItemPosition());
                 }
+                setStats(weekOrDayStats);
+            }
+        });
+
+        tv_score_emoto = root.findViewById(R.id.tv_graph_score_emoto);
+        tv_score_fanti = root.findViewById(R.id.tv_graph_score_fanti);
+        tv_score_intellecto = root.findViewById(R.id.tv_graph_score_intellecto);
+        tv_score_psymo = root.findViewById(R.id.tv_graph_score_psymo);
+        tv_score_senzo = root.findViewById(R.id.tv_graph_score_senzo);
+
+        tv_text_emoto = root.findViewById(R.id.tv_graph_text_emoto);
+        tv_text_fanti = root.findViewById(R.id.tv_graph_text_fanti);
+        tv_text_intellecto = root.findViewById(R.id.tv_graph_text_intellecto);
+        tv_text_senzo = root.findViewById(R.id.tv_graph_text_psymo);
+        tv_text_psymo = root.findViewById(R.id.tv_graph_text_senzo);
+
+
+
+        tbStats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToggleButton toggleButton = (ToggleButton) v;
+                weekOrDayStats = toggleButton.isChecked();
+                setStats(toggleButton.isChecked());
             }
         });
 
@@ -217,6 +259,74 @@ public class GraphFragment extends Fragment {
         new getFeelingForDays().execute();
     }
 
+    public void setStats(boolean weekOrDay){
+        if(weekOrDay){
+            if(MainActivity.childrenmode && parental){
+                tv_text_emoto.setText("Gemiddelde emoto afgelopen dag: ");
+                tv_score_emoto.setText(dayStats[0].toString());
+
+                tv_text_fanti.setText("Gemiddelde fanti afgelopen dag: ");
+                tv_score_fanti.setText(dayStats[1].toString());
+
+                tv_text_intellecto.setText("Gemiddelde intellecto afgelopen dag: ");
+                tv_score_intellecto.setText(dayStats[2].toString());
+
+                tv_text_psymo.setText("Gemiddelde psymo afgelopen dag: ");
+                tv_score_psymo.setText(dayStats[3].toString());
+
+                tv_text_senzo.setText("Gemiddelde senzo afgelopen dag: ");
+                tv_score_senzo.setText(dayStats[4].toString());
+            } else {
+                tv_text_emoto.setText("Gemiddelde emotionele intensiteit afgelopen dag: ");
+                tv_score_emoto.setText(dayStats[0].toString());
+
+                tv_text_fanti.setText("Gemiddelde beeldende intensiteit afgelopen dag: ");
+                tv_score_fanti.setText(dayStats[1].toString());
+
+                tv_text_intellecto.setText("Gemiddelde intellectuele intensiteit afgelopen dag: ");
+                tv_score_intellecto.setText(dayStats[2].toString());
+
+                tv_text_psymo.setText("Gemiddelde pyschomotorische intensiteit afgelopen dag: ");
+                tv_score_psymo.setText(dayStats[3].toString());
+
+                tv_text_senzo.setText("Gemiddelde sensorische intensiteit afgelopen dag: ");
+                tv_score_senzo.setText(dayStats[4].toString());
+            }
+        }else {
+            if(MainActivity.childrenmode && parental){
+                tv_text_emoto.setText("Gemiddelde emoto afgelopen week: ");
+                tv_score_emoto.setText(weekStats[0].toString());
+
+                tv_text_fanti.setText("Gemiddelde fanti afgelopen week: ");
+                tv_score_fanti.setText(weekStats[1].toString());
+
+                tv_text_intellecto.setText("Gemiddelde intellecto afgelopen week: ");
+                tv_score_intellecto.setText(weekStats[2].toString());
+
+                tv_text_psymo.setText("Gemiddelde psymo afgelopen week: ");
+                tv_score_psymo.setText(weekStats[3].toString());
+
+                tv_text_senzo.setText("Gemiddelde senzo afgelopen week: ");
+                tv_score_senzo.setText(weekStats[4].toString());
+            } else {
+                tv_text_emoto.setText("Gemiddelde emotionele intensiteit afgelopen week: ");
+                tv_score_emoto.setText(weekStats[0].toString());
+
+                tv_text_fanti.setText("Gemiddelde beeldende intensiteit afgelopen week: ");
+                tv_score_fanti.setText(weekStats[1].toString());
+
+                tv_text_intellecto.setText("Gemiddelde intellectuele intensiteit afgelopen week: ");
+                tv_score_intellecto.setText(weekStats[2].toString());
+
+                tv_text_psymo.setText("Gemiddelde pyschomotorische intensiteit afgelopen week: ");
+                tv_score_psymo.setText(weekStats[3].toString());
+
+                tv_text_senzo.setText("Gemiddelde sensorische intensiteit afgelopen week: ");
+                tv_score_senzo.setText(weekStats[4].toString());
+            }
+        }
+    }
+
     public void makeGraphView(){
 
         if(MainActivity.childrenmode && parental){
@@ -248,16 +358,7 @@ public class GraphFragment extends Fragment {
 
 
 
-        TextView tv_score_emoto = root.findViewById(R.id.tv_graph_score_emoto);
-        TextView tv_score_fanti = root.findViewById(R.id.tv_graph_score_fanti);
-        TextView tv_score_intellecto = root.findViewById(R.id.tv_graph_score_intellecto);
-        TextView tv_score_psymo = root.findViewById(R.id.tv_graph_score_psymo);
-        TextView tv_score_senzo = root.findViewById(R.id.tv_graph_score_senzo);
-        tv_score_emoto.setText("");
-        tv_score_fanti.setText("");
-        tv_score_intellecto.setText("");
-        tv_score_psymo.setText("");
-        tv_score_senzo.setText("");
+
 
 
 
@@ -267,11 +368,8 @@ public class GraphFragment extends Fragment {
             LineGraphSeries<DataPoint> emoto = createEmoto();
             if(MainActivity.childrenmode && parental){
                 emoto.setTitle("Emoto");
-                tv_score_emoto.setText("Emoto: " + Math.round(this.emoto));
             } else{
                 emoto.setTitle("Emotionele intensiteit");
-                tv_score_emoto.setText("Emotionele intensiteit: " + this.emoto);
-                tv_score_emoto.setVisibility(View.VISIBLE);
             }
             gv.addSeries(emoto);
 
@@ -281,11 +379,8 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 fanti.setTitle("Fanti");
-                tv_score_fanti.setText("Fanti: " + Math.round(this.fanti));
             } else{
                 fanti.setTitle("Beeldende intensiteit");
-                tv_score_fanti.setText("Beeldende intensiteit: " + this.fanti);
-                tv_score_fanti.setVisibility(View.VISIBLE);
             }
             gv.addSeries(fanti);
 
@@ -296,11 +391,8 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 intellecto.setTitle("Intellecto");
-                tv_score_intellecto.setText("Intellecto: " + Math.round(this.intellecto));
             } else{
                 intellecto.setTitle("Intellectuele intensiteit");
-                tv_score_intellecto.setText("Intellectuele intensiteit: " + this.intellecto);
-                tv_score_intellecto.setVisibility(View.VISIBLE);
             }
             gv.addSeries(intellecto);
 
@@ -309,11 +401,8 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 psymo.setTitle("Psymo");
-                tv_score_psymo.setText("Psymo: " + Math.round(this.psymo));
             } else{
                 psymo.setTitle("Pychomotorische intensiteit");
-                tv_score_psymo.setText("Psychomotorische intensiteit: " + this.psymo);
-                tv_score_psymo.setVisibility(View.VISIBLE);
             }
             gv.addSeries(psymo);
 
@@ -321,11 +410,8 @@ public class GraphFragment extends Fragment {
             LineGraphSeries<DataPoint> senzo = createSenzo();
             if(MainActivity.childrenmode && parental){
                 senzo.setTitle("Senzo");
-                tv_score_senzo.setText("Senzo: " + Math.round(this.senzo));
             } else{
                 senzo.setTitle("Sensorische intensiteit");
-                tv_score_senzo.setText("Sensorische intensiteit: " + this.senzo);
-                tv_score_senzo.setVisibility(View.VISIBLE);
             }
             gv.addSeries(senzo);
 
@@ -335,11 +421,8 @@ public class GraphFragment extends Fragment {
             LineGraphSeries<DataPoint> emoto = createEmoto();
             if(MainActivity.childrenmode && parental){
                 emoto.setTitle("Emoto");
-                tv_score_emoto.setText("Emoto: " + Math.round(this.emoto));
             } else{
                 emoto.setTitle("Emotionele intensiteit");
-                tv_score_emoto.setText("Emotionele intensiteit: " + this.emoto);
-                tv_score_emoto.setVisibility(View.VISIBLE);
             }
             gv.addSeries(emoto);
         } else if(position == 2){
@@ -348,11 +431,8 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 fanti.setTitle("Fanti");
-                tv_score_emoto.setText("Fanti: " + Math.round(this.fanti));
             } else{
                 fanti.setTitle("Beeldende intensiteit");
-                tv_score_emoto.setText("Beeldende intensiteit: " + this.fanti);
-                tv_score_fanti.setVisibility(View.VISIBLE);
             }
             gv.addSeries(fanti);
         } else if (position == 3){
@@ -361,11 +441,8 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 intellecto.setTitle("Intellecto");
-                tv_score_emoto.setText("Intellecto: " + Math.round(this.intellecto));
             } else{
                 intellecto.setTitle("Intellectuele intensiteit");
-                tv_score_emoto.setText("Intellectuele intensiteit: " + this.intellecto);
-                tv_score_intellecto.setVisibility(View.VISIBLE);
             }
             gv.addSeries(intellecto);
         } else if (position == 4){
@@ -374,11 +451,8 @@ public class GraphFragment extends Fragment {
 
             if(MainActivity.childrenmode && parental){
                 psymo.setTitle("Psymo");
-                tv_score_emoto.setText("Psymo: " + Math.round(this.psymo));
             } else{
                 psymo.setTitle("Pychomotorische intensiteit");
-                tv_score_emoto.setText("Psychomotorische intensiteit: " + this.psymo);
-                tv_score_psymo.setVisibility(View.VISIBLE);
             }
             gv.addSeries(psymo);
         } else if(position == 5){
@@ -386,16 +460,13 @@ public class GraphFragment extends Fragment {
             LineGraphSeries<DataPoint> senzo = createSenzo();
             if(MainActivity.childrenmode && parental){
                 senzo.setTitle("Senzo");
-                tv_score_emoto.setText("Senzo: " + Math.round(this.senzo));
             } else{
                 senzo.setTitle("Sensorische intensiteit");
-                tv_score_emoto.setText("Sensorische intensiteit: " + Math.round(this.senzo));
-                tv_score_senzo.setVisibility(View.VISIBLE);
             }
             gv.addSeries(senzo);
         }
 
-
+        setStats(weekOrDayStats);
 
         if(isEmailIntentStarted){
             storeScreenshot(ScreenshotLogic.takescreenshotOfRootView(root), names[name]);
@@ -416,27 +487,39 @@ public class GraphFragment extends Fragment {
         int stats = 0;
         int amountOfValues = 0;
         double finalStats = 0;
+        int lastDayValue = 0;
+        int amountOfValuesLastDay = 0;
 
         for (DayFeeling feelings : dayFeelings) {
             ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
+            lastDayValue = 0;
+            amountOfValuesLastDay = 0;
             double subx = x;
             for (FeelingEntity feeling : entities) {
                 senzo.appendData(new DataPoint(subx, feeling.getSenzo()), true, 10);
                 stats += feeling.getSenzo();
                 subx += 1.0 / entities.size();
                 amountOfValues++;
+                lastDayValue += feeling.getSenzo();
+                amountOfValuesLastDay++;
             }
             x++;
         }
         if(MainActivity.childrenmode && parental){
             finalStats = 1.0 * stats / amountOfValues;
+            this.weekStats[4] = finalStats;
+            this.dayStats[4] = 1.0 * lastDayValue / amountOfValuesLastDay;
         } else {
             finalStats = 1.0 * stats;
+            this.weekStats[4] = finalStats;
+            this.dayStats[4] = 1.0 * lastDayValue;
         }
         this.senzo = finalStats;
         senzo.setColor(Color.rgb(242, 150, 49));
         senzo.setDrawDataPoints(true);
         senzo.setDataPointsRadius(6);
+        Log.d(getClass().getSimpleName() + ": " + LocalDate.now().toString(), this.weekStats[4].toString());
+        Log.d(getClass().getSimpleName() + ": " + LocalDate.now().toString(), this.dayStats[4].toString());
         return senzo;
     }
 
@@ -446,22 +529,32 @@ public class GraphFragment extends Fragment {
         int stats = 0;
         int amountOfValues = 0;
         double finalStats = 0;
+        int lastDayValue = 0;
+        int amountOfValuesLastDay = 0;
 
         for (DayFeeling feelings : dayFeelings) {
             ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
             double subx = x;
+            lastDayValue = 0;
+            amountOfValuesLastDay = 0;
             for (FeelingEntity feeling : entities) {
                 psymo.appendData(new DataPoint(subx, feeling.getPsymo()), true, 10);
                 stats += feeling.getPsymo();
                 subx += 1.0 / entities.size();
                 amountOfValues++;
+                lastDayValue += feeling.getPsymo();
+                amountOfValuesLastDay++;
             }
             x++;
         }
         if(MainActivity.childrenmode && parental){
             finalStats = 1.0 * stats / amountOfValues;
+            this.weekStats[3] = finalStats;
+            this.dayStats[3] = 1.0 * lastDayValue / amountOfValuesLastDay;
         } else {
             finalStats = stats;
+            this.weekStats[3] = finalStats;
+            this.dayStats[3] = 1.0 * lastDayValue;
         }
         this.psymo = finalStats;
         psymo.setColor(Color.rgb(81, 102, 169));
@@ -476,22 +569,32 @@ public class GraphFragment extends Fragment {
         int stats = 0;
         int amountOfValues = 0;
         double finalStats = 0;
+        int lastDayValue = 0;
+        int amountOfValuesLastDay = 0;
 
         for (DayFeeling feelings : dayFeelings) {
             ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
             double subx = x;
+            lastDayValue = 0;
+            amountOfValuesLastDay = 0;
             for (FeelingEntity feeling : entities) {
                 intellecto.appendData(new DataPoint(subx, feeling.getIntellecto()), true, 10);
                 stats += feeling.getIntellecto();
                 subx += 1.0 / entities.size();
                 amountOfValues++;
+                lastDayValue += feeling.getIntellecto();
+                amountOfValuesLastDay++;
             }
             x++;
         }
         if(MainActivity.childrenmode && parental){
             finalStats = 1.0 * stats / amountOfValues;
+            this.weekStats[2] = finalStats;
+            this.dayStats[2] = 1.0 * lastDayValue / amountOfValuesLastDay;
         } else {
             finalStats = 1.0 * stats;
+            this.weekStats[2] = finalStats;
+            this.dayStats[2] = 1.0 * lastDayValue;
         }
         this.intellecto = finalStats;
         intellecto.setColor(Color.rgb(182, 103, 161));
@@ -506,22 +609,32 @@ public class GraphFragment extends Fragment {
         int stats = 0;
         int amountOfValues = 0;
         double finalStats = 0;
+        int lastDayValue = 0;
+        int amountOfValuesLastDay = 0;
 
         for (DayFeeling feelings : dayFeelings) {
             ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
             double subx = x;
+            lastDayValue = 0;
+            amountOfValuesLastDay = 0;
             for (FeelingEntity feeling : entities) {
                 fanti.appendData(new DataPoint(subx, feeling.getFanti()), true, 10);
                 stats += feeling.getFanti();
                 subx += 1.0 / entities.size();
                 amountOfValues++;
+                lastDayValue += feeling.getFanti();
+                amountOfValuesLastDay++;
             }
             x++;
         }
         if(MainActivity.childrenmode && parental){
             finalStats = 1.0 * stats / amountOfValues;
+            this.weekStats[1] = finalStats;
+            this.dayStats[1] = 1.0 * lastDayValue / amountOfValuesLastDay;
         } else {
             finalStats = 1.0 * stats;
+            this.weekStats[1] = finalStats;
+            this.dayStats[1] = 1.0 * lastDayValue;
         }
         this.fanti = finalStats;
         fanti.setColor(Color.rgb(98, 176, 74));
@@ -536,23 +649,33 @@ public class GraphFragment extends Fragment {
         int stats = 0;
         int amountOfValues = 0;
         double finalStats = 0;
+        int lastDayValue = 0;
+        int amountOfValuesLastDay = 0;
 
         for (DayFeeling feelings : dayFeelings) {
             ArrayList<FeelingEntity> entities = feelings.getFeelingsForDay();
             double subx = x;
+            lastDayValue = 0;
+            amountOfValuesLastDay = 0;
             for (FeelingEntity feeling : entities) {
                 emoto.appendData(new DataPoint(subx, feeling.getEmoto()), true, 10);
                 stats += feeling.getEmoto();
                 subx += 1.0 / entities.size();
                 amountOfValues++;
+                lastDayValue = feeling.getEmoto();
+                amountOfValuesLastDay++;
             }
             x++;
 
         }
         if(MainActivity.childrenmode && parental){
              finalStats = 1.0 * stats / amountOfValues;
+            this.weekStats[0] = finalStats;
+            this.dayStats[0] = 1.0 * lastDayValue / amountOfValuesLastDay;
         } else {
             finalStats = 1.0 * stats;
+            this.weekStats[0] = finalStats;
+            this.dayStats[0] = 1.0 * lastDayValue;
         }
         this.emoto = finalStats;
         emoto.setColor(Color.rgb(232, 85, 51));
@@ -600,7 +723,7 @@ public class GraphFragment extends Fragment {
         PdfDocument doc = new PdfDocument();
         int width = (gv.getWidth()) * 3;
         int height = (gv.getHeight()) * 2 + 600;
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(width, height, 1).create();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(width, height + 1000, 1).create();
         gv.getWidth();
         gv.getHeight();
 
@@ -645,9 +768,38 @@ public class GraphFragment extends Fragment {
         } else{
             canvas.drawText(MainActivity.name + " " + MainActivity.birthDay , 20, logo.getHeight(), paint);
         }
-        canvas.drawText("Datum vanaf: " + LocalDate.now().minusDays(6) ,20, logo.getHeight() + 60, paint);
-        canvas.drawText("Datum tot en met: " + LocalDate.now(), 20, logo.getHeight() + 110, paint);
+        canvas.drawText("Datum vanaf: " + LocalDate.now().minusDays(6).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) ,20, logo.getHeight() + 60, paint);
+        canvas.drawText("Datum tot en met: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")), 20, logo.getHeight() + 110, paint);
         canvas.drawText(MainActivity.begeleidster, 20, logo.getHeight() + 160, paint);
+
+        canvas.drawText("Weekstatistieken:", 20, height + 60, paint);
+        canvas.drawText("Gemiddelde emotionele intensiteit afgelopen week:", 20, height + 120, paint);
+        canvas.drawText("Gemiddelde beeldende intensiteit afgelopen week:", 20, height + 180, paint);
+        canvas.drawText("Gemiddelde intellectuele- intensiteit afgelopen week:", 20, height + 240, paint);
+        canvas.drawText("Gemiddelde psychomotorische intensiteit afgelopen week:", 20, height + 300, paint);
+        canvas.drawText("Gemiddelde sensorische intensiteit afgelopen week:", 20, height + 360, paint);
+
+        canvas.drawText(weekStats[0].toString(), 1400, height + 120, paint);
+        canvas.drawText(weekStats[1].toString(), 1400, height + 180, paint);
+        canvas.drawText(weekStats[2].toString(), 1400, height + 240, paint);
+        canvas.drawText(weekStats[3].toString(), 1400, height + 300, paint);
+        canvas.drawText(weekStats[4].toString(), 1400, height + 360, paint);
+
+
+        canvas.drawText("Dagstatistieken van " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ":", 1800, height + 60, paint);
+        canvas.drawText("Gemiddelde emotionele intensiteit afgelopen dag:", 1800, height + 120, paint);
+        canvas.drawText("Gemiddelde beeldende intensiteit afgelopen dag:", 1800, height + 180, paint);
+        canvas.drawText("Gemiddelde intellectuele- intensiteit afgelopen dag:", 1800, height + 240, paint);
+        canvas.drawText("Gemiddelde psychomotorische intensiteit afgelopen dag:", 1800, height + 300, paint);
+        canvas.drawText("Gemiddelde sensorische intensiteit afgelopen dag:", 1800, height + 360, paint);
+
+        canvas.drawText(dayStats[0].toString(), 3200, height + 120, paint);
+        canvas.drawText(dayStats[1].toString(), 3200, height + 180, paint);
+        canvas.drawText(dayStats[2].toString(), 3200, height + 240, paint);
+        canvas.drawText(dayStats[3].toString(), 3200, height + 300, paint);
+        canvas.drawText(dayStats[4].toString(), 3200, height + 360, paint);
+
+
 
         doc.finishPage(page);
 

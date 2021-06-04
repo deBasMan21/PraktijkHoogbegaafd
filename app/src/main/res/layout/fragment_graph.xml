@@ -51,23 +51,29 @@
             android:layout_marginRight="40dp"
             android:textOff="Kind"
             android:textOn="Ouder"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sr_graph_category" />
+            android:visibility="invisible" />
 
-        <Button
-            android:id="@+id/bn_graph_share"
+        <ToggleButton
+            android:id="@+id/tb_stats_switch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/phrOrange"
-            android:text="Delen"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tb_graph_switch" />
+            android:layout_height="50dp"
+            android:layout_marginRight="40dp"
+            android:textOff="Week"
+            android:textOn="Dag"
+            android:visibility="visible" />
+
     </LinearLayout>
 
 
+    <Button
+        android:id="@+id/bn_graph_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/phrOrange"
+        android:text="Delen"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.jjoe64.graphview.GraphView
         android:id="@+id/gv_graph"
@@ -78,47 +84,95 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <TextView
-        android:id="@+id/tv_graph_score_emoto"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="hey"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/bn_graph_share"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sr_graph_category" />
+        app:layout_constraintTop_toBottomOf="@+id/pb_graph_loading">
 
-    <TextView
-        android:id="@+id/tv_graph_score_fanti"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_graph_score_emoto" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginRight="10dp">
 
-    <TextView
-        android:id="@+id/tv_graph_score_intellecto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_graph_score_fanti" />
+            <TextView
+                android:id="@+id/tv_graph_text_emoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="hey" />
 
-    <TextView
-        android:id="@+id/tv_graph_score_psymo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_graph_score_intellecto" />
+            <TextView
+                android:id="@+id/tv_graph_text_fanti"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/tv_graph_score_senzo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_graph_score_psymo" />
+            <TextView
+                android:id="@+id/tv_graph_text_intellecto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_graph_text_psymo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_graph_text_senzo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp">
+
+            <TextView
+                android:id="@+id/tv_graph_score_emoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="hey"
+                android:textColor="@color/phrOrange"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_graph_score_fanti"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/phrOrange"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_graph_score_intellecto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/phrOrange"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_graph_score_psymo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/phrOrange"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_graph_score_senzo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/phrOrange"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
