@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -109,6 +110,8 @@ public class GraphFragment extends Fragment {
     private TextView tv_text_psymo;
     private TextView tv_text_senzo;
 
+    private ScrollView sv;
+
     private boolean ssDone = false;
     private int name;
 
@@ -123,6 +126,8 @@ public class GraphFragment extends Fragment {
         } else{
             root = inflater.inflate(R.layout.fragment_graph_adult, container, false);
         }
+
+        sv = root.findViewById(R.id.sv);
 
         gv = root.findViewById(R.id.gv_graph);
 
@@ -481,6 +486,7 @@ public class GraphFragment extends Fragment {
         setStats(weekOrDayStats);
 
         if(isEmailIntentStarted){
+            sv.smoothScrollTo(0,0);
             storeScreenshot(ScreenshotLogic.takescreenshotOfRootView(root), names[name]);
             if(name < 5){
                 name++;
@@ -741,7 +747,7 @@ public class GraphFragment extends Fragment {
 
         int differenceWidth = ssTotal.getWidth() - gv.getWidth();
 
-        int headerHeight = getToolBarHeight(getContext()) * 2;
+        int headerHeight = getToolBarHeight(getContext()) + 100;
 
 
         PdfDocument.Page page = doc.startPage(pageInfo);
@@ -882,18 +888,9 @@ public class GraphFragment extends Fragment {
             super.onPostExecute(aVoid);
             makeGraphView();
             pb.setVisibility(View.INVISIBLE);
-//            emailIntentPostExecute();
         }
     }
 
-    public void emailIntentPostExecute(){
-        if(isEmailIntentStarted){
-            storeScreenshot(ScreenshotLogic.takescreenshotOfRootView(root), names[name]);
-            if(ssDone){
-                startEmail();
-            }
-        }
-    }
 
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();

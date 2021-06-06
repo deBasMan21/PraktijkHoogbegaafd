@@ -36,7 +36,14 @@ public class SettingsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         settingsViewModel =
                 new ViewModelProvider(this).get(SettingsViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        View root = null;
+
+        if(MainActivity.childrenmode){
+            root = inflater.inflate(R.layout.fragment_settings, container, false);
+        } else {
+            root = inflater.inflate(R.layout.fragment_settings_adult, container, false);
+        }
 
         iem = MainActivity.iem;
 
@@ -55,14 +62,17 @@ public class SettingsFragment extends Fragment {
         }
         spinner.setSelection(selectedBegeleidster);
 
-        TextView parentName = root.findViewById(R.id.et_settings_parent);
-        parentName.setText(MainActivity.parentalName);
+
 
         EditText parent = root.findViewById(R.id.et_settings_parent);
+        parent.setText(MainActivity.parentalName);
+        TextView parentText = root.findViewById(R.id.tv_settings_parent);
         if(MainActivity.childrenmode){
             parent.setVisibility(View.VISIBLE);
+            parentText.setVisibility(View.VISIBLE);
         } else {
             parent.setVisibility(View.INVISIBLE);
+            parentText.setVisibility(View.INVISIBLE);
         }
 
         Calendar calendar = Calendar.getInstance();
@@ -101,7 +111,7 @@ public class SettingsFragment extends Fragment {
                 MainActivity.begeleidster = categories[spinner.getSelectedItemPosition()];
                 MainActivity.name = etName.getText().toString();
                 MainActivity.birthDay = bday.getText().toString();
-                MainActivity.parentalName = parentName.getText().toString();
+                MainActivity.parentalName = parent.getText().toString();
                 Intent intent = new Intent(getContext(), MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
