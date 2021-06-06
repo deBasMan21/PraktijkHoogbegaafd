@@ -47,7 +47,20 @@ public class QuestionSenzo extends AppCompatActivity {
             rs.setStepSize(1);
             tips.setVisibility(View.VISIBLE);
             tips.setText(R.string.senzo);
-        } else{
+        } else if (getIntent().hasExtra("parent")){
+            title.setText("Hoe aanwezig is de sensorische intensiteit van uw kind?");
+            title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            header.setImageResource(R.mipmap.ic_phr_stars_foreground);
+            max.setText("Aanwezig");
+            neutral.setText("Neutraal");
+            min.setText("Afwezig");
+            tips.setText("De sensorische intensiteit kan het best omschreven worden als een versterkte beleving van sensorische input, zoals dingen die je hoort, ziet, voelt, proeft en ruikt als duidelijk prettig of onprettig ervaren worden. Dit kan er toe leiden dat je sterk wordt aangetrokken tot sommige zintuigelijke belevingen of juist een aversie ontwikkelt voor bepaalde zintuigelijke belevingen en daarom deze uit de weg gaat.");
+            rs.setValueFrom(-2);
+            rs.setValueTo(2);
+            rs.setTickVisible(true);
+            rs.setStepSize(1);
+            tips.setVisibility(View.VISIBLE);
+        } else {
             title.setText("Hoe aanwezig is je sensorische intensiteit?");
             title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             header.setImageResource(R.mipmap.ic_phr_stars_foreground);

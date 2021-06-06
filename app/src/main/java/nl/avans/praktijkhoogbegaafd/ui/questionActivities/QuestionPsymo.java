@@ -47,7 +47,20 @@ public class QuestionPsymo extends AppCompatActivity {
             rs.setStepSize(1);
             tips.setVisibility(View.VISIBLE);
             tips.setText(R.string.psymo);
-        } else{
+        } else if(getIntent().hasExtra("parent")){
+            title.setText("Hoe aanwezig is de psychomotorische intensiteit van uw kind?");
+            title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            header.setImageResource(R.mipmap.ic_phr_stars_foreground);
+            max.setText("Aanwezig");
+            neutral.setText("Neutraal");
+            min.setText("Afwezig");
+            tips.setText("De psychomotorische intensiteit kan het best omschreven worden door een constante psychomotorische activiteit, hoge energielevels, snel en veel praten, veel beweging nodig hebben en een drang naar actie. Dit kan naar voren komen in het niet goed stil kunnen zitten, het repetitief friemelen aan voorwerpen of last hebben van motorische of verbale impulsiviteit.");
+            rs.setValueFrom(-2);
+            rs.setValueTo(2);
+            rs.setTickVisible(true);
+            rs.setStepSize(1);
+            tips.setVisibility(View.VISIBLE);
+        } else {
             title.setText("Hoe aanwezig is je psychomotorische intensiteit?");
             title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             header.setImageResource(R.mipmap.ic_phr_stars_foreground);

@@ -26,6 +26,20 @@ public class ShareActivity extends AppCompatActivity {
 
         HashMap<String, String> emailList = new HashMap<>();
         emailList.put("Lisanne Boerboom", "lisanne@praktijkhoogbegaafd.nl");
+        emailList.put("Eda Canikli", "eda@praktijkhoogbegaafd.nl");
+        emailList.put("Eveline Eulderink", "eveline@praktijkhoogbegaafd.nl");
+        emailList.put("Hanneke van de Sanden", "hanneke@praktijkhoogbegaafd.nl");
+        emailList.put("Imke", "imke@praktijkhoogbegaafd.nl");
+        emailList.put("Lotte Kobossen", "lotte@praktijkhoogbegaafd.nl");
+        emailList.put("Maud van Hoving", "maud@praktijkhoogbegaafd.nl");
+        emailList.put("Meghan Kalisvaart", "meghan@praktijkhoogbegaafd.nl");
+        emailList.put("Milou van Beijsterveldt", "milou@praktijkhoogbegaafd.nl");
+        emailList.put("Mirthe Zom", "mirthe@praktijkhoogbegaafd.nl");
+        emailList.put("Noor Vugs", "noor@praktijkhoogbegaafd.nl");
+        emailList.put("Tessa van Sluijs", "tessa@praktijkhoogbegaafd.nl");
+        emailList.put("Yvonne Buijsen", "yvonne@praktijkhoogbegaafd.nl");
+        emailList.put("Leah", "leah@praktijkhoogbegaafd.nl");
+        emailList.put("Sjarai Gelissen", "sjarai@praktijkhoogbegaafd.nl");
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());

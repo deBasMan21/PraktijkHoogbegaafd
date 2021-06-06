@@ -31,6 +31,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -117,7 +118,11 @@ public class GraphFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         graphViewModel =
                 new ViewModelProvider(this).get(GraphViewModel.class);
-        root = inflater.inflate(R.layout.fragment_graph, container, false);
+        if(MainActivity.childrenmode){
+            root = inflater.inflate(R.layout.fragment_graph, container, false);
+        } else{
+            root = inflater.inflate(R.layout.fragment_graph_adult, container, false);
+        }
 
         gv = root.findViewById(R.id.gv_graph);
 
@@ -136,10 +141,8 @@ public class GraphFragment extends Fragment {
         ToggleButton tbStats = root.findViewById(R.id.tb_stats_switch);
         if(MainActivity.childrenmode){
             tb.setVisibility(View.VISIBLE);
-            tbStats.setVisibility(View.VISIBLE);
         } else {
             tb.setVisibility(View.INVISIBLE);
-            tbStats.setVisibility(View.INVISIBLE);
         }
 
 
@@ -334,15 +337,24 @@ public class GraphFragment extends Fragment {
             gv.getViewport().setMinY(0);
             gv.getViewport().setMaxX(7);
             gv.getViewport().setMaxY(10);
-        } else{
+        } else if (!parental) {
             gv.getViewport().setMinX(1);
             gv.getViewport().setMinY(-2);
             gv.getViewport().setMaxX(7);
+            gv.getViewport().setMaxY(2);
+        } else {
+            gv.getViewport().setMinX(1);
+            gv.getViewport().setMinY(-2);
+            gv.getViewport().setMaxX(14);
             gv.getViewport().setMaxY(2);
         }
 
         gv.getViewport().setYAxisBoundsManual(true);
         gv.getViewport().setXAxisBoundsManual(true);
+
+//        gv.getGridLabelRenderer().setVerticalAxisTitle("Waarde");
+//        gv.getGridLabelRenderer().setHorizontalAxisTitle("Dagen");
+//        gv.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
 
 
 
@@ -496,7 +508,7 @@ public class GraphFragment extends Fragment {
             amountOfValuesLastDay = 0;
             double subx = x;
             for (FeelingEntity feeling : entities) {
-                senzo.appendData(new DataPoint(subx, feeling.getSenzo()), true, 10);
+                senzo.appendData(new DataPoint(subx, feeling.getSenzo()), true, 14);
                 stats += feeling.getSenzo();
                 subx += 1.0 / entities.size();
                 amountOfValues++;
@@ -538,7 +550,7 @@ public class GraphFragment extends Fragment {
             lastDayValue = 0;
             amountOfValuesLastDay = 0;
             for (FeelingEntity feeling : entities) {
-                psymo.appendData(new DataPoint(subx, feeling.getPsymo()), true, 10);
+                psymo.appendData(new DataPoint(subx, feeling.getPsymo()), true, 14);
                 stats += feeling.getPsymo();
                 subx += 1.0 / entities.size();
                 amountOfValues++;
@@ -578,7 +590,7 @@ public class GraphFragment extends Fragment {
             lastDayValue = 0;
             amountOfValuesLastDay = 0;
             for (FeelingEntity feeling : entities) {
-                intellecto.appendData(new DataPoint(subx, feeling.getIntellecto()), true, 10);
+                intellecto.appendData(new DataPoint(subx, feeling.getIntellecto()), true, 14);
                 stats += feeling.getIntellecto();
                 subx += 1.0 / entities.size();
                 amountOfValues++;
@@ -618,7 +630,7 @@ public class GraphFragment extends Fragment {
             lastDayValue = 0;
             amountOfValuesLastDay = 0;
             for (FeelingEntity feeling : entities) {
-                fanti.appendData(new DataPoint(subx, feeling.getFanti()), true, 10);
+                fanti.appendData(new DataPoint(subx, feeling.getFanti()), true, 14);
                 stats += feeling.getFanti();
                 subx += 1.0 / entities.size();
                 amountOfValues++;
@@ -658,7 +670,7 @@ public class GraphFragment extends Fragment {
             lastDayValue = 0;
             amountOfValuesLastDay = 0;
             for (FeelingEntity feeling : entities) {
-                emoto.appendData(new DataPoint(subx, feeling.getEmoto()), true, 10);
+                emoto.appendData(new DataPoint(subx, feeling.getEmoto()), true, 14);
                 stats += feeling.getEmoto();
                 subx += 1.0 / entities.size();
                 amountOfValues++;
@@ -723,7 +735,7 @@ public class GraphFragment extends Fragment {
         PdfDocument doc = new PdfDocument();
         int width = (gv.getWidth()) * 3;
         int height = (gv.getHeight()) * 2 + 600;
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(width, height + 1000, 1).create();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(width, height + 500, 1).create();
         gv.getWidth();
         gv.getHeight();
 
@@ -844,12 +856,18 @@ public class GraphFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             FeelingsEntityManager fem = MainActivity.fem;
             ArrayList<DayFeeling> feelingsForDays = new ArrayList<>();
-            for(int i = 0; i < 7; i++){
+            int amountOfDays = 7;
+            if(MainActivity.childrenmode){
+                amountOfDays = 7;
+            } else {
+                amountOfDays = 14;
+            }
+            for(int i = 0; i < amountOfDays; i++){
                 DayFeeling feelings;
                 if(firstTime){
-                    feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(6 - i).toString(), true);
+                    feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(amountOfDays - 1 - i).toString(), true);
                 } else {
-                    feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(6 - i).toString(), parental);
+                    feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(amountOfDays - 1 - i).toString(), parental);
                 }
                 if(feelings.getFeelingsForDay().size() != 0){
                     feelingsForDays.add(feelings);

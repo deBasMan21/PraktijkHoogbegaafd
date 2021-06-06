@@ -44,7 +44,9 @@ public class GiveInfoActivity extends AppCompatActivity {
             etParent.setVisibility(View.VISIBLE);
         }
 
-        String[] categories = {"Lisanne Boerboom", "Mirthe Zom", "Meghan Kalisvaart", "Tessa van Sluijs", "Noor Vugs", "Lotte Kobossen"};
+        String[] categories = {"Eda Canikli", "Eveline Eulderink", "Hanneke van de Sanden", "Imke", "Lisanne Boerboom", "Leah",
+                "Lotte Kobossen", "Maud van Hoving", "Meghan Kalisvaart", "Milou van Beijsterveldt", "Mirthe Zom", "Noor Vugs",
+                "Sjarai Gelissen", "Tessa van Sluijs", "Yvonne Buijsen"};
         Spinner spinner = (Spinner) findViewById(R.id.sr_info_behandelaar);
         ArrayAdapter<String> adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
