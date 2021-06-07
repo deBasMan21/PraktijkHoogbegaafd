@@ -29,7 +29,7 @@ public class ShareActivity extends AppCompatActivity {
         emailList.put("Eda Canikli", "eda@praktijkhoogbegaafd.nl");
         emailList.put("Eveline Eulderink", "eveline@praktijkhoogbegaafd.nl");
         emailList.put("Hanneke van de Sanden", "hanneke@praktijkhoogbegaafd.nl");
-        emailList.put("Imke", "imke@praktijkhoogbegaafd.nl");
+        emailList.put("Imke van der Velden", "imke@praktijkhoogbegaafd.nl");
         emailList.put("Lotte Kobossen", "lotte@praktijkhoogbegaafd.nl");
         emailList.put("Maud van Hoving", "maud@praktijkhoogbegaafd.nl");
         emailList.put("Meghan Kalisvaart", "meghan@praktijkhoogbegaafd.nl");
@@ -38,7 +38,7 @@ public class ShareActivity extends AppCompatActivity {
         emailList.put("Noor Vugs", "noor@praktijkhoogbegaafd.nl");
         emailList.put("Tessa van Sluijs", "tessa@praktijkhoogbegaafd.nl");
         emailList.put("Yvonne Buijsen", "yvonne@praktijkhoogbegaafd.nl");
-        emailList.put("Leah", "leah@praktijkhoogbegaafd.nl");
+        emailList.put("Leah Keijzer", "leah@praktijkhoogbegaafd.nl");
         emailList.put("Sjarai Gelissen", "sjarai@praktijkhoogbegaafd.nl");
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();

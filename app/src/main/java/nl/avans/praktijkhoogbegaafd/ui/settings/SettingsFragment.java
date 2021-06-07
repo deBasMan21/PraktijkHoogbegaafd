@@ -47,7 +47,7 @@ public class SettingsFragment extends Fragment {
 
         iem = MainActivity.iem;
 
-        String[] categories = {"Eda Canikli", "Eveline Eulderink", "Hanneke van de Sanden", "Imke", "Lisanne Boerboom", "Leah",
+        String[] categories = {"Eda Canikli", "Eveline Eulderink", "Hanneke van de Sanden", "Imke van der Velden", "Lisanne Boerboom", "Leah Keijzer",
                 "Lotte Kobossen", "Maud van Hoving", "Meghan Kalisvaart", "Milou van Beijsterveldt", "Mirthe Zom", "Noor Vugs",
                 "Sjarai Gelissen", "Tessa van Sluijs", "Yvonne Buijsen"};
         Spinner spinner = (Spinner) root.findViewById(R.id.sr_settings_begeleidster);
