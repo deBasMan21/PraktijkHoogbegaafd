@@ -38,6 +38,8 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -271,68 +273,76 @@ public class GraphFragment extends Fragment {
         if(weekOrDay){
             if(MainActivity.childrenmode && parental){
                 tv_text_emoto.setText("Gemiddelde emoto afgelopen dag: ");
-                tv_score_emoto.setText(dayStats[0].toString());
+                tv_score_emoto.setText(round(dayStats[0], 2) + "");
 
                 tv_text_fanti.setText("Gemiddelde fanti afgelopen dag: ");
-                tv_score_fanti.setText(dayStats[1].toString());
+                tv_score_fanti.setText(round(dayStats[1], 2) + "");
 
                 tv_text_intellecto.setText("Gemiddelde intellecto afgelopen dag: ");
-                tv_score_intellecto.setText(dayStats[2].toString());
+                tv_score_intellecto.setText(round(dayStats[2], 2) + "");
 
                 tv_text_psymo.setText("Gemiddelde psymo afgelopen dag: ");
-                tv_score_psymo.setText(dayStats[3].toString());
+                tv_score_psymo.setText(round(dayStats[3], 2) + "");
 
                 tv_text_senzo.setText("Gemiddelde senzo afgelopen dag: ");
-                tv_score_senzo.setText(dayStats[4].toString());
+                tv_score_senzo.setText(round(dayStats[4], 2) + "");
             } else {
                 tv_text_emoto.setText("Gemiddelde emotionele intensiteit afgelopen dag: ");
-                tv_score_emoto.setText(dayStats[0].toString());
+                tv_score_emoto.setText(round(dayStats[0], 2) + "");
 
                 tv_text_fanti.setText("Gemiddelde beeldende intensiteit afgelopen dag: ");
-                tv_score_fanti.setText(dayStats[1].toString());
+                tv_score_fanti.setText(round(dayStats[1], 2) + "");
 
                 tv_text_intellecto.setText("Gemiddelde intellectuele intensiteit afgelopen dag: ");
-                tv_score_intellecto.setText(dayStats[2].toString());
+                tv_score_intellecto.setText(round(dayStats[2], 2) + "");
 
                 tv_text_psymo.setText("Gemiddelde pyschomotorische intensiteit afgelopen dag: ");
-                tv_score_psymo.setText(dayStats[3].toString());
+                tv_score_psymo.setText(round(dayStats[3], 2) + "");
 
                 tv_text_senzo.setText("Gemiddelde sensorische intensiteit afgelopen dag: ");
-                tv_score_senzo.setText(dayStats[4].toString());
+                tv_score_senzo.setText(round(dayStats[4], 2) + "");
             }
         }else {
             if(MainActivity.childrenmode && parental){
                 tv_text_emoto.setText("Gemiddelde emoto afgelopen week: ");
-                tv_score_emoto.setText(weekStats[0].toString());
+                tv_score_emoto.setText(round(weekStats[0],2) + "");
 
                 tv_text_fanti.setText("Gemiddelde fanti afgelopen week: ");
-                tv_score_fanti.setText(weekStats[1].toString());
+                tv_score_fanti.setText(round(weekStats[1], 2) + "");
 
                 tv_text_intellecto.setText("Gemiddelde intellecto afgelopen week: ");
-                tv_score_intellecto.setText(weekStats[2].toString());
+                tv_score_intellecto.setText(round(weekStats[2], 2) + "");
 
                 tv_text_psymo.setText("Gemiddelde psymo afgelopen week: ");
-                tv_score_psymo.setText(weekStats[3].toString());
+                tv_score_psymo.setText(round(weekStats[3],2) + "");
 
                 tv_text_senzo.setText("Gemiddelde senzo afgelopen week: ");
-                tv_score_senzo.setText(weekStats[4].toString());
+                tv_score_senzo.setText(round(weekStats[4], 2) + "");
             } else {
                 tv_text_emoto.setText("Gemiddelde emotionele intensiteit afgelopen week: ");
-                tv_score_emoto.setText(weekStats[0].toString());
+                tv_score_emoto.setText(round(weekStats[0], 2) + "");
 
                 tv_text_fanti.setText("Gemiddelde beeldende intensiteit afgelopen week: ");
-                tv_score_fanti.setText(weekStats[1].toString());
+                tv_score_fanti.setText(round(weekStats[1], 2) + "");
 
                 tv_text_intellecto.setText("Gemiddelde intellectuele intensiteit afgelopen week: ");
-                tv_score_intellecto.setText(weekStats[2].toString());
+                tv_score_intellecto.setText(round(weekStats[2], 2) + "");
 
                 tv_text_psymo.setText("Gemiddelde pyschomotorische intensiteit afgelopen week: ");
-                tv_score_psymo.setText(weekStats[3].toString());
+                tv_score_psymo.setText(round(weekStats[3], 2) + "");
 
                 tv_text_senzo.setText("Gemiddelde sensorische intensiteit afgelopen week: ");
-                tv_score_senzo.setText(weekStats[4].toString());
+                tv_score_senzo.setText(round(weekStats[4], 2) + "");
             }
         }
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     public void makeGraphView(){
