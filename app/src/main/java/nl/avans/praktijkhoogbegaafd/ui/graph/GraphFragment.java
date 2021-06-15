@@ -757,7 +757,7 @@ public class GraphFragment extends Fragment {
 
         int differenceWidth = ssTotal.getWidth() - gv.getWidth();
 
-        int headerHeight = getToolBarHeight(getContext()) + 100;
+        int headerHeight = getToolBarHeight(getContext()) + 280;
 
 
         PdfDocument.Page page = doc.startPage(pageInfo);
@@ -807,11 +807,11 @@ public class GraphFragment extends Fragment {
         canvas.drawText("Gemiddelde psychomotorische intensiteit afgelopen week:", 20, height + 300, paint);
         canvas.drawText("Gemiddelde sensorische intensiteit afgelopen week:", 20, height + 360, paint);
 
-        canvas.drawText(weekStats[0].toString(), 1400, height + 120, paint);
-        canvas.drawText(weekStats[1].toString(), 1400, height + 180, paint);
-        canvas.drawText(weekStats[2].toString(), 1400, height + 240, paint);
-        canvas.drawText(weekStats[3].toString(), 1400, height + 300, paint);
-        canvas.drawText(weekStats[4].toString(), 1400, height + 360, paint);
+        canvas.drawText(round(weekStats[0], 2) + "", 1400, height + 120, paint);
+        canvas.drawText(round(weekStats[1], 2) + "", 1400, height + 180, paint);
+        canvas.drawText(round(weekStats[2], 2) + "", 1400, height + 240, paint);
+        canvas.drawText(round(weekStats[3], 2) + "", 1400, height + 300, paint);
+        canvas.drawText(round(weekStats[4], 2) + "", 1400, height + 360, paint);
 
 
         canvas.drawText("Dagstatistieken van " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ":", 1800, height + 60, paint);
@@ -821,11 +821,11 @@ public class GraphFragment extends Fragment {
         canvas.drawText("Gemiddelde psychomotorische intensiteit afgelopen dag:", 1800, height + 300, paint);
         canvas.drawText("Gemiddelde sensorische intensiteit afgelopen dag:", 1800, height + 360, paint);
 
-        canvas.drawText(dayStats[0].toString(), 3200, height + 120, paint);
-        canvas.drawText(dayStats[1].toString(), 3200, height + 180, paint);
-        canvas.drawText(dayStats[2].toString(), 3200, height + 240, paint);
-        canvas.drawText(dayStats[3].toString(), 3200, height + 300, paint);
-        canvas.drawText(dayStats[4].toString(), 3200, height + 360, paint);
+        canvas.drawText(round(dayStats[0], 2) + "", 3200, height + 120, paint);
+        canvas.drawText(round(dayStats[1], 2) + "", 3200, height + 180, paint);
+        canvas.drawText(round(dayStats[2], 2) + "", 3200, height + 240, paint);
+        canvas.drawText(round(dayStats[3], 2) + "", 3200, height + 300, paint);
+        canvas.drawText(round(dayStats[4], 2) + "", 3200, height + 360, paint);
 
 
 
