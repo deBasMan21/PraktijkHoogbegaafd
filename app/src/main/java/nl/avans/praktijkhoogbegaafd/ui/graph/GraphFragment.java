@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.pdf.PdfDocument;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.transition.Scene;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -500,7 +501,7 @@ public class GraphFragment extends Fragment {
 
         if(isEmailIntentStarted){
             sv.smoothScrollTo(0,0);
-            storeScreenshot(ScreenshotLogic.takescreenshotOfRootView(root), names[name]);
+            storeScreenshot(ScreenshotLogic.takeScreenshot(gv), names[name]);
             if(name < 5){
                 name++;
                 makeGraph(name);
@@ -755,12 +756,6 @@ public class GraphFragment extends Fragment {
         int width = (gv.getWidth()) * 3;
         int height = (gv.getHeight()) * 2 + 600;
         PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(width, height + 500, 1).create();
-        gv.getWidth();
-        gv.getHeight();
-
-        int differenceWidth = ssTotal.getWidth() - gv.getWidth();
-
-        int headerHeight = getToolBarHeight(getContext()) + 280;
 
 
         PdfDocument.Page page = doc.startPage(pageInfo);
@@ -768,30 +763,17 @@ public class GraphFragment extends Fragment {
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setTextSize(50);
-        Bitmap totalGraph = this.ssTotal;
-        Bitmap total = Bitmap.createBitmap(totalGraph, differenceWidth / 2, headerHeight, totalGraph.getWidth() - differenceWidth, totalGraph.getHeight() - (totalGraph.getHeight() - gv.getHeight()));
-        Bitmap emotoSS = this.ssEmoto;
-        Bitmap emoto = Bitmap.createBitmap(emotoSS, differenceWidth / 2, headerHeight, totalGraph.getWidth() - differenceWidth, totalGraph.getHeight() - (totalGraph.getHeight() - gv.getHeight()));
-        Bitmap fantiSS = this.ssFanti;
-        Bitmap fanti = Bitmap.createBitmap(fantiSS, differenceWidth / 2, headerHeight, totalGraph.getWidth() - differenceWidth, totalGraph.getHeight() - (totalGraph.getHeight() - gv.getHeight()));
-        Bitmap intellectoSS = this.ssIntellecto;
-        Bitmap intellecto = Bitmap.createBitmap(intellectoSS,  differenceWidth / 2, headerHeight, totalGraph.getWidth() - differenceWidth, totalGraph.getHeight() - (totalGraph.getHeight() - gv.getHeight()));
-        Bitmap psymoSS = this.ssPsymo;
-        Bitmap psymo = Bitmap.createBitmap(psymoSS, differenceWidth / 2, headerHeight, totalGraph.getWidth() - differenceWidth, totalGraph.getHeight() - (totalGraph.getHeight() - gv.getHeight()));
-        Bitmap senzoSS = this.ssSenzo;
-        Bitmap senzo = Bitmap.createBitmap(senzoSS, differenceWidth / 2, headerHeight, totalGraph.getWidth() - differenceWidth, totalGraph.getHeight() - (totalGraph.getHeight() - gv.getHeight()));
-
         Bitmap legend = BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.ic_phr_legenda_foreground);
         Bitmap logo = BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.ic_phr_logo_large_foreground);
         Bitmap scaledLogo = Bitmap.createScaledBitmap(logo, 800, 800, false);
 
 
-        canvas.drawBitmap(total, 0, logo.getHeight() + 210, paint);
-        canvas.drawBitmap(emoto, total.getWidth(), logo.getHeight() + 210, paint);
-        canvas.drawBitmap(fanti, emoto.getWidth() * 2, logo.getHeight() + 210, paint);
-        canvas.drawBitmap(intellecto, 0, total.getHeight() + logo.getHeight() + 210, paint);
-        canvas.drawBitmap(psymo, intellecto.getWidth(), total.getHeight() + logo.getHeight() + 210, paint);
-        canvas.drawBitmap(senzo, intellecto.getWidth() * 2, total.getHeight() + logo.getHeight() + 210, paint);
+        canvas.drawBitmap(ssTotal, 0, logo.getHeight() + 210, paint);
+        canvas.drawBitmap(ssEmoto, ssTotal.getWidth(), logo.getHeight() + 210, paint);
+        canvas.drawBitmap(ssFanti, ssEmoto.getWidth() * 2, logo.getHeight() + 210, paint);
+        canvas.drawBitmap(ssIntellecto, 0, ssTotal.getHeight() + logo.getHeight() + 210, paint);
+        canvas.drawBitmap(ssPsymo, ssIntellecto.getWidth(), ssTotal.getHeight() + logo.getHeight() + 210, paint);
+        canvas.drawBitmap(ssSenzo, ssIntellecto.getWidth() * 2, ssTotal.getHeight() + logo.getHeight() + 210, paint);
         canvas.drawBitmap(scaledLogo, (width - scaledLogo.getWidth()) / 2, -200, paint);
         canvas.drawBitmap(legend, width - legend.getWidth(), logo.getHeight() - 100, paint);
         if(MainActivity.childrenmode){
