@@ -337,12 +337,15 @@ public class GraphFragment extends Fragment {
         }
     }
 
-    public static double round(double value, int places) {
+    public static double round(Double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
-
-        BigDecimal bd = BigDecimal.valueOf(value);
-        bd = bd.setScale(places, RoundingMode.HALF_UP);
-        return bd.doubleValue();
+        if(!Double.isNaN(value)){
+            BigDecimal bd = BigDecimal.valueOf(value);
+            bd = bd.setScale(places, RoundingMode.HALF_UP);
+            return bd.doubleValue();
+        } else {
+            return Double.NaN;
+        }
     }
 
     public void makeGraphView(){
