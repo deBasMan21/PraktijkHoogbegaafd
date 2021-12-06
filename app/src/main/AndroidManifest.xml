@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/ic_phr_stars_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.PraktijkHoogbegaafd">
+        <activity android:name=".ui.ScreenShotActivity"></activity>
         <activity android:name=".ui.ShareActivity" />
         <activity android:name=".ui.GiveInfoActivity" />
         <activity android:name=".ui.StartupActivity" />
@@ -48,7 +49,7 @@
             android:exported="false"
             android:grantUriPermissions="true" />
 
-        <receiver android:name=".logic.ReminderBroadcast"/>
+        <receiver android:name=".logic.ReminderBroadcast" />
     </application>
 
 </manifest>

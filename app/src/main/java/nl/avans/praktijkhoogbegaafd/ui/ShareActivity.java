@@ -40,6 +40,7 @@ public class ShareActivity extends AppCompatActivity {
         emailList.put("Yvonne Buijsen", "yvonne@praktijkhoogbegaafd.nl");
         emailList.put("Leah Keijzer", "leah@praktijkhoogbegaafd.nl");
         emailList.put("Sjarai Gelissen", "sjarai@praktijkhoogbegaafd.nl");
+        emailList.put("Dev", "bbuijsen@gmail.com");
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -53,14 +54,25 @@ public class ShareActivity extends AppCompatActivity {
         Uri uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", pdf);
 
         Intent i = new Intent(Intent.ACTION_SEND);
-        i.putExtra(Intent.EXTRA_EMAIL, new String[]{emailList.get(MainActivity.begeleidster)});
+//        i.putExtra(Intent.EXTRA_EMAIL, new String[]{emailList.get(MainActivity.begeleidster)});
+        i.putExtra(Intent.EXTRA_EMAIL, new String[]{emailList.get("Dev")});
         i.putExtra(Intent.EXTRA_SUBJECT,"Verslag uit Praktijkhoogbegaafd app van " + MainActivity.name);
         i.putExtra(Intent.EXTRA_TEXT,"Dit verslag bestaat uit de data van " + LocalDate.now().minusDays(6).toString() + " tot en met " + LocalDate.now().toString() + ".");
         i.putExtra(Intent.EXTRA_STREAM,uri);
         i.setType("application/pdf");
         startActivity(Intent.createChooser(i,"Share your progression..."));
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
 
+                    }
+                });
+            }
+        });
 
     }
 

@@ -7,9 +7,9 @@ import android.view.View;
 
 public class ScreenshotLogic {
 
-    public static Bitmap image;
+    public Bitmap image;
 
-    public static Bitmap takeScreenshot(View v){
+    public Bitmap takeScreenshot(View v){
         v.setDrawingCacheEnabled(true);
         v.buildDrawingCache(true);
         Bitmap b = Bitmap.createBitmap(v.getDrawingCache());
@@ -24,14 +24,4 @@ public class ScreenshotLogic {
         canvas.drawBitmap(image, 0F, 0F, null);
         return newBitmap;
     }
-
-    public static Bitmap takescreenshotOfRootView(View v){
-        return takeScreenshot(v.getRootView());
-    }
-
-    public static void startIntent(){
-
-    }
-
-
 }
