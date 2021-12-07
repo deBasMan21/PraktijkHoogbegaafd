@@ -65,6 +65,9 @@ public class ScreenShotActivity extends AppCompatActivity {
     private Double[] weekStats = new Double[5];
     private Double[] dayStats = new Double[5];
 
+    private Double[] weekStatsChild = new Double[5];
+    private Double[] dayStatsChild = new Double[5];
+
     private boolean isEmailIntentStarted = false;
 
     private File file;
@@ -354,6 +357,11 @@ public class ScreenShotActivity extends AppCompatActivity {
         this.weekStats[4] = finalStats;
         this.dayStats[4] = 1.0 * lastDayValue / amountOfValuesLastDay;
 
+        if(parental && MainActivity.childrenmode){
+            this.weekStatsChild[4] = finalStats;
+            this.dayStatsChild[4] = 1.0 * lastDayValue / amountOfValuesLastDay;
+        }
+
         this.senzo = finalStats;
         senzo.setColor(Color.rgb(242, 150, 49));
         senzo.setDrawDataPoints(true);
@@ -388,6 +396,11 @@ public class ScreenShotActivity extends AppCompatActivity {
         finalStats = 1.0 * stats / amountOfValues;
         this.weekStats[3] = finalStats;
         this.dayStats[3] = 1.0 * lastDayValue / amountOfValuesLastDay;
+
+        if(parental && MainActivity.childrenmode){
+            this.weekStatsChild[3] = finalStats;
+            this.dayStatsChild[3] = 1.0 * lastDayValue / amountOfValuesLastDay;
+        }
 
         this.psymo = finalStats;
         psymo.setColor(Color.rgb(81, 102, 169));
@@ -424,6 +437,11 @@ public class ScreenShotActivity extends AppCompatActivity {
         this.weekStats[2] = finalStats;
         this.dayStats[2] = 1.0 * lastDayValue / amountOfValuesLastDay;
 
+        if(parental && MainActivity.childrenmode){
+            this.weekStatsChild[2] = finalStats;
+            this.dayStatsChild[2] = 1.0 * lastDayValue / amountOfValuesLastDay;
+        }
+
         this.intellecto = finalStats;
         intellecto.setColor(Color.rgb(182, 103, 161));
         intellecto.setDrawDataPoints(true);
@@ -458,6 +476,11 @@ public class ScreenShotActivity extends AppCompatActivity {
         finalStats = 1.0 * stats / amountOfValues;
         this.weekStats[1] = finalStats;
         this.dayStats[1] = 1.0 * lastDayValue / amountOfValuesLastDay;
+
+        if(parental && MainActivity.childrenmode){
+            this.weekStatsChild[1] = finalStats;
+            this.dayStatsChild[1] = 1.0 * lastDayValue / amountOfValuesLastDay;
+        }
 
         this.fanti = finalStats;
         fanti.setColor(Color.rgb(98, 176, 74));
@@ -494,6 +517,11 @@ public class ScreenShotActivity extends AppCompatActivity {
         finalStats = 1.0 * stats / amountOfValues;
         this.weekStats[0] = finalStats;
         this.dayStats[0] = 1.0 * lastDayValue / amountOfValuesLastDay;
+
+        if(parental && MainActivity.childrenmode){
+            this.weekStatsChild[0] = finalStats;
+            this.dayStatsChild[0] = 1.0 * lastDayValue / amountOfValuesLastDay;
+        }
 
 
         this.emoto = finalStats;
@@ -562,16 +590,20 @@ public class ScreenShotActivity extends AppCompatActivity {
 
         if (type == PDFTypes.PARENTONLY) {
             canvas = drawParent(canvas, logo, paint);
+            canvas = drawStats(canvas, height + 300, paint);
         } else if (type == PDFTypes.CHILDONLY) {
             canvas = drawChildren(canvas, logo, paint);
+            canvas = drawStats(canvas, height + 300, paint);
         } else {
             canvas = drawAll(canvas, logo, paint);
+            canvas = drawStats(canvas, height + 300, paint);
+            canvas = drawStatsForChild(canvas, height + 300, paint);
         }
 
         canvas.drawBitmap(scaledLogo, (width - scaledLogo.getWidth()) / 2, -100, paint);
         canvas.drawBitmap(legend, width - legend.getWidth(), 0, paint);
 
-        canvas = drawStats(canvas, height + 300, paint);
+
 
         doc.finishPage(page);
 
@@ -656,7 +688,7 @@ public class ScreenShotActivity extends AppCompatActivity {
         purple.setTextSize(20);
         purple.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
 
-        canvas.drawText("Weekstatistieken:", statsDescriptionX, height + 150, bold);
+        canvas.drawText("Weekstatistieken ouder:", statsDescriptionX, height + 150, bold);
         canvas.drawText("Gemiddelde emotionele intensiteit afgelopen week:", statsDescriptionX, height + 180, paint);
         canvas.drawText("Gemiddelde beeldende intensiteit afgelopen week:", statsDescriptionX, height + 210, paint);
         canvas.drawText("Gemiddelde intellectuele- intensiteit afgelopen week:", statsDescriptionX, height + 240, paint);
@@ -670,7 +702,7 @@ public class ScreenShotActivity extends AppCompatActivity {
         canvas.drawText(round(weekStats[4], 2) + "", statsValueX, height + 300, purple);
 
 
-        canvas.drawText("Dagstatistieken van " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ":", statsDescriptionX, height + 340, bold);
+        canvas.drawText("Dagstatistieken ouder van " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ":", statsDescriptionX, height + 340, bold);
         canvas.drawText("Gemiddelde emotionele intensiteit afgelopen dag:", statsDescriptionX, height + 370, paint);
         canvas.drawText("Gemiddelde beeldende intensiteit afgelopen dag:", statsDescriptionX, height + 400, paint);
         canvas.drawText("Gemiddelde intellectuele- intensiteit afgelopen dag:", statsDescriptionX, height + 430, paint);
@@ -682,6 +714,50 @@ public class ScreenShotActivity extends AppCompatActivity {
         canvas.drawText(round(dayStats[2], 2) + "", statsValueX, height + 430, purple);
         canvas.drawText(round(dayStats[3], 2) + "", statsValueX, height + 460, purple);
         canvas.drawText(round(dayStats[4], 2) + "", statsValueX, height + 490, purple);
+
+        return canvas;
+    }
+
+    public Canvas drawStatsForChild(Canvas canvas, int height, Paint paint) {
+        int statsDescriptionX = 800;
+        int statsValueX = 1380;
+
+        Paint bold = new Paint();
+        bold.setColor(getResources().getColor(R.color.prhPurpleDark));
+        bold.setTextSize(20);
+        bold.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+
+        Paint purple = new Paint();
+        purple.setColor(getResources().getColor(R.color.phrOrange));
+        purple.setTextSize(20);
+        purple.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+
+        canvas.drawText("Weekstatistieken kind:", statsDescriptionX, height + 150, bold);
+        canvas.drawText("Gemiddelde emotionele intensiteit afgelopen week:", statsDescriptionX, height + 180, paint);
+        canvas.drawText("Gemiddelde beeldende intensiteit afgelopen week:", statsDescriptionX, height + 210, paint);
+        canvas.drawText("Gemiddelde intellectuele- intensiteit afgelopen week:", statsDescriptionX, height + 240, paint);
+        canvas.drawText("Gemiddelde psychomotorische intensiteit afgelopen week:", statsDescriptionX, height + 270, paint);
+        canvas.drawText("Gemiddelde sensorische intensiteit afgelopen week:", statsDescriptionX, height + 300, paint);
+
+        canvas.drawText(round(weekStatsChild[0], 2) + "", statsValueX, height + 180, purple);
+        canvas.drawText(round(weekStatsChild[1], 2) + "", statsValueX, height + 210, purple);
+        canvas.drawText(round(weekStatsChild[2], 2) + "", statsValueX, height + 240, purple);
+        canvas.drawText(round(weekStatsChild[3], 2) + "", statsValueX, height + 270, purple);
+        canvas.drawText(round(weekStatsChild[4], 2) + "", statsValueX, height + 300, purple);
+
+
+        canvas.drawText("Dagstatistieken kind van " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ":", statsDescriptionX, height + 340, bold);
+        canvas.drawText("Gemiddelde emotionele intensiteit afgelopen dag:", statsDescriptionX, height + 370, paint);
+        canvas.drawText("Gemiddelde beeldende intensiteit afgelopen dag:", statsDescriptionX, height + 400, paint);
+        canvas.drawText("Gemiddelde intellectuele- intensiteit afgelopen dag:", statsDescriptionX, height + 430, paint);
+        canvas.drawText("Gemiddelde psychomotorische intensiteit afgelopen dag:", statsDescriptionX, height + 460, paint);
+        canvas.drawText("Gemiddelde sensorische intensiteit afgelopen dag:", statsDescriptionX, height + 490, paint);
+
+        canvas.drawText(round(dayStatsChild[0], 2) + "", statsValueX, height + 370, purple);
+        canvas.drawText(round(dayStatsChild[1], 2) + "", statsValueX, height + 400, purple);
+        canvas.drawText(round(dayStatsChild[2], 2) + "", statsValueX, height + 430, purple);
+        canvas.drawText(round(dayStatsChild[3], 2) + "", statsValueX, height + 460, purple);
+        canvas.drawText(round(dayStatsChild[4], 2) + "", statsValueX, height + 490, purple);
 
         return canvas;
     }
