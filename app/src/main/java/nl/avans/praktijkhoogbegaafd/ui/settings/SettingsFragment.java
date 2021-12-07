@@ -80,26 +80,6 @@ public class SettingsFragment extends Fragment {
         EditText bday = root.findViewById(R.id.et_settings_date_of_birth);
         bday.setText(MainActivity.birthDay);
 
-
-        DatePickerDialog.OnDateSetListener date = (view, year, month, dayOfMonth) -> {
-            calendar.set(Calendar.YEAR, year);
-            calendar.set(Calendar.MONTH, month);
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            bday.setText(new SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(calendar.getTime()));
-        };
-
-        bday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DatePickerDialog(getContext(),
-                        date,
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH))
-                        .show();
-            }
-        });
-
         EditText etName = root.findViewById(R.id.et_settings_name);
         etName.setText(MainActivity.name);
 

@@ -2,6 +2,7 @@ package nl.avans.praktijkhoogbegaafd.ui.graph;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -62,9 +64,6 @@ import nl.avans.praktijkhoogbegaafd.ui.home.HomeFragment;
 public class GraphFragment extends Fragment {
 
     private GraphViewModel graphViewModel;
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     private List<FeelingEntity> currentFeeling = new ArrayList<>();
     private List<DayFeeling> dayFeelings = new ArrayList<>();
@@ -259,16 +258,27 @@ public class GraphFragment extends Fragment {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                pb.setVisibility(View.VISIBLE);
-//                isEmailIntentStarted = true;
-//                parental = false;
-//                share.setVisibility(View.INVISIBLE);
-//                spinner.setVisibility(View.INVISIBLE);
-//                cb.setVisibility(View.INVISIBLE);
-//                ssDone = false;
-//                name = 0;
-//                makeGraph(0);
-                getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class));
+                if(MainActivity.childrenmode){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage(R.string.shareMessage).setNeutralButton("Allemaal", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.ALL).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        }
+                    }).setPositiveButton("Alleen kind", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.CHILDONLY).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        }
+                    }).setNegativeButton("Alleen ouder", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.PARENTONLY).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        }
+                    }).setTitle("Maak uw keuze en deel!").show();
+                } else {
+                    getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.PARENTONLY).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                }
             }
         });
 
@@ -490,20 +500,7 @@ public class GraphFragment extends Fragment {
             gv.addSeries(senzo);
         }
 
-        if(!isEmailIntentStarted){
-            setStats(weekOrDayStats);
-        }
-    }
-
-    public void makeScreenshots(){
-        ScreenshotLogic logic = new ScreenshotLogic();
-        sv.smoothScrollTo(0,0);
-        Bitmap b = logic.takeScreenshot(gv);
-        if(parental){
-            storeScreenshot(b, names[name]);
-        } else {
-            storeScreenshot(b, parentNames[name]);
-        }
+        setStats(weekOrDayStats);
     }
 
     public LineGraphSeries<DataPoint> createSenzo() {
@@ -530,25 +527,18 @@ public class GraphFragment extends Fragment {
             }
             x++;
         }
-        if (MainActivity.childrenmode && parental) {
-            finalStats = 1.0 * stats / amountOfValues;
-            this.weekStats[4] = finalStats;
-            this.dayStats[4] = 1.0 * lastDayValue / amountOfValuesLastDay;
-        } else {
-            finalStats = 1.0 * stats;
-            this.weekStats[4] = finalStats;
-            this.dayStats[4] = 1.0 * lastDayValue;
-        }
+        finalStats = 1.0 * stats / amountOfValues;
+        this.weekStats[4] = finalStats;
+        this.dayStats[4] = 1.0 * lastDayValue / amountOfValuesLastDay;
+
         this.senzo = finalStats;
         senzo.setColor(Color.rgb(242, 150, 49));
         senzo.setDrawDataPoints(true);
         senzo.setDataPointsRadius(6);
-        Log.d(getClass().getSimpleName() + ": " + LocalDate.now().toString(), this.weekStats[4].toString());
-        Log.d(getClass().getSimpleName() + ": " + LocalDate.now().toString(), this.dayStats[4].toString());
         return senzo;
     }
 
-    public LineGraphSeries<DataPoint> createPsymo(){
+    public LineGraphSeries<DataPoint> createPsymo() {
         LineGraphSeries<DataPoint> psymo = new LineGraphSeries<>();
         double x = 1;
         int stats = 0;
@@ -572,15 +562,10 @@ public class GraphFragment extends Fragment {
             }
             x++;
         }
-        if(MainActivity.childrenmode && parental){
-            finalStats = 1.0 * stats / amountOfValues;
-            this.weekStats[3] = finalStats;
-            this.dayStats[3] = 1.0 * lastDayValue / amountOfValuesLastDay;
-        } else {
-            finalStats = stats;
-            this.weekStats[3] = finalStats;
-            this.dayStats[3] = 1.0 * lastDayValue;
-        }
+        finalStats = 1.0 * stats / amountOfValues;
+        this.weekStats[3] = finalStats;
+        this.dayStats[3] = 1.0 * lastDayValue / amountOfValuesLastDay;
+
         this.psymo = finalStats;
         psymo.setColor(Color.rgb(81, 102, 169));
         psymo.setDrawDataPoints(true);
@@ -588,7 +573,7 @@ public class GraphFragment extends Fragment {
         return psymo;
     }
 
-    public LineGraphSeries<DataPoint> createIntellecto(){
+    public LineGraphSeries<DataPoint> createIntellecto() {
         LineGraphSeries<DataPoint> intellecto = new LineGraphSeries<>();
         double x = 1;
         int stats = 0;
@@ -612,15 +597,10 @@ public class GraphFragment extends Fragment {
             }
             x++;
         }
-        if(MainActivity.childrenmode && parental){
-            finalStats = 1.0 * stats / amountOfValues;
-            this.weekStats[2] = finalStats;
-            this.dayStats[2] = 1.0 * lastDayValue / amountOfValuesLastDay;
-        } else {
-            finalStats = 1.0 * stats;
-            this.weekStats[2] = finalStats;
-            this.dayStats[2] = 1.0 * lastDayValue;
-        }
+        finalStats = 1.0 * stats / amountOfValues;
+        this.weekStats[2] = finalStats;
+        this.dayStats[2] = 1.0 * lastDayValue / amountOfValuesLastDay;
+
         this.intellecto = finalStats;
         intellecto.setColor(Color.rgb(182, 103, 161));
         intellecto.setDrawDataPoints(true);
@@ -628,7 +608,7 @@ public class GraphFragment extends Fragment {
         return intellecto;
     }
 
-    public LineGraphSeries<DataPoint> createFanti(){
+    public LineGraphSeries<DataPoint> createFanti() {
         LineGraphSeries<DataPoint> fanti = new LineGraphSeries<>();
         double x = 1;
         int stats = 0;
@@ -652,15 +632,10 @@ public class GraphFragment extends Fragment {
             }
             x++;
         }
-        if(MainActivity.childrenmode && parental){
-            finalStats = 1.0 * stats / amountOfValues;
-            this.weekStats[1] = finalStats;
-            this.dayStats[1] = 1.0 * lastDayValue / amountOfValuesLastDay;
-        } else {
-            finalStats = 1.0 * stats;
-            this.weekStats[1] = finalStats;
-            this.dayStats[1] = 1.0 * lastDayValue;
-        }
+        finalStats = 1.0 * stats / amountOfValues;
+        this.weekStats[1] = finalStats;
+        this.dayStats[1] = 1.0 * lastDayValue / amountOfValuesLastDay;
+
         this.fanti = finalStats;
         fanti.setColor(Color.rgb(98, 176, 74));
         fanti.setDrawDataPoints(true);
@@ -668,7 +643,7 @@ public class GraphFragment extends Fragment {
         return fanti;
     }
 
-    public LineGraphSeries<DataPoint> createEmoto(){
+    public LineGraphSeries<DataPoint> createEmoto() {
         LineGraphSeries<DataPoint> emoto = new LineGraphSeries<>();
         double x = 1;
         int stats = 0;
@@ -693,224 +668,16 @@ public class GraphFragment extends Fragment {
             x++;
 
         }
-        if(MainActivity.childrenmode && parental){
-             finalStats = 1.0 * stats / amountOfValues;
-            this.weekStats[0] = finalStats;
-            this.dayStats[0] = 1.0 * lastDayValue / amountOfValuesLastDay;
-        } else {
-            finalStats = 1.0 * stats;
-            this.weekStats[0] = finalStats;
-            this.dayStats[0] = 1.0 * lastDayValue;
-        }
+        finalStats = 1.0 * stats / amountOfValues;
+        this.weekStats[0] = finalStats;
+        this.dayStats[0] = 1.0 * lastDayValue / amountOfValuesLastDay;
+
+
         this.emoto = finalStats;
         emoto.setColor(Color.rgb(232, 85, 51));
         emoto.setDrawDataPoints(true);
         emoto.setDataPointsRadius(6);
         return emoto;
-    }
-
-    public void storeScreenshot(Bitmap bitmap, String filename) {
-        switch (filename) {
-            case "Emoto":
-                this.ssEmoto = bitmap;
-                break;
-            case "Fanti":
-                this.ssFanti = bitmap;
-                break;
-            case "Intellecto":
-                this.ssIntellecto = bitmap;
-                break;
-            case "Psymo":
-                this.ssPsymo = bitmap;
-                break;
-            case "Senzo":
-                this.ssSenzo = bitmap;
-                break;
-            case "completeView":
-                this.ssTotal = bitmap;
-                break;
-            case "EmotoParent":
-                this.ssEmotoParent = bitmap;
-                break;
-            case "FantiParent":
-                this.ssFantiParent = bitmap;
-                break;
-            case "IntellectoParent":
-                this.ssIntellectoParent = bitmap;
-                break;
-            case "PsymoParent":
-                this.ssPsymoParent = bitmap;
-                break;
-            case "SenzoParent":
-                this.ssSenzoParent = bitmap;
-                break;
-            case "completeViewParent":
-                this.ssTotalParent = bitmap;
-                break;
-        }
-    }
-
-    private static int toolBarHeight = -1;
-
-    public static int getToolBarHeight(Context context) {
-        if (toolBarHeight > 0) {
-            return toolBarHeight;
-        }
-        final Resources resources = context.getResources();
-        final int resourceId = resources.getIdentifier("action_bar_size", "dimen", "android");
-        toolBarHeight = resourceId > 0 ?
-                resources.getDimensionPixelSize(resourceId) :
-                (int) convertDpToPixel(context, 56);
-        return toolBarHeight;
-    }
-
-    public static float convertDpToPixel(Context context, float dp) {
-        float scale = context.getResources().getDisplayMetrics().density;
-        return dp * scale + 0.5f;
-    }
-
-    public File createPDF(PDFTypes type){
-        PdfDocument doc = new PdfDocument();
-        int width = (gv.getWidth()) * 3;
-        int height = type == PDFTypes.ALL ? (gv.getHeight()) * 4 : (gv.getHeight()) * 2;
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(width, height + 1000, 1).create();
-
-        PdfDocument.Page page = doc.startPage(pageInfo);
-        Canvas canvas = page.getCanvas();
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(20);
-
-        Paint bold = new Paint();
-        bold.setColor(Color.BLACK);
-        bold.setTextSize(20);
-        bold.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-
-        Bitmap legend = BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.ic_phr_legenda_foreground);
-        Bitmap logo = BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.ic_phr_logo_large_foreground);
-        Bitmap scaledLogo = Bitmap.createScaledBitmap(logo, 400, 400, false);
-
-        if(type == PDFTypes.PARENTONLY){
-            canvas = drawParent(canvas, logo, paint);
-        } else if (type == PDFTypes.CHILDONLY){
-            canvas = drawChildren(canvas, logo, paint);
-        } else {
-            canvas = drawAll(canvas, logo, paint);
-        }
-
-        canvas.drawBitmap(scaledLogo, (width - scaledLogo.getWidth()) / 2, -100, paint);
-        canvas.drawBitmap(legend, width - legend.getWidth(), 0, paint);
-
-        canvas = drawStats(canvas, height + 300, paint, bold);
-
-        doc.finishPage(page);
-
-
-        ContextWrapper cw = new ContextWrapper(getContext());
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        File file = new File(directory, MainActivity.name + "(" + LocalDate.now() + ").pdf");
-        file.setReadable(true);
-        this.file = file;
-        if (file.exists()) {
-            file.delete();
-        }
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
-            doc.writeTo(fos);
-            fos.flush();
-            fos.close();
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        }
-        return file;
-    }
-
-    public Canvas drawParent(Canvas canvas, Bitmap logo, Paint paint){
-        canvas.drawBitmap(ssTotalParent, 0, logo.getHeight(), paint);
-        canvas.drawBitmap(ssEmotoParent, ssTotalParent.getWidth(), logo.getHeight(), paint);
-        canvas.drawBitmap(ssFantiParent, ssEmotoParent.getWidth() * 2, logo.getHeight(), paint);
-        canvas.drawBitmap(ssIntellectoParent, 0, ssTotalParent.getHeight() + logo.getHeight(), paint);
-        canvas.drawBitmap(ssPsymoParent, ssIntellectoParent.getWidth(), ssTotalParent.getHeight() + logo.getHeight(), paint);
-        canvas.drawBitmap(ssSenzoParent, ssIntellectoParent.getWidth() * 2, ssTotalParent.getHeight() + logo.getHeight(), paint);
-        return canvas;
-    }
-
-    public Canvas drawChildren(Canvas canvas, Bitmap logo, Paint paint){
-        canvas.drawBitmap(ssTotal, 0, logo.getHeight(), paint);
-        canvas.drawBitmap(ssEmoto, ssTotal.getWidth(), logo.getHeight(), paint);
-        canvas.drawBitmap(ssFanti, ssEmoto.getWidth() * 2, logo.getHeight(), paint);
-        canvas.drawBitmap(ssIntellecto, 0, ssTotal.getHeight() + logo.getHeight(), paint);
-        canvas.drawBitmap(ssPsymo, ssIntellecto.getWidth(), ssTotal.getHeight() + logo.getHeight(), paint);
-        canvas.drawBitmap(ssSenzo, ssIntellecto.getWidth() * 2, ssTotal.getHeight() + logo.getHeight(), paint);
-        return canvas;
-    }
-
-    public Canvas drawAll(Canvas canvas, Bitmap logo, Paint paint){
-        Paint bold = new Paint();
-        bold.setColor(Color.BLACK);
-        bold.setTextSize(40);
-        bold.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-
-        canvas.drawText("Kind:", 20, logo.getHeight(), bold);
-
-        canvas.drawBitmap(ssTotal, 0, logo.getHeight() + 20, paint);
-        canvas.drawBitmap(ssEmoto, ssTotal.getWidth(), logo.getHeight() + 20, paint);
-        canvas.drawBitmap(ssFanti, ssEmoto.getWidth() * 2, logo.getHeight() + 20, paint);
-        canvas.drawBitmap(ssIntellecto, 0, ssTotal.getHeight() + logo.getHeight() + 20, paint);
-        canvas.drawBitmap(ssPsymo, ssIntellecto.getWidth(), ssTotal.getHeight() + logo.getHeight() + 20, paint);
-        canvas.drawBitmap(ssSenzo, ssIntellecto.getWidth() * 2, ssTotal.getHeight() + logo.getHeight() + 20, paint);
-
-        canvas.drawText("Ouder:", 20, logo.getHeight() + ssTotalParent.getHeight() * 2 + 40, bold);
-
-        canvas.drawBitmap(ssTotalParent, 0, logo.getHeight() + ssTotalParent.getHeight() * 2 + 90, paint);
-        canvas.drawBitmap(ssEmotoParent, ssTotalParent.getWidth(), logo.getHeight() + ssTotalParent.getHeight() * 2 + 90, paint);
-        canvas.drawBitmap(ssFantiParent, ssEmotoParent.getWidth() * 2, logo.getHeight() + ssTotalParent.getHeight() * 2 + 90, paint);
-        canvas.drawBitmap(ssIntellectoParent, 0, ssTotalParent.getHeight() * 3 + 90 + logo.getHeight(), paint);
-        canvas.drawBitmap(ssPsymoParent, ssIntellectoParent.getWidth(), ssTotalParent.getHeight() * 3 + logo.getHeight() + 90, paint);
-        canvas.drawBitmap(ssSenzoParent, ssIntellectoParent.getWidth() * 2, ssTotalParent.getHeight() * 3 + logo.getHeight() + 90, paint);
-        return canvas;
-    }
-
-    public Canvas drawStats(Canvas canvas, int height, Paint paint, Paint bold){
-        int statsDescriptionX = 20;
-        int statsValueX = 600;
-
-        canvas.drawText("Weekstatistieken:", statsDescriptionX, height + 150, bold);
-        canvas.drawText("Gemiddelde emotionele intensiteit afgelopen week:", statsDescriptionX, height + 180, paint);
-        canvas.drawText("Gemiddelde beeldende intensiteit afgelopen week:", statsDescriptionX, height + 210, paint);
-        canvas.drawText("Gemiddelde intellectuele- intensiteit afgelopen week:", statsDescriptionX, height + 240, paint);
-        canvas.drawText("Gemiddelde psychomotorische intensiteit afgelopen week:", statsDescriptionX, height + 270, paint);
-        canvas.drawText("Gemiddelde sensorische intensiteit afgelopen week:", statsDescriptionX, height + 290, paint);
-
-        canvas.drawText(round(weekStats[0], 2) + "", statsValueX, height + 180, paint);
-        canvas.drawText(round(weekStats[1], 2) + "", statsValueX, height + 210, paint);
-        canvas.drawText(round(weekStats[2], 2) + "", statsValueX, height + 240, paint);
-        canvas.drawText(round(weekStats[3], 2) + "", statsValueX, height + 270, paint);
-        canvas.drawText(round(weekStats[4], 2) + "", statsValueX, height + 300, paint);
-
-
-        canvas.drawText("Dagstatistieken van " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ":", statsDescriptionX, height + 340, bold);
-        canvas.drawText("Gemiddelde emotionele intensiteit afgelopen dag:", statsDescriptionX, height + 370, paint);
-        canvas.drawText("Gemiddelde beeldende intensiteit afgelopen dag:", statsDescriptionX, height + 400, paint);
-        canvas.drawText("Gemiddelde intellectuele- intensiteit afgelopen dag:", statsDescriptionX, height + 430, paint);
-        canvas.drawText("Gemiddelde psychomotorische intensiteit afgelopen dag:", statsDescriptionX, height + 460, paint);
-        canvas.drawText("Gemiddelde sensorische intensiteit afgelopen dag:", statsDescriptionX, height + 490, paint);
-
-        canvas.drawText(round(dayStats[0], 2) + "", statsValueX, height + 370, paint);
-        canvas.drawText(round(dayStats[1], 2) + "", statsValueX, height + 400, paint);
-        canvas.drawText(round(dayStats[2], 2) + "", statsValueX, height + 430, paint);
-        canvas.drawText(round(dayStats[3], 2) + "", statsValueX, height + 460, paint);
-        canvas.drawText(round(dayStats[4], 2) + "", statsValueX, height + 490, paint);
-
-        return canvas;
-    }
-
-    public void startEmail(){
-        File file = createPDF(PDFTypes.ALL);
-        Intent i = new Intent(getContext(), ShareActivity.class);
-        i.putExtra("pdf", file);
-        startActivity(i);
     }
 
     public class getFeelingForDays extends AsyncTask<Void, Void, Void>{
@@ -943,7 +710,6 @@ public class GraphFragment extends Fragment {
                 }
             }
             dayFeelings = feelingsForDays;
-
             return null;
         }
 
@@ -952,19 +718,6 @@ public class GraphFragment extends Fragment {
             super.onPostExecute(aVoid);
             makeGraphView();
             pb.setVisibility(View.INVISIBLE);
-            if(isEmailIntentStarted){
-                makeScreenshots();
-                if(name < 5){
-                    name++;
-                    makeGraph(name);
-                } else if (name == 5 && !parental){
-                    name = 0;
-                    parental = true;
-                    makeGraph(name);
-                } else{
-                    startEmail();
-                }
-            }
         }
     }
 }

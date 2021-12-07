@@ -94,6 +94,8 @@ public class ScreenShotActivity extends AppCompatActivity {
     private Bitmap ssSenzoParent = null;
     private Bitmap ssTotalParent = null;
 
+    private PDFTypes type;
+
     private int name;
 
     @Override
@@ -103,48 +105,59 @@ public class ScreenShotActivity extends AppCompatActivity {
 
         gv = findViewById(R.id.gv_graph);
 
+        parental = true;
+        name = 0;
+
+        type = (PDFTypes) getIntent().getSerializableExtra("type");
+
         gv.getLegendRenderer().setVisible(false);
 
         makeGraph(0);
 
         isEmailIntentStarted = true;
-        parental = false;
-        name = 0;
 
         makeGraph(0);
     }
 
     public void makeGraph(int position) {
         this.position = position;
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                FeelingsEntityManager fem = MainActivity.fem;
-                ArrayList<DayFeeling> feelingsForDays = new ArrayList<>();
-                int amountOfDays = 7;
-                if (MainActivity.childrenmode) {
-                    amountOfDays = 7;
-                } else {
-                    amountOfDays = 14;
-                }
-                for (int i = 0; i < amountOfDays; i++) {
-                    DayFeeling feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(amountOfDays - 1 - i).toString(), parental);
-
-                    if (feelings.getFeelingsForDay().size() != 0) {
-                        feelingsForDays.add(feelings);
+        if(position == 0){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FeelingsEntityManager fem = MainActivity.fem;
+                    ArrayList<DayFeeling> feelingsForDays = new ArrayList<>();
+                    int amountOfDays = 7;
+                    if (MainActivity.childrenmode) {
+                        amountOfDays = 7;
+                    } else {
+                        amountOfDays = 14;
                     }
-                }
-                dayFeelings = feelingsForDays;
+                    for (int i = 0; i < amountOfDays; i++) {
+                        DayFeeling feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(amountOfDays - 1 - i).toString(), parental);
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        makeGraphView();
+                        if (feelings.getFeelingsForDay().size() != 0) {
+                            feelingsForDays.add(feelings);
+                        }
                     }
-                });
-            }
-        }).start();
+                    dayFeelings = feelingsForDays;
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(250);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            makeGraphView();
+                        }
+                    });
+                }
+            }).start();
+        } else {
+            makeGraphView();
+        }
     }
 
     public static double round(Double value, int places) {
@@ -289,18 +302,13 @@ public class ScreenShotActivity extends AppCompatActivity {
         }
 
         if(isEmailIntentStarted){
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             makeScreenshots();
             if(name < 5){
                 name++;
                 makeGraph(name);
-            } else if (name == 5 && !parental){
+            } else if (name == 5 && parental){
                 name = 0;
-                parental = true;
+                parental = false;
                 makeGraph(name);
             } else{
                 startEmail();
@@ -342,15 +350,10 @@ public class ScreenShotActivity extends AppCompatActivity {
             }
             x++;
         }
-        if (MainActivity.childrenmode && parental) {
-            finalStats = 1.0 * stats / amountOfValues;
-            this.weekStats[4] = finalStats;
-            this.dayStats[4] = 1.0 * lastDayValue / amountOfValuesLastDay;
-        } else {
-            finalStats = 1.0 * stats;
-            this.weekStats[4] = finalStats;
-            this.dayStats[4] = 1.0 * lastDayValue;
-        }
+        finalStats = 1.0 * stats / amountOfValues;
+        this.weekStats[4] = finalStats;
+        this.dayStats[4] = 1.0 * lastDayValue / amountOfValuesLastDay;
+
         this.senzo = finalStats;
         senzo.setColor(Color.rgb(242, 150, 49));
         senzo.setDrawDataPoints(true);
@@ -382,15 +385,10 @@ public class ScreenShotActivity extends AppCompatActivity {
             }
             x++;
         }
-        if (MainActivity.childrenmode && parental) {
-            finalStats = 1.0 * stats / amountOfValues;
-            this.weekStats[3] = finalStats;
-            this.dayStats[3] = 1.0 * lastDayValue / amountOfValuesLastDay;
-        } else {
-            finalStats = stats;
-            this.weekStats[3] = finalStats;
-            this.dayStats[3] = 1.0 * lastDayValue;
-        }
+        finalStats = 1.0 * stats / amountOfValues;
+        this.weekStats[3] = finalStats;
+        this.dayStats[3] = 1.0 * lastDayValue / amountOfValuesLastDay;
+
         this.psymo = finalStats;
         psymo.setColor(Color.rgb(81, 102, 169));
         psymo.setDrawDataPoints(true);
@@ -422,15 +420,10 @@ public class ScreenShotActivity extends AppCompatActivity {
             }
             x++;
         }
-        if (MainActivity.childrenmode && parental) {
-            finalStats = 1.0 * stats / amountOfValues;
-            this.weekStats[2] = finalStats;
-            this.dayStats[2] = 1.0 * lastDayValue / amountOfValuesLastDay;
-        } else {
-            finalStats = 1.0 * stats;
-            this.weekStats[2] = finalStats;
-            this.dayStats[2] = 1.0 * lastDayValue;
-        }
+        finalStats = 1.0 * stats / amountOfValues;
+        this.weekStats[2] = finalStats;
+        this.dayStats[2] = 1.0 * lastDayValue / amountOfValuesLastDay;
+
         this.intellecto = finalStats;
         intellecto.setColor(Color.rgb(182, 103, 161));
         intellecto.setDrawDataPoints(true);
@@ -462,15 +455,10 @@ public class ScreenShotActivity extends AppCompatActivity {
             }
             x++;
         }
-        if (MainActivity.childrenmode && parental) {
-            finalStats = 1.0 * stats / amountOfValues;
-            this.weekStats[1] = finalStats;
-            this.dayStats[1] = 1.0 * lastDayValue / amountOfValuesLastDay;
-        } else {
-            finalStats = 1.0 * stats;
-            this.weekStats[1] = finalStats;
-            this.dayStats[1] = 1.0 * lastDayValue;
-        }
+        finalStats = 1.0 * stats / amountOfValues;
+        this.weekStats[1] = finalStats;
+        this.dayStats[1] = 1.0 * lastDayValue / amountOfValuesLastDay;
+
         this.fanti = finalStats;
         fanti.setColor(Color.rgb(98, 176, 74));
         fanti.setDrawDataPoints(true);
@@ -503,15 +491,11 @@ public class ScreenShotActivity extends AppCompatActivity {
             x++;
 
         }
-        if (MainActivity.childrenmode && parental) {
-            finalStats = 1.0 * stats / amountOfValues;
-            this.weekStats[0] = finalStats;
-            this.dayStats[0] = 1.0 * lastDayValue / amountOfValuesLastDay;
-        } else {
-            finalStats = 1.0 * stats;
-            this.weekStats[0] = finalStats;
-            this.dayStats[0] = 1.0 * lastDayValue;
-        }
+        finalStats = 1.0 * stats / amountOfValues;
+        this.weekStats[0] = finalStats;
+        this.dayStats[0] = 1.0 * lastDayValue / amountOfValuesLastDay;
+
+
         this.emoto = finalStats;
         emoto.setColor(Color.rgb(232, 85, 51));
         emoto.setDrawDataPoints(true);
@@ -560,11 +544,6 @@ public class ScreenShotActivity extends AppCompatActivity {
         }
     }
 
-    public static float convertDpToPixel(Context context, float dp) {
-        float scale = context.getResources().getDisplayMetrics().density;
-        return dp * scale + 0.5f;
-    }
-
     public File createPDF(PDFTypes type) {
         PdfDocument doc = new PdfDocument();
         int width = (gv.getWidth()) * 3;
@@ -577,12 +556,7 @@ public class ScreenShotActivity extends AppCompatActivity {
         paint.setColor(Color.BLACK);
         paint.setTextSize(20);
 
-        Paint bold = new Paint();
-        bold.setColor(Color.BLACK);
-        bold.setTextSize(20);
-        bold.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-
-        Bitmap legend = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_phr_legenda_foreground);
+        Bitmap legend = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_phr_legenda_new_foreground);
         Bitmap logo = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_phr_logo_large_foreground);
         Bitmap scaledLogo = Bitmap.createScaledBitmap(logo, 400, 400, false);
 
@@ -597,7 +571,7 @@ public class ScreenShotActivity extends AppCompatActivity {
         canvas.drawBitmap(scaledLogo, (width - scaledLogo.getWidth()) / 2, -100, paint);
         canvas.drawBitmap(legend, width - legend.getWidth(), 0, paint);
 
-        canvas = drawStats(canvas, height + 300, paint, bold);
+        canvas = drawStats(canvas, height + 300, paint);
 
         doc.finishPage(page);
 
@@ -644,7 +618,7 @@ public class ScreenShotActivity extends AppCompatActivity {
 
     public Canvas drawAll(Canvas canvas, Bitmap logo, Paint paint) {
         Paint bold = new Paint();
-        bold.setColor(Color.BLACK);
+        bold.setColor(getResources().getColor(R.color.prhPurpleDark));
         bold.setTextSize(40);
         bold.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
 
@@ -668,22 +642,32 @@ public class ScreenShotActivity extends AppCompatActivity {
         return canvas;
     }
 
-    public Canvas drawStats(Canvas canvas, int height, Paint paint, Paint bold) {
+    public Canvas drawStats(Canvas canvas, int height, Paint paint) {
         int statsDescriptionX = 20;
         int statsValueX = 600;
+
+        Paint bold = new Paint();
+        bold.setColor(getResources().getColor(R.color.prhPurpleDark));
+        bold.setTextSize(20);
+        bold.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+
+        Paint purple = new Paint();
+        purple.setColor(getResources().getColor(R.color.phrOrange));
+        purple.setTextSize(20);
+        purple.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
 
         canvas.drawText("Weekstatistieken:", statsDescriptionX, height + 150, bold);
         canvas.drawText("Gemiddelde emotionele intensiteit afgelopen week:", statsDescriptionX, height + 180, paint);
         canvas.drawText("Gemiddelde beeldende intensiteit afgelopen week:", statsDescriptionX, height + 210, paint);
         canvas.drawText("Gemiddelde intellectuele- intensiteit afgelopen week:", statsDescriptionX, height + 240, paint);
         canvas.drawText("Gemiddelde psychomotorische intensiteit afgelopen week:", statsDescriptionX, height + 270, paint);
-        canvas.drawText("Gemiddelde sensorische intensiteit afgelopen week:", statsDescriptionX, height + 290, paint);
+        canvas.drawText("Gemiddelde sensorische intensiteit afgelopen week:", statsDescriptionX, height + 300, paint);
 
-        canvas.drawText(round(weekStats[0], 2) + "", statsValueX, height + 180, paint);
-        canvas.drawText(round(weekStats[1], 2) + "", statsValueX, height + 210, paint);
-        canvas.drawText(round(weekStats[2], 2) + "", statsValueX, height + 240, paint);
-        canvas.drawText(round(weekStats[3], 2) + "", statsValueX, height + 270, paint);
-        canvas.drawText(round(weekStats[4], 2) + "", statsValueX, height + 300, paint);
+        canvas.drawText(round(weekStats[0], 2) + "", statsValueX, height + 180, purple);
+        canvas.drawText(round(weekStats[1], 2) + "", statsValueX, height + 210, purple);
+        canvas.drawText(round(weekStats[2], 2) + "", statsValueX, height + 240, purple);
+        canvas.drawText(round(weekStats[3], 2) + "", statsValueX, height + 270, purple);
+        canvas.drawText(round(weekStats[4], 2) + "", statsValueX, height + 300, purple);
 
 
         canvas.drawText("Dagstatistieken van " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ":", statsDescriptionX, height + 340, bold);
@@ -693,17 +677,17 @@ public class ScreenShotActivity extends AppCompatActivity {
         canvas.drawText("Gemiddelde psychomotorische intensiteit afgelopen dag:", statsDescriptionX, height + 460, paint);
         canvas.drawText("Gemiddelde sensorische intensiteit afgelopen dag:", statsDescriptionX, height + 490, paint);
 
-        canvas.drawText(round(dayStats[0], 2) + "", statsValueX, height + 370, paint);
-        canvas.drawText(round(dayStats[1], 2) + "", statsValueX, height + 400, paint);
-        canvas.drawText(round(dayStats[2], 2) + "", statsValueX, height + 430, paint);
-        canvas.drawText(round(dayStats[3], 2) + "", statsValueX, height + 460, paint);
-        canvas.drawText(round(dayStats[4], 2) + "", statsValueX, height + 490, paint);
+        canvas.drawText(round(dayStats[0], 2) + "", statsValueX, height + 370, purple);
+        canvas.drawText(round(dayStats[1], 2) + "", statsValueX, height + 400, purple);
+        canvas.drawText(round(dayStats[2], 2) + "", statsValueX, height + 430, purple);
+        canvas.drawText(round(dayStats[3], 2) + "", statsValueX, height + 460, purple);
+        canvas.drawText(round(dayStats[4], 2) + "", statsValueX, height + 490, purple);
 
         return canvas;
     }
 
     public void startEmail() {
-        File file = createPDF(PDFTypes.ALL);
+        File file = createPDF(type);
         Intent i = new Intent(this, ShareActivity.class);
         i.putExtra("pdf", file);
         startActivity(i);

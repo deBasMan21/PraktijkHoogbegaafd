@@ -67,7 +67,7 @@ public class GiveInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(parental){
-                    if(!(etName.getText().toString().equals("") || etBirthday.getText().toString().equals("") || etParent.getText().toString().equals(""))){
+                    if(!(etName.getText().toString().equals("") || etParent.getText().toString().equals(""))){
                         MainActivity.name = etName.getText().toString();
                         MainActivity.birthDay = etBirthday.getText().toString();
                         MainActivity.childrenmode = true;
@@ -85,7 +85,7 @@ public class GiveInfoActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Controleer of alles ingevuld is", Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    if(!(etName.getText().toString().equals("") || etBirthday.getText().toString().equals(""))){
+                    if(!(etName.getText().toString().equals(""))){
                         MainActivity.name = etName.getText().toString();
                         MainActivity.birthDay = etBirthday.getText().toString();
                         MainActivity.childrenmode = false;

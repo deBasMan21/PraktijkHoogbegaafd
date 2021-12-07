@@ -29,6 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Geboortedatum:"
+        android:visibility="gone"
         android:layout_marginTop="20dp"
         android:id="@+id/tv_settings_bday"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,7 +39,7 @@
     <EditText
         android:id="@+id/et_settings_date_of_birth"
         android:layout_width="200dp"
-
+        android:visibility="gone"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -101,7 +102,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Versie 1.1.0"
+        android:text="Versie 1.2.0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
