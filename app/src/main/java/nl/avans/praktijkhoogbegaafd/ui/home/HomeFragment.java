@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FeelingsEntityManager fem = MainActivity.fem;
-                boolean feelings = fem.getFeelingsForDay(LocalDate.now().toString(), false).getFeelingsForDay().size() >= 3;
+                boolean feelings = fem.getFeelingsForDay(LocalDate.now().toString(), true).getFeelingsForDay().size() >= 3;
                 if(!feelings){
                     Intent intent = new Intent(getContext(), QuestionEmoto.class);
                     startActivity(intent);
@@ -67,7 +67,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FeelingsEntityManager fem = MainActivity.fem;
-                boolean feelings = fem.getFeelingsForDay(LocalDate.now().toString(), true).getFeelingsForDay().size() >= 3;
+                boolean feelings = fem.getFeelingsForDay(LocalDate.now().toString(), false).getFeelingsForDay().size() >= 3;
                 if(!feelings){
                     Intent intent = new Intent(getContext(), QuestionEmoto.class);
                     intent.putExtra("parent", true);

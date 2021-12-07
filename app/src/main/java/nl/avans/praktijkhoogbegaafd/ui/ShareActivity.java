@@ -54,8 +54,8 @@ public class ShareActivity extends AppCompatActivity {
         Uri uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", pdf);
 
         Intent i = new Intent(Intent.ACTION_SEND);
-//        i.putExtra(Intent.EXTRA_EMAIL, new String[]{emailList.get(MainActivity.begeleidster)});
-        i.putExtra(Intent.EXTRA_EMAIL, new String[]{emailList.get("Dev")});
+        i.putExtra(Intent.EXTRA_EMAIL, new String[]{emailList.get(MainActivity.begeleidster)});
+//        i.putExtra(Intent.EXTRA_EMAIL, new String[]{emailList.get("Dev")});
         i.putExtra(Intent.EXTRA_SUBJECT,"Verslag uit Praktijkhoogbegaafd app van " + MainActivity.name);
         i.putExtra(Intent.EXTRA_TEXT,"Dit verslag bestaat uit de data van " + LocalDate.now().minusDays(6).toString() + " tot en met " + LocalDate.now().toString() + ".");
         i.putExtra(Intent.EXTRA_STREAM,uri);
