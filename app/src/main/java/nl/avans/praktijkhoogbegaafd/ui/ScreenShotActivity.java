@@ -101,12 +101,16 @@ public class ScreenShotActivity extends AppCompatActivity {
 
     private int name;
 
+    private LocalDate selectedDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen_shot);
 
         gv = findViewById(R.id.gv_graph);
+
+        selectedDate = LocalDate.parse(getIntent().getStringExtra("date"));
 
         parental = true;
         name = 0;
@@ -130,18 +134,12 @@ public class ScreenShotActivity extends AppCompatActivity {
                 public void run() {
                     FeelingsEntityManager fem = MainActivity.fem;
                     ArrayList<DayFeeling> feelingsForDays = new ArrayList<>();
-                    int amountOfDays = 7;
-                    if (MainActivity.childrenmode) {
-                        amountOfDays = 7;
-                    } else {
-                        amountOfDays = 14;
-                    }
-                    for (int i = 0; i < amountOfDays; i++) {
-                        DayFeeling feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(amountOfDays - 1 - i).toString(), parental);
+                    int amountOfDays = MainActivity.childrenmode ? 7 : 14;
 
-                        if (feelings.getFeelingsForDay().size() != 0) {
-                            feelingsForDays.add(feelings);
-                        }
+                    for(int i = 0; i < amountOfDays; i++){
+                        DayFeeling feelings;
+                        feelings = fem.getFeelingsForDay(selectedDate.plusDays(amountOfDays).minusDays(amountOfDays - 1 - i).toString(), parental);
+                        feelingsForDays.add(feelings);
                     }
                     dayFeelings = feelingsForDays;
 

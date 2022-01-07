@@ -1,5 +1,6 @@
 package nl.avans.praktijkhoogbegaafd.ui.graph;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
@@ -24,6 +25,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -48,6 +51,7 @@ import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import nl.avans.praktijkhoogbegaafd.domain.PDFTypes;
@@ -124,6 +128,9 @@ public class GraphFragment extends Fragment {
     private TextView tv_text_psymo;
     private TextView tv_text_senzo;
 
+    private EditText et_date;
+    private LocalDate selectedDate;
+
     private ScrollView sv;
 
     private boolean ssDone = false;
@@ -141,11 +148,24 @@ public class GraphFragment extends Fragment {
             root = inflater.inflate(R.layout.fragment_graph_adult, container, false);
         }
 
+
+
         sv = root.findViewById(R.id.sv);
 
         gv = root.findViewById(R.id.gv_graph);
 
         pb = root.findViewById(R.id.pb_graph_loading);
+
+        et_date = root.findViewById(R.id.et_graph_date);
+        et_date.setFocusable(false);
+
+        selectedDate = LocalDate.now().minusDays(MainActivity.childrenmode ? 7 : 14);
+        int year = selectedDate.getYear();
+        int month = selectedDate.getMonthValue();
+        int dayOfMonth = selectedDate.getDayOfMonth();
+
+        String date = String.format("%s-%s-%s%n", dayOfMonth, month, year);
+        et_date.setText("Datum vanaf: " + date);
 
         adapterAdult = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, categoriesAdult);
         adapterChildren = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, categoriesChildren);
@@ -263,22 +283,46 @@ public class GraphFragment extends Fragment {
                     builder.setMessage(R.string.shareMessage).setNeutralButton("Allemaal", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.ALL).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                            getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.ALL).putExtra("date", selectedDate.toString()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         }
                     }).setPositiveButton("Alleen kind", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.CHILDONLY).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                            getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.CHILDONLY).putExtra("date", selectedDate.toString()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         }
                     }).setNegativeButton("Alleen ouder", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.PARENTONLY).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                            getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.PARENTONLY).putExtra("date", selectedDate.toString()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         }
                     }).setTitle("Maak uw keuze en deel!").show();
                 } else {
-                    getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.PARENTONLY).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                    getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.PARENTONLY).putExtra("date", selectedDate.toString()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 }
+            }
+        });
+
+
+
+        DatePickerDialog dialog = new DatePickerDialog(root.getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                String date = String.format("%s-%s-%s%n", dayOfMonth, month + 1, year);
+                et_date.setText("Datum vanaf: " + date);
+                selectedDate = LocalDate.of(year, month + 1, dayOfMonth);
+                makeGraph(position);
+            }
+        }, year, month, dayOfMonth);
+
+        LocalDate disabledDates = LocalDate.now().minusDays(MainActivity.childrenmode ? 7 : 14);
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(disabledDates.getYear(), disabledDates.getMonthValue() - 1, disabledDates.getDayOfMonth());
+        dialog.getDatePicker().setMaxDate(calendar.getTimeInMillis());
+
+        et_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.show();
             }
         });
 
@@ -692,22 +736,12 @@ public class GraphFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             FeelingsEntityManager fem = MainActivity.fem;
             ArrayList<DayFeeling> feelingsForDays = new ArrayList<>();
-            int amountOfDays = 7;
-            if(MainActivity.childrenmode){
-                amountOfDays = 7;
-            } else {
-                amountOfDays = 14;
-            }
+            int amountOfDays = MainActivity.childrenmode ? 7 : 14;
+
             for(int i = 0; i < amountOfDays; i++){
                 DayFeeling feelings;
-                if(firstTime){
-                    feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(amountOfDays - 1 - i).toString(), true);
-                } else {
-                    feelings = fem.getFeelingsForDay(LocalDate.now().minusDays(amountOfDays - 1 - i).toString(), parental);
-                }
-                if(feelings.getFeelingsForDay().size() != 0){
-                    feelingsForDays.add(feelings);
-                }
+                feelings = fem.getFeelingsForDay(selectedDate.plusDays(amountOfDays).minusDays(amountOfDays - 1 - i).toString(), firstTime || parental);
+                feelingsForDays.add(feelings);
             }
             dayFeelings = feelingsForDays;
             return null;
