@@ -77,9 +77,6 @@ public class SettingsFragment extends Fragment {
 
         Calendar calendar = Calendar.getInstance();
 
-        EditText bday = root.findViewById(R.id.et_settings_date_of_birth);
-        bday.setText(MainActivity.birthDay);
-
         EditText etName = root.findViewById(R.id.et_settings_name);
         etName.setText(MainActivity.name);
 
@@ -90,7 +87,6 @@ public class SettingsFragment extends Fragment {
                 String oldName = MainActivity.name;
                 MainActivity.begeleidster = categories[spinner.getSelectedItemPosition()];
                 MainActivity.name = etName.getText().toString();
-                MainActivity.birthDay = bday.getText().toString();
                 MainActivity.parentalName = parent.getText().toString();
                 Intent intent = new Intent(getContext(), MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
