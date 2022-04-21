@@ -23,6 +23,7 @@ import nl.avans.praktijkhoogbegaafd.logic.InfoEntityManager;
 public class GiveInfoActivity extends AppCompatActivity {
 
     private boolean parental = false;
+    private boolean withPhr = false;
 
     private InfoEntityManager iem;
 
@@ -31,81 +32,43 @@ public class GiveInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_give_info);
 
-        iem = new InfoEntityManager(getApplication());
-
-        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-
-        TextView tvParent = findViewById(R.id.tv_info_parent);
-        EditText etParent = findViewById(R.id.et_info_parent);
-
         parental = getIntent().getBooleanExtra("parental", false);
-        if(parental){
-            tvParent.setVisibility(View.VISIBLE);
-            etParent.setVisibility(View.VISIBLE);
-        }
+        withPhr = getIntent().getBooleanExtra("withPhr", false);
 
-        String[] categories = {"Eda Canikli", "Eveline Eulderink", "Hanneke van de Sanden", "Imke van der Velden", "Lisanne Boerboom", "Leah Keijzer",
-                "Lotte Kobossen", "Maud van Hoving", "Meghan Kalisvaart", "Milou van Beijsterveldt", "Mirthe Zom", "Noor Vugs",
-                "Sjarai Gelissen", "Tessa van Sluijs", "Yvonne Buijsen"};
+        String[] categories = getResources().getStringArray(R.array.begeleidsters);
+
         Spinner spinner = (Spinner) findViewById(R.id.sr_info_behandelaar);
         ArrayAdapter<String> adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
+        TextView tv_spinner_text = findViewById(R.id.tv_info_behandelaar);
+
+        spinner.setVisibility(withPhr ? View.VISIBLE : View.GONE);
+        tv_spinner_text.setVisibility(withPhr ? View.VISIBLE : View.GONE);
 
         EditText etName = findViewById(R.id.et_info_name);
-        EditText etBirthday = findViewById(R.id.et_info_birthday);
-
-        Calendar cal = Calendar.getInstance();
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-        int month = cal.get(Calendar.MONTH);
-        int year = cal.get(Calendar.YEAR);
-
 
         Button confirm = findViewById(R.id.bn_info_confirm);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(parental){
-                    if(!(etName.getText().toString().equals("") || etParent.getText().toString().equals(""))){
-                        MainActivity.name = etName.getText().toString();
-                        MainActivity.birthDay = etBirthday.getText().toString();
-                        MainActivity.childrenmode = true;
-                        MainActivity.begeleidster = categories[spinner.getSelectedItemPosition()];
-                        MainActivity.parentalName = etParent.getText().toString();
+                if(!etName.getText().toString().equals("")){
+                    SharedPreferences prefs = getSharedPreferences("info", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString(getResources().getString(R.string.PREFS_NAME), etName.getText().toString());
+                    editor.putBoolean(getResources().getString(R.string.PREFS_CHILDRENMODE), parental);
+                    editor.putString(getResources().getString(R.string.PREFS_BEGELEIDSTER), categories[spinner.getSelectedItemPosition()]);
+                    editor.putBoolean(getResources().getString(R.string.PREFS_WITHPHR), withPhr);
+                    editor.apply();
 
-                        iem.insertInfo(new InfoEntity(MainActivity.name, MainActivity.birthDay, MainActivity.begeleidster, MainActivity.parentalName, MainActivity.childrenmode));
-
-
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("info", true);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Controleer of alles ingevuld is", Toast.LENGTH_LONG).show();
-                    }
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("info", true);
+                    startActivity(intent);
                 } else {
-                    if(!(etName.getText().toString().equals(""))){
-                        MainActivity.name = etName.getText().toString();
-                        MainActivity.birthDay = etBirthday.getText().toString();
-                        MainActivity.childrenmode = false;
-                        MainActivity.parentalName = "";
-                        MainActivity.begeleidster = categories[spinner.getSelectedItemPosition()];
-
-                        iem.insertInfo(new InfoEntity(MainActivity.name, MainActivity.birthDay, MainActivity.begeleidster, MainActivity.parentalName, MainActivity.childrenmode));
-
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("info", true);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Controleer of alles ingevuld is", Toast.LENGTH_LONG).show();
-                    }
+                    Toast.makeText(getApplicationContext(), "Controleer of alles ingevuld is", Toast.LENGTH_LONG).show();
                 }
-
-
-
-
             }
         });
 

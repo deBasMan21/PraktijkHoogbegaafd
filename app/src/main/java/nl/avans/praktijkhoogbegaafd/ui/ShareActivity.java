@@ -22,58 +22,37 @@ public class ShareActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share);
 
-
+        boolean withPhr = MainActivity.withPhr;
 
         HashMap<String, String> emailList = new HashMap<>();
-        emailList.put("Lisanne Boerboom", "lisanne@praktijkhoogbegaafd.nl");
-        emailList.put("Eda Canikli", "eda@praktijkhoogbegaafd.nl");
-        emailList.put("Eveline Eulderink", "eveline@praktijkhoogbegaafd.nl");
-        emailList.put("Hanneke van de Sanden", "hanneke@praktijkhoogbegaafd.nl");
-        emailList.put("Imke van der Velden", "imke@praktijkhoogbegaafd.nl");
-        emailList.put("Lotte Kobossen", "lotte@praktijkhoogbegaafd.nl");
-        emailList.put("Maud van Hoving", "maud@praktijkhoogbegaafd.nl");
-        emailList.put("Meghan Kalisvaart", "meghan@praktijkhoogbegaafd.nl");
-        emailList.put("Milou van Beijsterveldt", "milou@praktijkhoogbegaafd.nl");
-        emailList.put("Mirthe Zom", "mirthe@praktijkhoogbegaafd.nl");
-        emailList.put("Noor Vugs", "noor@praktijkhoogbegaafd.nl");
-        emailList.put("Tessa van Sluijs", "tessa@praktijkhoogbegaafd.nl");
-        emailList.put("Yvonne Buijsen", "yvonne@praktijkhoogbegaafd.nl");
-        emailList.put("Leah Keijzer", "leah@praktijkhoogbegaafd.nl");
-        emailList.put("Sjarai Gelissen", "sjarai@praktijkhoogbegaafd.nl");
-        emailList.put("Dev", "bbuijsen@gmail.com");
+
+        String[] begeleidsters = getResources().getStringArray(R.array.begeleidsters);
+
+        for(String begeleidster : begeleidsters){
+            String email = begeleidster.split(" ")[0] + "@praktijkhoogbegaafd.nl";
+            if (begeleidster.split(" ")[0].equals("Denise")){
+                email = begeleidster.split(" ")[0] + "_" + begeleidster.split(" ")[1].charAt(0) + "@praktijkhoogbegaafd.nl";
+            }
+            System.out.println(email);
+            emailList.put(begeleidster, email);
+        }
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
         File pdf = (File) getIntent().getSerializableExtra("pdf");
 
-        if(pdf.canRead() && pdf.exists()){
-            System.out.println("GELUKT");
-        }
-
         Uri uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", pdf);
 
         Intent i = new Intent(Intent.ACTION_SEND);
-        i.putExtra(Intent.EXTRA_EMAIL, new String[]{emailList.get(MainActivity.begeleidster)});
-//        i.putExtra(Intent.EXTRA_EMAIL, new String[]{emailList.get("Dev")});
+        if(withPhr){
+            i.putExtra(Intent.EXTRA_EMAIL, new String[]{emailList.get(MainActivity.begeleidster)});
+        }
         i.putExtra(Intent.EXTRA_SUBJECT,"Verslag uit Praktijkhoogbegaafd app van " + MainActivity.name);
         i.putExtra(Intent.EXTRA_TEXT,"Dit verslag bestaat uit de data van " + LocalDate.now().minusDays(6).toString() + " tot en met " + LocalDate.now().toString() + ".");
         i.putExtra(Intent.EXTRA_STREAM,uri);
         i.setType("application/pdf");
         startActivity(Intent.createChooser(i,"Share your progression..."));
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                });
-            }
-        });
-
     }
 
     public void goBack(View v){

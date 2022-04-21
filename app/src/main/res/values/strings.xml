@@ -25,4 +25,25 @@
     <string name="shareMessage">Kies welke grafieken je wil delen met je begeleider.</string>
 
     <string name="version">Versie 1.3.0</string>
+
+    <string name="PREFS_NAME">NAME</string>
+    <string name="PREFS_CHILDRENMODE">CHILDRENMODE</string>
+    <string name="PREFS_BEGELEIDSTER">BEGELEIDSTER</string>
+    <string name="PREFS_WITHPHR">WITHPHR</string>
+
+    <string-array name="begeleidsters">
+        <item>Chelsea Aarts</item>
+        <item>Claire Spoormakers</item>
+        <item>Denise Damen</item>
+        <item>Denise Janssen</item>
+        <item>Eda Canikli</item>
+        <item>Eveline Eulderink</item>
+        <item>Lisanne Boerboom</item>
+        <item>Meghan Kalisvaart</item>
+        <item>Milou van Beijsterveldt</item>
+        <item>Mirthe Zom</item>
+        <item>Sjarai Gelissen</item>
+        <item>Tessa van Sluijs</item>
+        <item>Yvonne Duran</item>
+    </string-array>
 </resources>

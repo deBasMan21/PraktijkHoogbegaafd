@@ -1,22 +1,12 @@
 package nl.avans.praktijkhoogbegaafd.ui.graph;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.graphics.pdf.PdfDocument;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.transition.Scene;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +18,6 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -39,17 +28,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.SQLOutput;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -60,11 +44,9 @@ import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.dal.FeelingEntity;
 import nl.avans.praktijkhoogbegaafd.domain.DayFeeling;
 import nl.avans.praktijkhoogbegaafd.logic.FeelingsEntityManager;
-import nl.avans.praktijkhoogbegaafd.logic.ScreenshotLogic;
 import nl.avans.praktijkhoogbegaafd.ui.ScreenShotActivity;
-import nl.avans.praktijkhoogbegaafd.ui.ShareActivity;
-import nl.avans.praktijkhoogbegaafd.ui.home.HomeFragment;
 
+@SuppressLint("SetTextI18n")
 public class GraphFragment extends Fragment {
 
     private GraphViewModel graphViewModel;
@@ -87,8 +69,6 @@ public class GraphFragment extends Fragment {
     private ArrayAdapter<String> adapterChildren = null;
     private ArrayAdapter<String> adapterAdult = null;
 
-    private File file;
-
     private View root;
     private int position;
 
@@ -99,23 +79,6 @@ public class GraphFragment extends Fragment {
     private double intellecto = 0;
     private double psymo = 0;
     private double senzo = 0;
-
-    private String[] names = {"completeView", "Emoto", "Fanti", "Intellecto", "Psymo", "Senzo" };
-    private String[] parentNames = {"completeViewParent", "EmotoParent", "FantiParent", "IntellectoParent", "PsymoParent", "SenzoParent" };
-
-    private Bitmap ssEmoto = null;
-    private Bitmap ssFanti = null;
-    private Bitmap ssIntellecto = null;
-    private Bitmap ssPsymo = null;
-    private Bitmap ssSenzo = null;
-    private Bitmap ssTotal = null;
-
-    private Bitmap ssEmotoParent = null;
-    private Bitmap ssFantiParent = null;
-    private Bitmap ssIntellectoParent = null;
-    private Bitmap ssPsymoParent = null;
-    private Bitmap ssSenzoParent = null;
-    private Bitmap ssTotalParent = null;
 
     private TextView tv_score_emoto;
     private TextView tv_score_fanti;
@@ -131,11 +94,6 @@ public class GraphFragment extends Fragment {
     private EditText et_date;
     private LocalDate selectedDate;
 
-    private ScrollView sv;
-
-    private boolean ssDone = false;
-    private int name;
-
     private boolean weekOrDayStats = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -147,10 +105,6 @@ public class GraphFragment extends Fragment {
         } else{
             root = inflater.inflate(R.layout.fragment_graph_adult, container, false);
         }
-
-
-
-        sv = root.findViewById(R.id.sv);
 
         gv = root.findViewById(R.id.gv_graph);
 
@@ -198,14 +152,12 @@ public class GraphFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("hij veranderd");
                 firstTime = false;
                 makeGraph(position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                System.out.println("hij veranderd");
                 firstTime = false;
                 makeGraph(spinner.getSelectedItemPosition());
             }
@@ -214,18 +166,16 @@ public class GraphFragment extends Fragment {
         tb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("hij veranderd");
                 ToggleButton button = (ToggleButton) v;
                 firstTime = false;
                 if(button.isChecked()){
                     parental = false;
                     spinner.setAdapter(adapterAdult);
-                    makeGraph(spinner.getSelectedItemPosition());
                 } else {
                     parental = true;
                     spinner.setAdapter(adapterChildren);
-                    makeGraph(spinner.getSelectedItemPosition());
                 }
+                makeGraph(spinner.getSelectedItemPosition());
                 setStats(weekOrDayStats);
             }
         });
@@ -263,14 +213,8 @@ public class GraphFragment extends Fragment {
         cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                System.out.println("hij veranderd");
-                if(isChecked){
-                    gv.getLegendRenderer().setVisible(true);
-                    makeGraph(position);
-                } else{
-                    gv.getLegendRenderer().setVisible(false);
-                    makeGraph(position);
-                }
+                gv.getLegendRenderer().setVisible(isChecked);
+                makeGraph(position);
             }
         });
 
@@ -288,12 +232,12 @@ public class GraphFragment extends Fragment {
                     }).setPositiveButton("Alleen kind", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.CHILDONLY).putExtra("date", selectedDate.toString()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                            getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.PARENTONLY).putExtra("date", selectedDate.toString()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         }
                     }).setNegativeButton("Alleen ouder", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.PARENTONLY).putExtra("date", selectedDate.toString()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                            getContext().startActivity(new Intent(getContext(), ScreenShotActivity.class).putExtra("type", PDFTypes.CHILDONLY).putExtra("date", selectedDate.toString()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         }
                     }).setTitle("Maak uw keuze en deel!").show();
                 } else {
@@ -333,6 +277,7 @@ public class GraphFragment extends Fragment {
         this.position = position;
         new getFeelingForDays().execute();
     }
+
 
     public void setStats(boolean weekOrDay){
         if(weekOrDay){
@@ -418,17 +363,17 @@ public class GraphFragment extends Fragment {
         if(MainActivity.childrenmode && parental){
             gv.getViewport().setMinX(1);
             gv.getViewport().setMinY(0);
-            gv.getViewport().setMaxX(7);
+            gv.getViewport().setMaxX(8);
             gv.getViewport().setMaxY(10);
         } else if (!parental) {
             gv.getViewport().setMinX(1);
             gv.getViewport().setMinY(-2);
-            gv.getViewport().setMaxX(7);
+            gv.getViewport().setMaxX(8);
             gv.getViewport().setMaxY(2);
         } else {
             gv.getViewport().setMinX(1);
             gv.getViewport().setMinY(-2);
-            gv.getViewport().setMaxX(14);
+            gv.getViewport().setMaxX(15);
             gv.getViewport().setMaxY(2);
         }
 
@@ -453,8 +398,6 @@ public class GraphFragment extends Fragment {
                 emoto.setTitle("Emotionele intensiteit");
             }
             gv.addSeries(emoto);
-
-
 
             LineGraphSeries<DataPoint> fanti = createFanti();
 

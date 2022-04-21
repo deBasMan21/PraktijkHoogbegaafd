@@ -45,28 +45,6 @@
         android:text="Naam"
         app:layout_constraintTop_toBottomOf="@+id/tv_settings_name" />
 
-
-    <TextView
-        android:id="@+id/tv_settings_parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ouder:"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_settings_name" />
-
-    <EditText
-        android:id="@+id/et_settings_parent"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-
-        android:visibility="invisible"
-        android:text="ParentName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_settings_parent" />
-
     <Button
         android:id="@+id/bn_settings_confirm"
         android:layout_marginTop="20dp"
@@ -76,9 +54,10 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_settings_parent" />
+        app:layout_constraintTop_toBottomOf="@+id/et_settings_name" />
 
     <TextView
+        android:id="@+id/tv_settings_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/version"

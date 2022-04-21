@@ -59,7 +59,8 @@ public class ScreenShotActivity extends AppCompatActivity {
     private List<FeelingEntity> currentFeeling = new ArrayList<>();
     private List<DayFeeling> dayFeelings = new ArrayList<>();
 
-    private boolean parental = true;
+    private boolean parent = true;
+    private boolean parental = false;
     private GraphView gv;
 
     private Double[] weekStats = new Double[5];
@@ -99,7 +100,7 @@ public class ScreenShotActivity extends AppCompatActivity {
 
     private PDFTypes type;
 
-    private int name;
+    private int name = 0;
 
     private LocalDate selectedDate;
 
@@ -108,14 +109,19 @@ public class ScreenShotActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen_shot);
 
-        gv = findViewById(R.id.gv_graph);
+        gv = findViewById(R.id.gv_graph_ss);
 
         selectedDate = LocalDate.parse(getIntent().getStringExtra("date"));
 
-        parental = true;
-        name = 0;
+        parental = MainActivity.childrenmode;
 
         type = (PDFTypes) getIntent().getSerializableExtra("type");
+
+        if (type == PDFTypes.PARENTONLY || type == PDFTypes.ALL){
+            parent = true;
+        } else {
+            parent = false;
+        }
 
         gv.getLegendRenderer().setVisible(false);
 
@@ -123,7 +129,7 @@ public class ScreenShotActivity extends AppCompatActivity {
 
         isEmailIntentStarted = true;
 
-        makeGraph(0);
+        makeGraph(name);
     }
 
     public void makeGraph(int position) {
@@ -138,7 +144,7 @@ public class ScreenShotActivity extends AppCompatActivity {
 
                     for(int i = 0; i < amountOfDays; i++){
                         DayFeeling feelings;
-                        feelings = fem.getFeelingsForDay(selectedDate.plusDays(amountOfDays).minusDays(amountOfDays - 1 - i).toString(), parental);
+                        feelings = fem.getFeelingsForDay(selectedDate.plusDays(amountOfDays).minusDays(amountOfDays - 1 - i).toString(), parent);
                         feelingsForDays.add(feelings);
                     }
                     dayFeelings = feelingsForDays;
@@ -174,20 +180,20 @@ public class ScreenShotActivity extends AppCompatActivity {
 
     public void makeGraphView() {
 
-        if (MainActivity.childrenmode && parental) {
+        if (parental && parent) {
             gv.getViewport().setMinX(1);
             gv.getViewport().setMinY(0);
-            gv.getViewport().setMaxX(7);
+            gv.getViewport().setMaxX(8);
             gv.getViewport().setMaxY(10);
-        } else if (!parental) {
+        } else if (parental) {
             gv.getViewport().setMinX(1);
             gv.getViewport().setMinY(-2);
-            gv.getViewport().setMaxX(7);
+            gv.getViewport().setMaxX(8);
             gv.getViewport().setMaxY(2);
         } else {
             gv.getViewport().setMinX(1);
             gv.getViewport().setMinY(-2);
-            gv.getViewport().setMaxX(14);
+            gv.getViewport().setMaxX(15);
             gv.getViewport().setMaxY(2);
         }
 
@@ -307,9 +313,9 @@ public class ScreenShotActivity extends AppCompatActivity {
             if(name < 5){
                 name++;
                 makeGraph(name);
-            } else if (name == 5 && parental){
+            } else if (name == 5 && parent){
                 name = 0;
-                parental = false;
+                parent = false;
                 makeGraph(name);
             } else{
                 startEmail();
@@ -320,7 +326,7 @@ public class ScreenShotActivity extends AppCompatActivity {
     public void makeScreenshots() {
         ScreenshotLogic logic = new ScreenshotLogic();
         Bitmap b = logic.takeScreenshot(gv);
-        if (parental) {
+        if (!parent) {
             storeScreenshot(b, names[name]);
         } else {
             storeScreenshot(b, parentNames[name]);
@@ -601,20 +607,20 @@ public class ScreenShotActivity extends AppCompatActivity {
         canvas.drawBitmap(scaledLogo, (width - scaledLogo.getWidth()) / 2, -100, paint);
         canvas.drawBitmap(legend, width - legend.getWidth(), 0, paint);
 
-
-
         doc.finishPage(page);
-
 
         ContextWrapper cw = new ContextWrapper(this);
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
         File file = new File(directory, MainActivity.name + "(" + LocalDate.now() + ").pdf");
         file.setReadable(true);
         this.file = file;
+
         if (file.exists()) {
             file.delete();
         }
+
         FileOutputStream fos = null;
+
         try {
             fos = new FileOutputStream(file);
             doc.writeTo(fos);
@@ -623,6 +629,7 @@ public class ScreenShotActivity extends AppCompatActivity {
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }
+
         return file;
     }
 
@@ -652,7 +659,7 @@ public class ScreenShotActivity extends AppCompatActivity {
         bold.setTextSize(40);
         bold.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
 
-        canvas.drawText("Kind:", 20, logo.getHeight(), bold);
+        canvas.drawText("Ouder:", 20, logo.getHeight(), bold);
 
         canvas.drawBitmap(ssTotal, 0, logo.getHeight() + 20, paint);
         canvas.drawBitmap(ssEmoto, ssTotal.getWidth(), logo.getHeight() + 20, paint);
@@ -661,7 +668,7 @@ public class ScreenShotActivity extends AppCompatActivity {
         canvas.drawBitmap(ssPsymo, ssIntellecto.getWidth(), ssTotal.getHeight() + logo.getHeight() + 20, paint);
         canvas.drawBitmap(ssSenzo, ssIntellecto.getWidth() * 2, ssTotal.getHeight() + logo.getHeight() + 20, paint);
 
-        canvas.drawText("Ouder:", 20, logo.getHeight() + ssTotalParent.getHeight() * 2 + 40, bold);
+        canvas.drawText("Kind:", 20, logo.getHeight() + ssTotalParent.getHeight() * 2 + 40, bold);
 
         canvas.drawBitmap(ssTotalParent, 0, logo.getHeight() + ssTotalParent.getHeight() * 2 + 90, paint);
         canvas.drawBitmap(ssEmotoParent, ssTotalParent.getWidth(), logo.getHeight() + ssTotalParent.getHeight() * 2 + 90, paint);

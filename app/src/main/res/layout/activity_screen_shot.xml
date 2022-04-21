@@ -7,7 +7,7 @@
     tools:context=".ui.ScreenShotActivity">
 
     <com.jjoe64.graphview.GraphView
-        android:id="@+id/gv_graph"
+        android:id="@+id/gv_graph_ss"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_margin="20dp"

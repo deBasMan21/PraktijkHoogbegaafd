@@ -1,6 +1,8 @@
 package nl.avans.praktijkhoogbegaafd.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,23 +33,18 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity {
-
     private AppBarConfiguration mAppBarConfiguration;
 
     public static FeelingsEntityManager fem;
-    public static InfoEntityManager iem;
 
     public static boolean childrenmode = false;
-
+    public static boolean withPhr = false;
     public static String name = "";
     public static String begeleidster = "";
-    public static String birthDay = "";
-    public static String parentalName = "";
 
     public static int id = 1;
 
     public static File file;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +52,10 @@ public class MainActivity extends AppCompatActivity {
 
         ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
 
-
-
         String path = Environment.getExternalStorageDirectory().toString();
         file = new File(path);
 
         fem = new FeelingsEntityManager(getApplication());
-        iem = new InfoEntityManager(getApplication());
-
 
         id = fem.getHighestId();
 
@@ -72,15 +65,13 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
 
-        InfoEntity info;
+        SharedPreferences prefs = getSharedPreferences("info", Context.MODE_PRIVATE);
 
-        if(iem.hasInfo()){
-            info = iem.getInfo();
-            MainActivity.name = info.getName();
-            MainActivity.parentalName = info.getParent();
-            MainActivity.begeleidster = info.getBegeleidster();
-            MainActivity.birthDay = info.getBirthday();
-            MainActivity.childrenmode = info.isParentalControl();
+        if(!prefs.getString(getResources().getString(R.string.PREFS_NAME), "empty").equals("empty")){
+            MainActivity.name = prefs.getString(getResources().getString(R.string.PREFS_NAME), "");
+            MainActivity.begeleidster = prefs.getString(getResources().getString(R.string.PREFS_BEGELEIDSTER), "");
+            MainActivity.childrenmode = prefs.getBoolean(getResources().getString(R.string.PREFS_CHILDRENMODE), false);
+            MainActivity.withPhr = prefs.getBoolean(getResources().getString(R.string.PREFS_WITHPHR), false);
         } else {
             Intent intent = new Intent(this, StartupActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -94,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         TextView tvName = navHeader.findViewById(R.id.tv_header_name);
         TextView tvBegeleidster = navHeader.findViewById(R.id.tv_header_begeleidster);
 
-        tvBegeleidster.setText(begeleidster);
+        tvBegeleidster.setText(withPhr ? begeleidster : "");
         tvName.setText(name);
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(

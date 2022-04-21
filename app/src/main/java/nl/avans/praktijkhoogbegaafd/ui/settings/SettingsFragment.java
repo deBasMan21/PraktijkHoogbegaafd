@@ -1,7 +1,10 @@
 package nl.avans.praktijkhoogbegaafd.ui.settings;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +16,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -28,9 +34,7 @@ import nl.avans.praktijkhoogbegaafd.logic.InfoEntityManager;
 public class SettingsFragment extends Fragment {
 
     private SettingsViewModel settingsViewModel;
-
-
-    private InfoEntityManager iem;
+    private int resetCount = 0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -45,15 +49,12 @@ public class SettingsFragment extends Fragment {
             root = inflater.inflate(R.layout.fragment_settings_adult, container, false);
         }
 
-        iem = MainActivity.iem;
-
-        String[] categories = {"Eda Canikli", "Eveline Eulderink", "Hanneke van de Sanden", "Imke van der Velden", "Lisanne Boerboom", "Leah Keijzer",
-                "Lotte Kobossen", "Maud van Hoving", "Meghan Kalisvaart", "Milou van Beijsterveldt", "Mirthe Zom", "Noor Vugs",
-                "Sjarai Gelissen", "Tessa van Sluijs", "Yvonne Buijsen"};
+        String[] categories = getResources().getStringArray(R.array.begeleidsters);
         Spinner spinner = (Spinner) root.findViewById(R.id.sr_settings_begeleidster);
         ArrayAdapter<String> adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
         int selectedBegeleidster = 0;
         for(int i = 0; i < categories.length; i++){
             if(categories[i].equals(MainActivity.begeleidster)){
@@ -62,20 +63,12 @@ public class SettingsFragment extends Fragment {
         }
         spinner.setSelection(selectedBegeleidster);
 
+        TextView tv_spinner_text = root.findViewById(R.id.tv_settings_begeleidster);
 
-
-        EditText parent = root.findViewById(R.id.et_settings_parent);
-        parent.setText(MainActivity.parentalName);
-        TextView parentText = root.findViewById(R.id.tv_settings_parent);
-        if(MainActivity.childrenmode){
-            parent.setVisibility(View.VISIBLE);
-            parentText.setVisibility(View.VISIBLE);
-        } else {
-            parent.setVisibility(View.INVISIBLE);
-            parentText.setVisibility(View.INVISIBLE);
-        }
-
-        Calendar calendar = Calendar.getInstance();
+        SharedPreferences prefs = getContext().getSharedPreferences("info", Context.MODE_PRIVATE);
+        boolean withPhr = prefs.getBoolean(getResources().getString(R.string.PREFS_WITHPHR), false);
+        spinner.setVisibility(withPhr ? View.VISIBLE : View.GONE);
+        tv_spinner_text.setVisibility(withPhr ? View.VISIBLE : View.GONE);
 
         EditText etName = root.findViewById(R.id.et_settings_name);
         etName.setText(MainActivity.name);
@@ -87,16 +80,53 @@ public class SettingsFragment extends Fragment {
                 String oldName = MainActivity.name;
                 MainActivity.begeleidster = categories[spinner.getSelectedItemPosition()];
                 MainActivity.name = etName.getText().toString();
-                MainActivity.parentalName = parent.getText().toString();
                 Intent intent = new Intent(getContext(), MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                iem.updateInfo(oldName, new InfoEntity(MainActivity.name, MainActivity.birthDay, MainActivity.parentalName, MainActivity.begeleidster, MainActivity.childrenmode));
+                SharedPreferences prefs = getContext().getSharedPreferences("info", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString(getResources().getString(R.string.PREFS_NAME), etName.getText().toString());
+                editor.putString(getResources().getString(R.string.PREFS_BEGELEIDSTER), categories[spinner.getSelectedItemPosition()]);
+                editor.apply();
 
                 startActivity(intent);
             }
         });
 
+        TextView tv_version = root.findViewById(R.id.tv_settings_version);
+        tv_version.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetCount++;
+                if(resetCount == 5){
+                    resetCount = 0;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Je staat op het punt om de app te resetten. Dit kan niet teruggedraaid worden.").setNegativeButton("Ga door", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            MainActivity.fem.deleteAll();
+
+                            SharedPreferences prefs = getContext().getSharedPreferences("info", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.remove(getResources().getString(R.string.PREFS_WITHPHR));
+                            editor.remove(getResources().getString(R.string.PREFS_CHILDRENMODE));
+                            editor.remove(getResources().getString(R.string.PREFS_BEGELEIDSTER));
+                            editor.remove(getResources().getString(R.string.PREFS_NAME));
+                            editor.apply();
+
+                            Intent intent = new Intent(getContext(), MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        }
+                    }).setPositiveButton("Annuleren", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).setTitle("App resetten").show();
+                }
+            }
+        });
 
         return root;
     }

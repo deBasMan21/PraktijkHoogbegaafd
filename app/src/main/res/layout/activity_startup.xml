@@ -6,7 +6,86 @@
     android:layout_height="match_parent"
     tools:context=".ui.StartupActivity">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_startup_select_phr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingHorizontal="50dp"
+        >
+
+        <ImageView
+            android:id="@+id/iv_startup_stars"
+            android:layout_width="400dp"
+            android:layout_height="200dp"
+            android:src="@mipmap/ic_phr_logo_large_foreground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_startup_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gebruik je deze app in het kader van de behandeling bij Praktijk Hoogbegaafd?"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_startup_stars" />
+
+        <Switch
+            android:id="@+id/s_startup_withphr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:showText="true"
+            android:splitTrack="true"
+            android:textOff="Nee"
+            android:textOn="Ja"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_startup_toggle"
+            android:layout_marginTop="25dp"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <TextView
+            android:id="@+id/tv_startup_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ontvangen code:"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/s_startup_withphr"
+            android:layout_marginTop="25dp"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/et_startup_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="1234"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_startup_code"
+            android:inputType="numberPassword"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/bn_startup_continue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Verder"
+            android:layout_marginTop="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_startup_code" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <LinearLayout
+        android:id="@+id/ll_startup_select_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -14,6 +93,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
         >
 
         <LinearLayout
@@ -62,6 +142,4 @@
 
 
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

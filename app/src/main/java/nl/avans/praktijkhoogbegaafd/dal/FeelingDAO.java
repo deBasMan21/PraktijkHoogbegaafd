@@ -19,4 +19,7 @@ public interface FeelingDAO {
 
     @Query("SELECT id FROM FeelingEntity ORDER BY id DESC LIMIT 1")
     int getHighestId();
+
+    @Query("DELETE FROM FeelingEntity")
+    void deleteAll();
 }

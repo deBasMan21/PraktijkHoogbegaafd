@@ -39,4 +39,8 @@ public class FeelingsEntityManager {
     public int getHighestId(){
         return feelingDAO.getHighestId();
     }
+
+    public void deleteAll() {
+        feelingDAO.deleteAll();
+    }
 }
