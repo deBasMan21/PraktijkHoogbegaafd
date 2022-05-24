@@ -1,5 +1,5 @@
-package nl.avans.praktijkhoogbegaafd.domain;
+package nl.avans.praktijkhoogbegaafd.domain
 
-public enum PDFTypes {
+enum class PDFTypes {
     PARENTONLY, CHILDONLY, ALL
 }
