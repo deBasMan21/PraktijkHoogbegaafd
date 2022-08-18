@@ -28,6 +28,7 @@ import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.dal.InfoEntity;
 import nl.avans.praktijkhoogbegaafd.logic.FeelingsEntityManager;
 import nl.avans.praktijkhoogbegaafd.logic.InfoEntityManager;
+import nl.avans.praktijkhoogbegaafd.logic.NotificationUtils;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -95,6 +96,17 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        reminderNotification();
+    }
+
+    public void reminderNotification()
+    {
+        NotificationUtils _notificationUtils = new NotificationUtils(this);
+        long _currentTime = System.currentTimeMillis();
+        long tenSeconds = 1000 * 10;
+        long _triggerReminder = _currentTime + tenSeconds; //triggers a reminder after 10 seconds.
+        _notificationUtils.setReminder(_triggerReminder);
     }
 
     @Override

@@ -51,7 +51,7 @@
             android:exported="false"
             android:grantUriPermissions="true" />
 
-        <receiver android:name=".logic.ReminderBroadcast" />
+        <receiver android:name=".logic.ReminderBroadcast"/>
     </application>
 
 </manifest>
