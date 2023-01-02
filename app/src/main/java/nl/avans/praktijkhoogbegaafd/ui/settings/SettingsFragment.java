@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -26,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import nl.avans.praktijkhoogbegaafd.logic.NotificationUtils;
 import nl.avans.praktijkhoogbegaafd.ui.MainActivity;
 import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.dal.InfoEntity;
@@ -35,19 +38,15 @@ public class SettingsFragment extends Fragment {
 
     private SettingsViewModel settingsViewModel;
     private int resetCount = 0;
+    private boolean notificationsEnabled = true;
+    private String notificationsKey = "notificationsEnabled";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         settingsViewModel =
                 new ViewModelProvider(this).get(SettingsViewModel.class);
 
-        View root = null;
-
-        if(MainActivity.childrenmode){
-            root = inflater.inflate(R.layout.fragment_settings, container, false);
-        } else {
-            root = inflater.inflate(R.layout.fragment_settings_adult, container, false);
-        }
+        View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
         String[] categories = getResources().getStringArray(R.array.begeleidsters);
         Spinner spinner = (Spinner) root.findViewById(R.id.sr_settings_begeleidster);
@@ -69,6 +68,7 @@ public class SettingsFragment extends Fragment {
         boolean withPhr = prefs.getBoolean(getResources().getString(R.string.PREFS_WITHPHR), false);
         spinner.setVisibility(withPhr ? View.VISIBLE : View.GONE);
         tv_spinner_text.setVisibility(withPhr ? View.VISIBLE : View.GONE);
+        notificationsEnabled = prefs.getBoolean(notificationsKey, true);
 
         EditText etName = root.findViewById(R.id.et_settings_name);
         etName.setText(MainActivity.name);
@@ -112,6 +112,7 @@ public class SettingsFragment extends Fragment {
                             editor.remove(getResources().getString(R.string.PREFS_CHILDRENMODE));
                             editor.remove(getResources().getString(R.string.PREFS_BEGELEIDSTER));
                             editor.remove(getResources().getString(R.string.PREFS_NAME));
+                            editor.remove(notificationsKey);
                             editor.apply();
 
                             Intent intent = new Intent(getContext(), MainActivity.class);
@@ -128,8 +129,44 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        ToggleButton tbNotifications = root.findViewById(R.id.tb_settings_notifications);
+        tbNotifications.setChecked(notificationsEnabled);
+        tbNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (notificationsEnabled) {
+                    cancelReminderNotification();
+                    System.out.println("debug: disabled notifications");
+                } else {
+                    setReminderNotification();
+                    System.out.println("debug: enabled notifications");
+                }
+                prefs.edit().putBoolean(notificationsKey, !notificationsEnabled).apply();
+                notificationsEnabled = !notificationsEnabled;
+            }
+        });
+
+        Button privacyBtn = root.findViewById(R.id.tv_settings_privacy);
+        privacyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent openPrivacyPolicy = new Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.google.com/gview?embedded=true&url=https://www.praktijkhoogbegaafd.nl/wp-content/uploads/2021/01/Privacy-policy-jan-2021.pdf"));
+                startActivity(openPrivacyPolicy);
+            }
+        });
+
         return root;
     }
 
+    public void setReminderNotification()
+    {
+        NotificationUtils _notificationUtils = new NotificationUtils(getContext());
+        _notificationUtils.setReminders();
+    }
 
+    public void cancelReminderNotification()
+    {
+        NotificationUtils _notificationUtils = new NotificationUtils(getContext());
+        _notificationUtils.cancelReminders();
+    }
 }
