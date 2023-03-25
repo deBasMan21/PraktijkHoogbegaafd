@@ -12,8 +12,10 @@ import android.view.View;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Map;
 
 import nl.avans.praktijkhoogbegaafd.R;
+import nl.avans.praktijkhoogbegaafd.domain.BegeleidstersHolder;
 
 public class ShareActivity extends AppCompatActivity {
 
@@ -24,18 +26,7 @@ public class ShareActivity extends AppCompatActivity {
 
         boolean withPhr = MainActivity.withPhr;
 
-        HashMap<String, String> emailList = new HashMap<>();
-
-        String[] begeleidsters = getResources().getStringArray(R.array.begeleidsters);
-
-        for(String begeleidster : begeleidsters){
-            String email = begeleidster.split(" ")[0] + "@praktijkhoogbegaafd.nl";
-            if (begeleidster.split(" ")[0].equals("Denise")){
-                email = begeleidster.split(" ")[0] + "_" + begeleidster.split(" ")[1].charAt(0) + "@praktijkhoogbegaafd.nl";
-            }
-            System.out.println(email);
-            emailList.put(begeleidster, email);
-        }
+        Map<String, String> emailList = BegeleidstersHolder.standard.begeleidsters;
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());

@@ -18,6 +18,7 @@ import java.util.Calendar;
 
 import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.dal.InfoEntity;
+import nl.avans.praktijkhoogbegaafd.domain.BegeleidstersHolder;
 import nl.avans.praktijkhoogbegaafd.logic.InfoEntityManager;
 
 public class GiveInfoActivity extends AppCompatActivity {
@@ -35,7 +36,7 @@ public class GiveInfoActivity extends AppCompatActivity {
         parental = getIntent().getBooleanExtra("parental", false);
         withPhr = getIntent().getBooleanExtra("withPhr", false);
 
-        String[] categories = getResources().getStringArray(R.array.begeleidsters);
+        String[] categories = BegeleidstersHolder.standard.begeleidsters.keySet().toArray(new String[0]);
 
         Spinner spinner = (Spinner) findViewById(R.id.sr_info_behandelaar);
         ArrayAdapter<String> adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, categories);

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -28,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import nl.avans.praktijkhoogbegaafd.domain.BegeleidstersHolder;
 import nl.avans.praktijkhoogbegaafd.logic.NotificationUtils;
 import nl.avans.praktijkhoogbegaafd.ui.MainActivity;
 import nl.avans.praktijkhoogbegaafd.R;
@@ -48,11 +50,16 @@ public class SettingsFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        String[] categories = getResources().getStringArray(R.array.begeleidsters);
+        String[] categories = BegeleidstersHolder.standard.begeleidsters.keySet().toArray(new String[0]);
         Spinner spinner = (Spinner) root.findViewById(R.id.sr_settings_begeleidster);
         ArrayAdapter<String> adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+        EditText etCode = root.findViewById(R.id.et_settings_code);
+        TextView tvCode = root.findViewById(R.id.tv_settings_code);
+        Button bnCode = root.findViewById(R.id.bn_settings_continue);
+        LinearLayout llCode = root.findViewById(R.id.ll_settings_code);
 
         int selectedBegeleidster = 0;
         for(int i = 0; i < categories.length; i++){
@@ -69,6 +76,46 @@ public class SettingsFragment extends Fragment {
         spinner.setVisibility(withPhr ? View.VISIBLE : View.GONE);
         tv_spinner_text.setVisibility(withPhr ? View.VISIBLE : View.GONE);
         notificationsEnabled = prefs.getBoolean(notificationsKey, true);
+
+        if (withPhr) {
+            llCode.setVisibility(View.GONE);
+            tvCode.setVisibility(View.GONE);
+
+            tv_spinner_text.setVisibility(View.VISIBLE);
+            spinner.setVisibility(View.VISIBLE);
+        } else {
+            llCode.setVisibility(View.VISIBLE);
+            tvCode.setVisibility(View.VISIBLE);
+
+            tv_spinner_text.setVisibility(View.GONE);
+            spinner.setVisibility(View.GONE);
+        }
+
+        bnCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (etCode.getText().toString().equals("1065")) {
+                    llCode.setVisibility(View.GONE);
+                    tvCode.setVisibility(View.GONE);
+
+                    tv_spinner_text.setVisibility(View.VISIBLE);
+                    spinner.setVisibility(View.VISIBLE);
+
+                    SharedPreferences prefs = getContext().getSharedPreferences("info", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean(getResources().getString(R.string.PREFS_WITHPHR), true);
+                    editor.apply();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Ingevoerde code is onjuist").setNegativeButton("Oké", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).setTitle("Oeps...").show();
+                }
+            }
+        });
 
         EditText etName = root.findViewById(R.id.et_settings_name);
         etName.setText(MainActivity.name);

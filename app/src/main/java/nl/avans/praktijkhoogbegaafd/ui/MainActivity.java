@@ -22,16 +22,29 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.dal.InfoEntity;
+import nl.avans.praktijkhoogbegaafd.domain.BegeleidstersHolder;
 import nl.avans.praktijkhoogbegaafd.logic.FeelingsEntityManager;
 import nl.avans.praktijkhoogbegaafd.logic.InfoEntityManager;
 import nl.avans.praktijkhoogbegaafd.logic.NotificationUtils;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
@@ -98,15 +111,20 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         reminderNotification();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                BegeleidstersHolder.standard.begeleidsters = getBegeleidsters();
+            }
+        }).start();
+
     }
 
     public void reminderNotification()
     {
         NotificationUtils _notificationUtils = new NotificationUtils(this);
-        long _currentTime = System.currentTimeMillis();
-        long tenSeconds = 1000 * 10;
-        long _triggerReminder = _currentTime + tenSeconds; //triggers a reminder after 10 seconds.
-        _notificationUtils.setReminder(_triggerReminder);
+        _notificationUtils.setReminders();
     }
 
     @Override
@@ -121,5 +139,42 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    public Map<String, String> getBegeleidsters() {
+        try {
+            URL url = new URL("https://www.praktijkhoogbegaafd.nl/begeleidsters.json");
+            String jsonString = getJson(url);
+            JSONObject obj = new JSONObject(jsonString);
+
+            Map<String, String> map = new HashMap<String, String>();
+            Iterator<String> keys = obj.keys();
+            while(keys.hasNext()) {
+                String key = keys.next();
+                String value = obj.getString(key);
+                map.put(key, value);
+            }
+
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new HashMap<>();
+        }
+    }
+
+    public String getJson(URL url) {
+        try (InputStream input = url.openStream()) {
+            InputStreamReader isr = new InputStreamReader(input);
+            BufferedReader reader = new BufferedReader(isr);
+            StringBuilder json = new StringBuilder();
+            int c;
+            while ((c = reader.read()) != -1) {
+                json.append((char) c);
+            }
+            return json.toString();
+        } catch(Exception e) {
+            System.out.println(e.getLocalizedMessage());
+            return "error ocurred " + e;
+        }
     }
 }

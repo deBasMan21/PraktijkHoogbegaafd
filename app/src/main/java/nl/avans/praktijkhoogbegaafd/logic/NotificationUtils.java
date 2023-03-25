@@ -10,7 +10,10 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Build;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+
+import java.util.Calendar;
 
 import nl.avans.praktijkhoogbegaafd.R;
 
@@ -59,14 +62,48 @@ public class NotificationUtils extends ContextWrapper
         return _notificationManager;
     }
 
-    public void setReminder(long timeInMillis)
+    public void setReminders() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            setRepeatingReminder(10, 0);
+            setRepeatingReminder(16, 0);
+            setRepeatingReminder(20, 0);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    private void setRepeatingReminder(int hour, int minute)
     {
         Intent _intent = new Intent(_context, ReminderBroadcast.class);
-        PendingIntent _pendingIntent = PendingIntent.getBroadcast(_context, 0, _intent, 0);
+        PendingIntent _pendingIntent = PendingIntent.getBroadcast(_context, 1, _intent, PendingIntent.FLAG_MUTABLE);
 
         AlarmManager _alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-        _alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, _pendingIntent);
+        Calendar cal = Calendar.getInstance();
+        //notification to start tomorrow
+        cal.add(Calendar.DAY_OF_YEAR, 1);
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.SECOND, 0);
+        long time = cal.getTimeInMillis();
+
+        long interval = 86400000;
+
+        _alarmManager.setRepeating(AlarmManager.RTC, time, interval, _pendingIntent);
     }
 
+    public void cancelReminders() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Intent updateServiceIntent = new Intent(this, ReminderBroadcast.class);
+
+        for(int i = 0; i < 24; i++) {
+            PendingIntent pendingUpdateIntent = PendingIntent.getService(this, i, updateServiceIntent, 0);
+
+            try {
+                alarmManager.cancel(pendingUpdateIntent);
+            } catch (Exception e) {
+                System.out.println(e.getLocalizedMessage());
+            }
+        }
+    }
 }

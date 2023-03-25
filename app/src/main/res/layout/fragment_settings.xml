@@ -7,33 +7,74 @@
     tools:context=".ui.settings.SettingsFragment"
     android:layout_margin="20dp">
 
-
-    <TextView
-        android:id="@+id/tv_settings_begeleidster"
+    <LinearLayout
+        android:id="@+id/ll_settings_withPhr"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Begeleidster:"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent">
 
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/sr_settings_begeleidster"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_settings_begeleidster" />
+        <TextView
+            android:id="@+id/tv_settings_begeleidster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Begeleidster:"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/sr_settings_begeleidster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_settings_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ontvangen code:"
+            android:layout_gravity="center"
+            android:visibility="visible"/>
+
+        <LinearLayout
+            android:id="@+id/ll_settings_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/et_settings_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="1234"
+                android:inputType="numberPassword"
+                android:visibility="visible"/>
+
+            <Button
+                android:id="@+id/bn_settings_continue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Verder"
+                android:layout_marginLeft="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_startup_code" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <TextView
+        android:id="@+id/tv_settings_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Naam:"
         android:layout_marginTop="20dp"
-        android:id="@+id/tv_settings_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sr_settings_begeleidster" />
+        app:layout_constraintTop_toBottomOf="@+id/ll_settings_withPhr" />
 
     <EditText
         android:id="@+id/et_settings_name"
