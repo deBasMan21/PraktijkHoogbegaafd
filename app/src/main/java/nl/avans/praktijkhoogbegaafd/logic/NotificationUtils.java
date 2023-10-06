@@ -97,7 +97,7 @@ public class NotificationUtils extends ContextWrapper
         Intent updateServiceIntent = new Intent(this, ReminderBroadcast.class);
 
         for(int i = 0; i < 24; i++) {
-            PendingIntent pendingUpdateIntent = PendingIntent.getService(this, i, updateServiceIntent, 0);
+            PendingIntent pendingUpdateIntent = PendingIntent.getService(this, i, updateServiceIntent, PendingIntent.FLAG_MUTABLE);
 
             try {
                 alarmManager.cancel(pendingUpdateIntent);

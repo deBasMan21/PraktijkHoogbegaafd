@@ -7,21 +7,19 @@ import android.view.View;
 
 public class ScreenshotLogic {
 
-    public Bitmap image;
-
-    public Bitmap takeScreenshot(View v){
+    public static Bitmap takeScreenshot(View v){
         v.setDrawingCacheEnabled(true);
         v.buildDrawingCache(true);
-        Bitmap b = Bitmap.createBitmap(v.getDrawingCache());
+        Bitmap bitmap = v.getDrawingCache();
+        Bitmap b = Bitmap.createBitmap(bitmap);
         v.setDrawingCacheEnabled(true);
-        image = b;
         b.setHasAlpha(true);
 
-        Bitmap newBitmap = Bitmap.createBitmap(image.getWidth(),
-                image.getHeight(), image.getConfig());
+        Bitmap newBitmap = Bitmap.createBitmap(b.getWidth(),
+                b.getHeight(), b.getConfig());
         Canvas canvas = new Canvas(newBitmap);
         canvas.drawColor(Color.WHITE);
-        canvas.drawBitmap(image, 0F, 0F, null);
+        canvas.drawBitmap(b, 0F, 0F, null);
         return newBitmap;
     }
 }

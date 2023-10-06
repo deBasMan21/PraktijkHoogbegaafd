@@ -126,8 +126,6 @@ public class GraphFragment extends Fragment {
 
         makeGraph(0);
 
-        System.out.println("hier maakt hij een nieuwe grafiek");
-
         ToggleButton tb = root.findViewById(R.id.tb_graph_switch);
         ToggleButton tbStats = root.findViewById(R.id.tb_stats_switch);
         if(MainActivity.childrenmode){
@@ -135,7 +133,6 @@ public class GraphFragment extends Fragment {
         } else {
             tb.setVisibility(View.INVISIBLE);
         }
-
 
         Spinner spinner = (Spinner) root.findViewById(R.id.sr_graph_category);
         ArrayAdapter<String> adapter;
@@ -146,8 +143,6 @@ public class GraphFragment extends Fragment {
         }
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-
-
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -191,8 +186,6 @@ public class GraphFragment extends Fragment {
         tv_text_intellecto = root.findViewById(R.id.tv_graph_text_intellecto);
         tv_text_senzo = root.findViewById(R.id.tv_graph_text_psymo);
         tv_text_psymo = root.findViewById(R.id.tv_graph_text_senzo);
-
-
 
         tbStats.setOnClickListener(new View.OnClickListener() {
             @Override

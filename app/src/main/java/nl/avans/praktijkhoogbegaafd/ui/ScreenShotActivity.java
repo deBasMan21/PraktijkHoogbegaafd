@@ -1,8 +1,6 @@
 package nl.avans.praktijkhoogbegaafd.ui;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -14,22 +12,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.ToggleButton;
+import android.view.ViewTreeObserver;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -43,7 +27,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import nl.avans.praktijkhoogbegaafd.R;
 import nl.avans.praktijkhoogbegaafd.dal.FeelingEntity;
@@ -51,16 +34,13 @@ import nl.avans.praktijkhoogbegaafd.domain.DayFeeling;
 import nl.avans.praktijkhoogbegaafd.domain.PDFTypes;
 import nl.avans.praktijkhoogbegaafd.logic.FeelingsEntityManager;
 import nl.avans.praktijkhoogbegaafd.logic.ScreenshotLogic;
-import nl.avans.praktijkhoogbegaafd.ui.graph.GraphFragment;
-import nl.avans.praktijkhoogbegaafd.ui.graph.GraphViewModel;
 
 public class ScreenShotActivity extends AppCompatActivity {
 
     private List<FeelingEntity> currentFeeling = new ArrayList<>();
     private List<DayFeeling> dayFeelings = new ArrayList<>();
 
-    private boolean parent = true;
-    private boolean parental = false;
+    private boolean isChild = true;
     private GraphView gv;
 
     private Double[] weekStats = new Double[5];
@@ -110,26 +90,22 @@ public class ScreenShotActivity extends AppCompatActivity {
         setContentView(R.layout.activity_screen_shot);
 
         gv = findViewById(R.id.gv_graph_ss);
+        gv.getLegendRenderer().setVisible(false);
 
         selectedDate = LocalDate.parse(getIntent().getStringExtra("date"));
-
-        parental = MainActivity.childrenmode;
-
         type = (PDFTypes) getIntent().getSerializableExtra("type");
 
-        if (type == PDFTypes.PARENTONLY || type == PDFTypes.ALL){
-            parent = true;
-        } else {
-            parent = false;
-        }
-
-        gv.getLegendRenderer().setVisible(false);
+        isChild = type == PDFTypes.PARENTONLY || type == PDFTypes.ALL;
 
         makeGraph(0);
 
-        isEmailIntentStarted = true;
-
-        makeGraph(name);
+        gv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                isEmailIntentStarted = true;
+                makeGraph(name);
+            }
+        });
     }
 
     public void makeGraph(int position) {
@@ -144,7 +120,7 @@ public class ScreenShotActivity extends AppCompatActivity {
 
                     for(int i = 0; i < amountOfDays; i++){
                         DayFeeling feelings;
-                        feelings = fem.getFeelingsForDay(selectedDate.plusDays(amountOfDays).minusDays(amountOfDays - 1 - i).toString(), parent);
+                        feelings = fem.getFeelingsForDay(selectedDate.plusDays(amountOfDays).minusDays(amountOfDays - 1 - i).toString(), isChild);
                         feelingsForDays.add(feelings);
                     }
                     dayFeelings = feelingsForDays;
@@ -168,24 +144,27 @@ public class ScreenShotActivity extends AppCompatActivity {
     }
 
     public static double round(Double value, int places) {
+        System.out.println("debug: rouding " + value);
         if (places < 0) throw new IllegalArgumentException();
+        if (value == null) { return 0; }
         if (!Double.isNaN(value)) {
             BigDecimal bd = BigDecimal.valueOf(value);
             bd = bd.setScale(places, RoundingMode.HALF_UP);
+            System.out.println("debug: rounded to " + bd);
             return bd.doubleValue();
         } else {
-            return Double.NaN;
+            return 0;
         }
     }
 
     public void makeGraphView() {
 
-        if (parental && parent) {
+        if (MainActivity.childrenmode && isChild) {
             gv.getViewport().setMinX(1);
             gv.getViewport().setMinY(0);
             gv.getViewport().setMaxX(8);
             gv.getViewport().setMaxY(10);
-        } else if (parental) {
+        } else if (MainActivity.childrenmode) {
             gv.getViewport().setMinX(1);
             gv.getViewport().setMinY(-2);
             gv.getViewport().setMaxX(8);
@@ -212,7 +191,7 @@ public class ScreenShotActivity extends AppCompatActivity {
         gv.removeAllSeries();
         if (position == 0) {
             LineGraphSeries<DataPoint> emoto = createEmoto();
-            if (MainActivity.childrenmode && parental) {
+            if (MainActivity.childrenmode && isChild) {
                 emoto.setTitle("Emoto");
             } else {
                 emoto.setTitle("Emotionele intensiteit");
@@ -222,7 +201,7 @@ public class ScreenShotActivity extends AppCompatActivity {
 
             LineGraphSeries<DataPoint> fanti = createFanti();
 
-            if (MainActivity.childrenmode && parental) {
+            if (MainActivity.childrenmode && isChild) {
                 fanti.setTitle("Fanti");
             } else {
                 fanti.setTitle("Beeldende intensiteit");
@@ -231,7 +210,7 @@ public class ScreenShotActivity extends AppCompatActivity {
 
             LineGraphSeries<DataPoint> intellecto = createIntellecto();
 
-            if (MainActivity.childrenmode && parental) {
+            if (MainActivity.childrenmode && isChild) {
                 intellecto.setTitle("Intellecto");
             } else {
                 intellecto.setTitle("Intellectuele intensiteit");
@@ -241,7 +220,7 @@ public class ScreenShotActivity extends AppCompatActivity {
 
             LineGraphSeries<DataPoint> psymo = createPsymo();
 
-            if (MainActivity.childrenmode && parental) {
+            if (MainActivity.childrenmode && isChild) {
                 psymo.setTitle("Psymo");
             } else {
                 psymo.setTitle("Pychomotorische intensiteit");
@@ -250,7 +229,7 @@ public class ScreenShotActivity extends AppCompatActivity {
 
 
             LineGraphSeries<DataPoint> senzo = createSenzo();
-            if (MainActivity.childrenmode && parental) {
+            if (MainActivity.childrenmode && isChild) {
                 senzo.setTitle("Senzo");
             } else {
                 senzo.setTitle("Sensorische intensiteit");
@@ -261,7 +240,7 @@ public class ScreenShotActivity extends AppCompatActivity {
         } else if (position == 1) {
             gv.removeAllSeries();
             LineGraphSeries<DataPoint> emoto = createEmoto();
-            if (MainActivity.childrenmode && parental) {
+            if (MainActivity.childrenmode && isChild) {
                 emoto.setTitle("Emoto");
             } else {
                 emoto.setTitle("Emotionele intensiteit");
@@ -271,7 +250,7 @@ public class ScreenShotActivity extends AppCompatActivity {
             gv.removeAllSeries();
             LineGraphSeries<DataPoint> fanti = createFanti();
 
-            if (MainActivity.childrenmode && parental) {
+            if (MainActivity.childrenmode && isChild) {
                 fanti.setTitle("Fanti");
             } else {
                 fanti.setTitle("Beeldende intensiteit");
@@ -281,7 +260,7 @@ public class ScreenShotActivity extends AppCompatActivity {
             gv.removeAllSeries();
             LineGraphSeries<DataPoint> intellecto = createIntellecto();
 
-            if (MainActivity.childrenmode && parental) {
+            if (MainActivity.childrenmode && isChild) {
                 intellecto.setTitle("Intellecto");
             } else {
                 intellecto.setTitle("Intellectuele intensiteit");
@@ -291,7 +270,7 @@ public class ScreenShotActivity extends AppCompatActivity {
             gv.removeAllSeries();
             LineGraphSeries<DataPoint> psymo = createPsymo();
 
-            if (MainActivity.childrenmode && parental) {
+            if (MainActivity.childrenmode && isChild) {
                 psymo.setTitle("Psymo");
             } else {
                 psymo.setTitle("Pychomotorische intensiteit");
@@ -300,7 +279,7 @@ public class ScreenShotActivity extends AppCompatActivity {
         } else if (position == 5) {
             gv.removeAllSeries();
             LineGraphSeries<DataPoint> senzo = createSenzo();
-            if (MainActivity.childrenmode && parental) {
+            if (MainActivity.childrenmode && isChild) {
                 senzo.setTitle("Senzo");
             } else {
                 senzo.setTitle("Sensorische intensiteit");
@@ -313,9 +292,9 @@ public class ScreenShotActivity extends AppCompatActivity {
             if(name < 5){
                 name++;
                 makeGraph(name);
-            } else if (name == 5 && parent){
+            } else if (name == 5 && isChild){
                 name = 0;
-                parent = false;
+                isChild = false;
                 makeGraph(name);
             } else{
                 startEmail();
@@ -324,9 +303,8 @@ public class ScreenShotActivity extends AppCompatActivity {
     }
 
     public void makeScreenshots() {
-        ScreenshotLogic logic = new ScreenshotLogic();
-        Bitmap b = logic.takeScreenshot(gv);
-        if (!parent) {
+        Bitmap b = ScreenshotLogic.takeScreenshot(gv);
+        if (!isChild) {
             storeScreenshot(b, names[name]);
         } else {
             storeScreenshot(b, parentNames[name]);
@@ -338,7 +316,6 @@ public class ScreenShotActivity extends AppCompatActivity {
         double x = 1;
         int stats = 0;
         int amountOfValues = 0;
-        double finalStats = 0;
         int lastDayValue = 0;
         int amountOfValuesLastDay = 0;
 
@@ -357,13 +334,25 @@ public class ScreenShotActivity extends AppCompatActivity {
             }
             x++;
         }
-        finalStats = 1.0 * stats / amountOfValues;
-        this.weekStats[4] = finalStats;
-        this.dayStats[4] = 1.0 * lastDayValue / amountOfValuesLastDay;
 
-        if(parental && MainActivity.childrenmode){
-            this.weekStatsChild[4] = finalStats;
-            this.dayStatsChild[4] = 1.0 * lastDayValue / amountOfValuesLastDay;
+        double finalStats = 1.0 * stats / amountOfValues;
+        double dayStat = 1.0 * lastDayValue / amountOfValuesLastDay;
+
+        if (!Double.isNaN(finalStats)) {
+            System.out.println("debug: here with stats " + finalStats + " " + isChild + " " + MainActivity.childrenmode);
+            if(isChild && MainActivity.childrenmode){
+                this.weekStatsChild[4] = finalStats;
+            } else {
+                this.weekStats[4] = finalStats;
+            }
+        }
+
+        if (!Double.isNaN(dayStat)) {
+            if(isChild && MainActivity.childrenmode){
+                this.dayStatsChild[4] = dayStat;
+            } else {
+                this.dayStats[4] = dayStat;
+            }
         }
 
         this.senzo = finalStats;
@@ -378,7 +367,6 @@ public class ScreenShotActivity extends AppCompatActivity {
         double x = 1;
         int stats = 0;
         int amountOfValues = 0;
-        double finalStats = 0;
         int lastDayValue = 0;
         int amountOfValuesLastDay = 0;
 
@@ -397,13 +385,24 @@ public class ScreenShotActivity extends AppCompatActivity {
             }
             x++;
         }
-        finalStats = 1.0 * stats / amountOfValues;
-        this.weekStats[3] = finalStats;
-        this.dayStats[3] = 1.0 * lastDayValue / amountOfValuesLastDay;
 
-        if(parental && MainActivity.childrenmode){
-            this.weekStatsChild[3] = finalStats;
-            this.dayStatsChild[3] = 1.0 * lastDayValue / amountOfValuesLastDay;
+        double finalStats = 1.0 * stats / amountOfValues;
+        double dayStat = 1.0 * lastDayValue / amountOfValuesLastDay;
+
+        if (!Double.isNaN(finalStats)) {
+            if(isChild && MainActivity.childrenmode){
+                this.weekStatsChild[3] = finalStats;
+            } else {
+                this.weekStats[3] = finalStats;
+            }
+        }
+
+        if (!Double.isNaN(dayStat)) {
+            if(isChild && MainActivity.childrenmode){
+                this.dayStatsChild[3] = dayStat;
+            } else {
+                this.dayStats[3] = dayStat;
+            }
         }
 
         this.psymo = finalStats;
@@ -418,7 +417,6 @@ public class ScreenShotActivity extends AppCompatActivity {
         double x = 1;
         int stats = 0;
         int amountOfValues = 0;
-        double finalStats = 0;
         int lastDayValue = 0;
         int amountOfValuesLastDay = 0;
 
@@ -437,13 +435,24 @@ public class ScreenShotActivity extends AppCompatActivity {
             }
             x++;
         }
-        finalStats = 1.0 * stats / amountOfValues;
-        this.weekStats[2] = finalStats;
-        this.dayStats[2] = 1.0 * lastDayValue / amountOfValuesLastDay;
 
-        if(parental && MainActivity.childrenmode){
-            this.weekStatsChild[2] = finalStats;
-            this.dayStatsChild[2] = 1.0 * lastDayValue / amountOfValuesLastDay;
+        double finalStats = 1.0 * stats / amountOfValues;
+        double dayStat = 1.0 * lastDayValue / amountOfValuesLastDay;
+
+        if (!Double.isNaN(finalStats)) {
+            if(isChild && MainActivity.childrenmode){
+                this.weekStatsChild[2] = finalStats;
+            } else {
+                this.weekStats[2] = finalStats;
+            }
+        }
+
+        if (!Double.isNaN(dayStat)) {
+            if(isChild && MainActivity.childrenmode){
+                this.dayStatsChild[2] = dayStat;
+            } else {
+                this.dayStats[2] = dayStat;
+            }
         }
 
         this.intellecto = finalStats;
@@ -458,7 +467,6 @@ public class ScreenShotActivity extends AppCompatActivity {
         double x = 1;
         int stats = 0;
         int amountOfValues = 0;
-        double finalStats = 0;
         int lastDayValue = 0;
         int amountOfValuesLastDay = 0;
 
@@ -477,13 +485,24 @@ public class ScreenShotActivity extends AppCompatActivity {
             }
             x++;
         }
-        finalStats = 1.0 * stats / amountOfValues;
-        this.weekStats[1] = finalStats;
-        this.dayStats[1] = 1.0 * lastDayValue / amountOfValuesLastDay;
 
-        if(parental && MainActivity.childrenmode){
-            this.weekStatsChild[1] = finalStats;
-            this.dayStatsChild[1] = 1.0 * lastDayValue / amountOfValuesLastDay;
+        double finalStats = 1.0 * stats / amountOfValues;
+        double dayStat = 1.0 * lastDayValue / amountOfValuesLastDay;
+
+        if (!Double.isNaN(finalStats)) {
+            if(isChild && MainActivity.childrenmode){
+                this.weekStatsChild[1] = finalStats;
+            } else {
+                this.weekStats[1] = finalStats;
+            }
+        }
+
+        if (!Double.isNaN(dayStat)) {
+            if(isChild && MainActivity.childrenmode){
+                this.dayStatsChild[1] = dayStat;
+            } else {
+                this.dayStats[1] = dayStat;
+            }
         }
 
         this.fanti = finalStats;
@@ -498,7 +517,6 @@ public class ScreenShotActivity extends AppCompatActivity {
         double x = 1;
         int stats = 0;
         int amountOfValues = 0;
-        double finalStats = 0;
         int lastDayValue = 0;
         int amountOfValuesLastDay = 0;
 
@@ -518,15 +536,25 @@ public class ScreenShotActivity extends AppCompatActivity {
             x++;
 
         }
-        finalStats = 1.0 * stats / amountOfValues;
-        this.weekStats[0] = finalStats;
-        this.dayStats[0] = 1.0 * lastDayValue / amountOfValuesLastDay;
 
-        if(parental && MainActivity.childrenmode){
-            this.weekStatsChild[0] = finalStats;
-            this.dayStatsChild[0] = 1.0 * lastDayValue / amountOfValuesLastDay;
+        double finalStats = 1.0 * stats / amountOfValues;
+        double dayStat = 1.0 * lastDayValue / amountOfValuesLastDay;
+
+        if (!Double.isNaN(finalStats)) {
+            if(isChild && MainActivity.childrenmode){
+                this.weekStatsChild[0] = finalStats;
+            } else {
+                this.weekStats[0] = finalStats;
+            }
         }
 
+        if (!Double.isNaN(dayStat)) {
+            if(isChild && MainActivity.childrenmode){
+                this.dayStatsChild[0] = dayStat;
+            } else {
+                this.dayStats[0] = dayStat;
+            }
+        }
 
         this.emoto = finalStats;
         emoto.setColor(Color.rgb(232, 85, 51));
@@ -693,7 +721,9 @@ public class ScreenShotActivity extends AppCompatActivity {
         purple.setTextSize(20);
         purple.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
 
-        canvas.drawText("Weekstatistieken ouder:", statsDescriptionX, height + 150, bold);
+        String statsText = MainActivity.childrenmode ? "ouder" : "volwassene";
+
+        canvas.drawText("Weekstatistieken " + statsText + ":", statsDescriptionX, height + 150, bold);
         canvas.drawText("Gemiddelde emotionele intensiteit afgelopen week:", statsDescriptionX, height + 180, paint);
         canvas.drawText("Gemiddelde beeldende intensiteit afgelopen week:", statsDescriptionX, height + 210, paint);
         canvas.drawText("Gemiddelde intellectuele- intensiteit afgelopen week:", statsDescriptionX, height + 240, paint);
@@ -707,7 +737,7 @@ public class ScreenShotActivity extends AppCompatActivity {
         canvas.drawText(round(weekStats[4], 2) + "", statsValueX, height + 300, purple);
 
 
-        canvas.drawText("Dagstatistieken ouder van " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ":", statsDescriptionX, height + 340, bold);
+        canvas.drawText("Dagstatistieken " + statsText + " van " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ":", statsDescriptionX, height + 340, bold);
         canvas.drawText("Gemiddelde emotionele intensiteit afgelopen dag:", statsDescriptionX, height + 370, paint);
         canvas.drawText("Gemiddelde beeldende intensiteit afgelopen dag:", statsDescriptionX, height + 400, paint);
         canvas.drawText("Gemiddelde intellectuele- intensiteit afgelopen dag:", statsDescriptionX, height + 430, paint);
